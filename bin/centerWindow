@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# get screen resolution width and halve it
+
+width=$(xrandr --current | awk '/Screen/ {print $8}')
+
+half=$(expr "$width" / 2 )
+
+# echo $half
+
+# move active window
+
+#xdotool getactivewindow windowsize 75% y
+xdotool getactivewindow windowmove $half y
+
+
+

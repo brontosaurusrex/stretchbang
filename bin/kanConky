@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# kanConky < display a simple kanban board
+# could be called from conky and should look usefull with
+# non-monospaced fonts (like cuprum as well)
+
+# example call from conky
+# ${execpi 60 kanConky}
+
+# if conky is cutting stuff, add something like
+# text_buffer_size 1024
+# to .conkyrc
+
+# action
+cd ~/source/kanban-cli || exit
+
+kan () {
+ls -chtr "$@"
+}
+
+two="#000000"
+one="#8B9CA3"
+
+echo -n '${color '$one'}' # conky stuff
+echo "Projekt"
+echo -n '${color '$two'}'
+kan 1_projekt
+echo 
+echo -n '${color '$one'}'
+echo "Za Mix"
+echo -n '${color '$two'}'
+kan 2_mix
+echo
+echo -n '${color '$one'}'
+echo "Push"
+echo -n '${color '$two'}'
+kan 3_push
+echo 

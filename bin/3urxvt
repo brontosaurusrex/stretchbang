@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# 3urxvt - is a script that opens 3 urxvt windows, centered, with specific width/height on specific virtual screen.
+# needs 'xrandr','xdotool' and 'awk' < in repos
+
+# illustration
+#+---------------------------------------------------+
+#|            +-------------------------+            |
+#|            |urxvt1                   |            |
+#|            |                         |            |
+#|            |                         |            |
+#|            +-------------------------+            |
+#|            +-------------------------+            |
+#|            |urxvt2                   |            |
+#|            |                         |            |
+#|            |                         |            |
+#|            +-------------------------+            |
+#|            +-------------------------+            |
+#|            |urxvt3                   |            |
+#|            |                         |            |
+#|            |                         |            |
+#|            +-------------------------+            |
+#+---------------------------------------------------+
+
+# remember what desktop is active now
+desknow=$(xdotool get_desktop)
+
+# configurable variables
+xdotool set_desktop 1   # change me to a desktop you want urxvt windows to open
+w="1000"                # window width
+h="360"                 # window height
+margin="-5"             # bottom margin
+y="50"                  # y pos of first window
+sleep="0.1"             # sleep time < this should NOT be neccesary
+
+# checks
+command -v xrandr >/dev/null 2>&1 ||    { >&2 echo "I need xrandr." ; exit 1; }
+command -v xdotool >/dev/null 2>&1 ||   { >&2 echo "I need xdotool." ; exit 1; }
+command -v awk >/dev/null 2>&1 ||   { >&2 echo "I need awk." ; exit 1; }
+
+# get screen resolution width and halve it
+width=$(xrandr --current | awk '/Screen/ {print $8}')
+halfwidth=$((width / 2))
+
+# calc stuff
+center=$((halfwidth - w / 2))
+
+echo "halfwidth $halfwidth"     # screen center
+echo "center $center"           # the actual x position to move a window to become centered
+
+# check if they are allready running and only run if they are not
+xdotool search -name 'term1' windowactivate && { echo "term1 already running" ; } || \
+(urxvt -title term1 & sleep "$sleep") && xdotool search --sync --name 'term1' windowactivate windowsize "$w" "$h" windowmove "$center" "$y" &
+xdotool search -name 'term2' windowactivate && { echo "term2 already running" ; } || \
+(urxvt -title term2 & sleep "$sleep") && xdotool search --sync --name 'term2' windowactivate windowsize "$w" "$h" windowmove "$center" $((y + h + margin)) &
+xdotool search -name 'term3' windowactivate && { echo "term3 already running" ; } || \
+(urxvt -title term3 & sleep "$sleep") && xdotool search --sync --name 'term3' windowactivate windowsize "$w" "$h" windowmove "$center" $((y + 2 * h + 2 * margin))
+
+wait
+
+xdotool set_desktop "$desknow" # return me to original desktop
+
+# notes:
+# wmctrl -l < will list all visible window ids
+# xdotool windowmove does not support percents, while windowsize does
+
+

@@ -1,0 +1,52 @@
+    userresources=$HOME/.Xresources
+    usermodmap=$HOME/.Xmodmap
+    sysresources=/etc/X11/xinit/.Xresources
+    sysmodmap=/etc/X11/xinit/.Xmodmap
+
+    if [ -f $sysresources ]; then
+        /usr/bin/xrdb -merge $sysresources
+    fi
+
+    if [ -f $sysmodmap ]; then
+        /usr/bin/xmodmap $sysmodmap
+    fi
+
+    if [ -f $userresources ]; then
+        /usr/bin/xrdb -merge $userresources
+    fi
+
+    if [ -f $usermodmap ]; then
+        /usr/bin/xmodmap $usermodmap
+    fi
+
+
+
+
+    nitrogen --restore & # load wallpaper
+
+
+        #dwm_status &
+    
+        #(sleep 1 && nmgui) &
+        
+   	    #(sleep 2 && terminator) &
+
+        #dwm_9menu &    
+
+    killall conky &
+
+    (sleep 5 && conky -c ~/.conkyrcdwm | while read LINE; do xsetroot -name "$LINE"; done) &
+
+
+    (      urxvtc 
+          if [ $? \-eq 2 ]; then
+             urxvtd \-q \-o \-f
+             urxvtc 
+          fi
+    )  &
+
+    xset s off s noblank s noexpose -dpms 
+
+    exec ck-launch-session dbus-launch dwm
+
+

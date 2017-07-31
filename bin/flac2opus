@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# flac2opus
+
+# Usage examples
+
+# Simple:
+# ...........................................
+# flac2opus *.flac
+# parallel --gnu flac2opus {} ::: *.flac
+
+# With find:
+# ...........................................
+# If the symlinks are in question (cp -rs flacs /destination/), you could call this script:
+# find . -lname "*.flac" -exec flac2opus {} \+
+# or with parallel
+# find . -lname "*.flac" | parallel --gnu flac2opus {}
+
+# Or if the files are to be found
+# find . -type f -iname "*.flac" -exec flac2opus {} \+
+# or with parallel
+# find . -type f -iname "*.flac" | parallel --gnu flac2opus {}
+
+# note: Using parallel (apt-get install parallel) will give enormous encoding speed boost. 
+
+
+command -v opusenc >/dev/null 2>&1 || { echo >&2 "I require opusenc but it's not installed, exiting."; exit 1; }
+command -v mediainfo >/dev/null 2>&1 || { echo "I need mediainfo installed." ; exit 1; }
+
+encode() { # put your opusenc settings here
+   opusenc "$expanded" "$dir/$base.opus"
+}
+
+while [ $# -gt 0 ]; do
+
+  
+    expanded=$(readlink -f "$1")
+    echo ".............................."
+    echo "$expanded"
+    
+    base=$(basename "${1}")     # basename, like                file.flac
+    base="${base%.*}"           # basename without extension    file
+    dir=$(dirname "${1}")       # directory
+    
+
+        # Do some checks first
+        if [ -f "$dir/$base.opus" ]
+        then # opus file in existance, do some duration checking
+            echo "the file exists, checking if flac and opus durations match"
+        
+                if diff <(mediainfo "$expanded" | grep -m 1 Duration) <(mediainfo "$dir/$base.opus" | grep -m 1 Duration)
+                then
+                    echo "yes, durations match, skipping"
+                else
+                    echo "no, durations does not match, reencoding" 
+                    encode 
+                   
+                fi
+            
+            
+        else # the opus file does not exist yet
+            encode
+        fi
+   
+    shift
+done

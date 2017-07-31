@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# internal ip
+echo -n "internal: "
+/sbin/ifconfig $1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}' | head -1
+
+# two ways to get external ip, 2nd runs if first fails only
+echo -n "external: "
+
+curl -B http://wtfismyip.com/text
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+
+test=$(curl -s http://www.nasa.gov/rss/dyn/image_of_the_day.rss | grep -m1 "<enclosure" | sed 's/^.*url="//' | sed 's/" len.*$//') && wget "$test" -O /tmp/nasa.jpg && viewnior /tmp/nasa.jpg && rm /tmp/nasa.jpg
+

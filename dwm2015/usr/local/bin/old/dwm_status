@@ -1,0 +1,6 @@
+    #!/bin/bash
+    while true; do
+        date=`date +"%x %H:%M"`
+        xsetroot -name "$date"
+    sleep 30
+    done

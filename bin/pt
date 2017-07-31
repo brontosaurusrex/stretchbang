@@ -1,0 +1,1 @@
+mpv --cache 10000 $(youtube-dl -g "$1")
