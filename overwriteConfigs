@@ -4,7 +4,7 @@
 # set -x
 
 # config
-srcdir="$HOME/source/postbang" # < set this to the place where root postbang source git is
+srcdir="$HOME/source/stretchbang" # < set this to the place where root postbang source git is
 
 # main
 if [  ! -d "$srcdir" ]
