@@ -15,10 +15,10 @@
 compton & # check .config/compton.conf
 
 ## restore wallpaper
-nitrogen --restore & tint2 & volumeicon & (sleep 10 && wbar) &
+nitrogen --restore & tint2 & (sleep 10 && wbar) &
 
 ## Run conky with slight delay
-(sleep 3 && conky) &  
+#(sleep 3 && conky) &  
 
 ## power manager
 # xfce4-power-manager &
@@ -39,9 +39,6 @@ xset b off &
 
 ## policy kit
 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
-
-## play some audio at login
-# mpv ~/audio_fx/vader.mp3 & 
 
 ## only if running in vbox, will restore wallpaper, restart conky, restart wbar if resolution 
 ## change is detected.
