@@ -1117,9 +1117,7 @@
       <focus>yes</focus>
       <decor>no</decor>
     </application>
-    <application class="Firefox-esr" name="Navigator" role="browser" type="normal">
-      <decor>no</decor>
-    </application><application class="Chromium" name="slither.io" role="pop-up" type="normal">
+    <application class="Chromium" name="slither.io" role="pop-up" type="normal">
       <decor>no</decor>
     </application>
   </applications>
