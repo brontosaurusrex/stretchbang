@@ -3,25 +3,28 @@
 	<menu id="root-menu" label="Openbox 3">
 		<item label="run">
 			<action name="Execute">
-				<execute>rofi -show run -font &quot;Cuprum 13&quot; -bw 0 -separator-style none -width 17 -hide-scrollbar -padding 1</execute>
+				<execute>gmrun</execute>
 			</action>
 		</item>
-		<separator/>
-		<menu execute="pipeMisc" id="misc" label="pipe"/>
 		<separator/>
 		<item label="urxvt">
 			<action name="Execute">
 				<execute>urxvt</execute>
 			</action>
 		</item>
-		<item label="geany">
+		<item label="terminator">
 			<action name="Execute">
-				<execute>geany</execute>
+				<execute>x-terminal-emulator</execute>
 			</action>
 		</item>
 		<item label="thunar">
 			<action name="Execute">
 				<execute>thunar</execute>
+			</action>
+		</item>
+		<item label="geany">
+			<action name="Execute">
+				<execute>geany</execute>
 			</action>
 		</item>
 		<item label="firefox">
@@ -32,6 +35,22 @@
 		<item label="mpv">
 			<action name="Execute">
 				<execute>mpv --force-window --idle</execute>
+			</action>
+		</item>
+		<item label="slither.io">
+			<action name="Execute">
+				<execute>google-chrome --app=&quot;http://slither.io&quot;</execute>
+			</action>
+		</item>
+		<separator/>
+		<item label="gimp-dev">
+			<action name="Execute">
+				<execute>~/.gimp-build-dev/bin/gimp-2.9</execute>
+			</action>
+		</item>
+		<item label="inkscape">
+			<action name="Execute">
+				<execute>inkscape</execute>
 			</action>
 		</item>
 		<separator/>
@@ -50,7 +69,6 @@
 		<!-- This requires the presence of the 'menu' package to work -->
 		<separator/>
 		<menu id="root-menu-251146" label="config">
-			<menu execute="pipeSysInfo pipe" id="sysInfo" label="sysInfo"/>
 			<item label="lxAppearance">
 				<action name="Execute">
 					<execute>lxappearance</execute>
@@ -69,11 +87,6 @@
 			<item label="wbarRestart">
 				<action name="Execute">
 					<execute>wbarRestart</execute>
-				</action>
-			</item>
-			<item label="tint2Restart">
-				<action name="Execute">
-					<execute>tint2Restart</execute>
 				</action>
 			</item>
 			<separator/>
