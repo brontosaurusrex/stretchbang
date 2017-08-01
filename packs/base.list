@@ -9,6 +9,7 @@ openbox
 xserver-xorg
 xinit
 vim
+vim-gtk
 thunar
 thunar-archive-plugin
 tint2
