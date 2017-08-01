@@ -12,7 +12,7 @@
 
 # 2017 by bronto, fixed by o9000
 
-set -x
+#set -x
 
 (echo ""; stdbuf -oL alsactl monitor) |
 while read
@@ -24,7 +24,7 @@ do
     mute=$(awk -F"[][]" '/dB/ { print $6 }' <(amixer sget Master))
     mute=$(awk '{print $1; exit}' <(echo "$mute")) # just the first value
     
-    echo "$volPercents" "$mute"
+    #echo "$volPercents" "$mute"
 
 
     if (( volPercents > 100 )); then
