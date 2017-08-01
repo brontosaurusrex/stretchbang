@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# run with sudo
+
+apt install -y $(cat base.list)
+apt install -y --no-install-recommends $(cat baseNoInstallRec.list)
+apt install -y $(cat extra.list)
