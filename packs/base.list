@@ -1,3 +1,5 @@
+arc-theme
+psmisc
 gvfs
 gtk3-engines-*
 openbox
@@ -22,7 +24,6 @@ mpv
 youtube-dl
 mediainfo
 mkvtoolnix
-alsa-base
 alsa-tools
 alsa-tools-gui
 alsa-utils
