@@ -3,7 +3,7 @@
 	<menu id="root-menu" label="Openbox 3">
 		<item label="run">
 			<action name="Execute">
-				<execute>rofi -show run -font &quot;Cuprum 13&quot; -bw 0 -separator-style none -width 17 -hide-scrollbar -padding 1</execute>
+				<execute>gmrun</execute>
 			</action>
 		</item>
 		<separator/>
