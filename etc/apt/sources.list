@@ -12,5 +12,8 @@ deb-src https://deb.debian.org/debian/ stretch-proposed-updates main contrib non
 deb http://security.debian.org/ stretch/updates main contrib non-free
 deb-src http://security.debian.org/ stretch/updates main contrib non-free
 
+# backports
+deb https://deb.debian.org/debian stretch-backports main contrib non-free
+
 # docker
 # deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
