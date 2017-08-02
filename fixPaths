@@ -2,7 +2,7 @@
 
 # fix paths in .wbar and .Xresources
 # .wbar paths
-sed -i "s=SomePath=$HOME/source/stretchbang=" ~/.wbar
+sed -i "s=SomePath=$HOME/.config/stretchbang=" ~/.wbar
 
 # .Xresources urxvt icon path
 sed -i "s=SomePath=$HOME=" ~/.Xresources
