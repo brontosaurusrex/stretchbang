@@ -1,0 +1,6 @@
+# restore
+dconf load /com/gexperts/Tilix/ < tilix.dconf
+# backup
+dconf dump /com/gexperts/Tilix/ > tilix.dconf
+
+# needs dconf (packapge dconf-cli in Debian)
