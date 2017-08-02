@@ -1,4 +1,4 @@
-fbc
+bc
 gawk
 arc-theme
 compton
@@ -64,3 +64,5 @@ volumeicon-alsa
 wmctrl
 wcalc
 maim
+wbar
+wbar-config
