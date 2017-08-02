@@ -4,7 +4,7 @@
 # set -x
 
 # config
-srcdir="$HOME/source/stretchbang" # < set this to the place where root postbang source git is
+srcdir="$HOME/source/stretchbang" # < set this to the place where stretchbang source git is
 
 # main
 if [  ! -d "$srcdir" ]
@@ -40,7 +40,7 @@ cp -vurb .fonts/* ~/.fonts/
 # depends, either vrb or vurb OR vb or vub (so its either vu or only v)
 mkdir ~/.config/ ~/.urxvt/ ~/bin/ 2>/dev/null
 cp -"$switch"rb .config/* ~/.config/
-cp -"$switch"rb .gconf/* ~/.gconf/ # gksu settings
+cp -"$switch"rb .gconf/* ~/.gconf/ # gksu settings ?
 cp -"$switch"rb .urxvt/* ~/.urxvt/
 cp -"$switch"rb bin/* ~/bin/
 
