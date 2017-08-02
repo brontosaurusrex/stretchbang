@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# make some user dirs
+
+cd
+mkdir documents downloads images music tmp videos
+cp ~/source/stretchbang/.config/user-dirs.dirs ~/.config
+echo "logout of openbox, login back and it should happen."
