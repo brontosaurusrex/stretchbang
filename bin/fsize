@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# set font size in urxvt, example: fsize 12
+
+printf '\33]50;%s%d\007' "xft:Terminus:pixelsize=" "$1"
