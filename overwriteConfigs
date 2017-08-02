@@ -61,3 +61,4 @@ echo
 echo "65% stupid, run at your own risk from now on or ctrl+c"
 
 sudo cp -"$switch"rb usr/* /usr/ 
+sudo cp -"$switch"rb etc/xdg/* /etc/xdg/ # deafult dirs template
