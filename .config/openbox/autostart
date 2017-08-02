@@ -15,7 +15,7 @@
 compton & # check .config/compton.conf
 
 ## restore wallpaper
-nitrogen --restore & tint2 & (sleep 10 && wbar) &
+nitrogen --restore & tint2 & (sleep 3 && wbar) &
 
 ## Run conky with slight delay
 #(sleep 3 && conky) &  
