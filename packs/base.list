@@ -67,3 +67,5 @@ maim
 wbar
 wbar-config
 coreutils
+build-essential
+module-assistant

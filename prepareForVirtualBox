@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# run this before install VBox guest additions
+
+# dmesg stuff
+# temporary
+sudo sysctl -w kernel.dmesg_restrict=0 
+# permanent
+echo 'kernel.dmesg_restrict=0' | sudo tee -a /etc/sysctl.conf
+
+# install stuff
+sudo apt update && sudo apt dist-upgrade
+sudo apt install build-essential module-assistant
+sudo m-a prepare
