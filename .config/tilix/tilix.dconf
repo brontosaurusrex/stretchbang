@@ -23,3 +23,5 @@ allow-bold=false
 use-theme-colors=false
 cursor-blink-mode='off'
 background-color='#263238'
+background-transparency-percent=0
+dim-transparency-percent=39
