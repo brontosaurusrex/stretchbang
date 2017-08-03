@@ -1,29 +1,44 @@
 #!/bin/bash
 
 # changeres
-# reset wallpaper if screen-resolution change is detected and we are running
-# under virtualbox, else just exit.
-# var=$(command-name-here)
+
+# reset/restart things if running under virtualbox
 
 old=$(xrandr)
 
 if grep hypervisor /proc/cpuinfo ; then # if cpu flags have hypervisor assume virtualbox
 
+echo "hypervisor detected, running 4ever in loop"
+
     while true ; do
 
-        if diff <(echo "$old") <(xrandr); then
-        
-        
+        if ! diff <(echo "$old") <(xrandr); then
         
         echo "res was changed"
-        
-        
+        # wallpaper
+        echo "restore wall"
+        nitrogen --restore # ugly assumption, how to check if wall was set with nitrogen?
+        # wbar
+        pgrep -x wbar
+            if [ $? -eq 0 ]; then
+              echo "kill wbar"
+              killall wbar && wbar
+              echo "start wbar"
+
+            fi
+        # conky
+        pgrep -x conky
+            if [ $? -eq 0 ]; then
+              echo "kill conky"
+              killall conky && conky
+              echo "start conky"
+
+            fi 
+
         fi
 
         old=$(xrandr)
-
         sleep 5
-
     done
 
 else
@@ -31,7 +46,3 @@ else
     exit
 
 fi
-
-
-
-# ( nitrogen --restore && wbarRestart )
