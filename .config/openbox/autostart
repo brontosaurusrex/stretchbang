@@ -42,7 +42,8 @@ xset b off &
 
 ## only if running in vbox, will restore wallpaper, restart conky, restart wbar if resolution 
 ## change is detected.
-~/bin/changeres &
+# ~/bin/changeres & 
+# ^ needs rewrite, should only restart things that are actually running, shall not use dmesg for vbox detection.
 
 ## optional (http://raspberrypi.stackexchange.com/questions/752/how-do-i-prevent-the-screen-from-going-blank)
 xset s off         # don't activate screensaver
