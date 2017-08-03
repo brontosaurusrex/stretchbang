@@ -7,27 +7,31 @@
 
 old=$(xrandr)
 
-if dmesg | grep -i Virtualbox ; then
+if grep hypervisor /proc/cpuinfo ; then # if cpu flags have hypervisor assume virtualbox
 
-	while true ; do
-	
-	# diff <(echo "$foo") <(echo "$bar")
-	
-	#diff <(echo "$old") <(xrandr) || ( nitrogen --restore && wbarRestart && killall conky ; sleep 2 && conky & )
-	diff <(echo "$old") <(xrandr) || ( nitrogen --restore && wbarRestart )
-    
-	# in bunsen labs one could use a line like
-	# diff <(echo "$old") <(xrandr) || ( nitrogen --restore && killall conky && sleep 2 && bl-conky-session & )
-	
-	old=$(xrandr)
-	
+    while true ; do
 
+        if diff <(echo "$old") <(xrandr); then
+        
+        
+        
+        echo "res was changed"
+        
+        
+        fi
 
-	
-	sleep 5; done
+        old=$(xrandr)
+
+        sleep 5
+
+    done
 
 else
 
-	exit
-     
+    exit
+
 fi
+
+
+
+# ( nitrogen --restore && wbarRestart )
