@@ -1,7 +1,8 @@
 [/]
-terminal-title-style='none'
+focus-follow-mouse=true
 enable-wide-handle=false
 sidebar-on-right=false
+terminal-title-style='none'
 theme-variant='dark'
 window-style='borderless'
 
@@ -12,12 +13,13 @@ visible-name='Default'
 login-shell=true
 palette=['#252525', '#FF5252', '#C3D82C', '#FFC135', '#42A5F5', '#D81B60', '#00ACC1', '#F5F5F5', '#708284', '#FF5252', '#C3D82C', '#FFC135', '#42A5F5', '#D81B60', '#00ACC1', '#F5F5F5']
 badge-color-set=false
-use-system-font=false
+scroll-on-output=false
 cursor-colors-set=false
 highlight-colors-set=false
-use-theme-colors=false
+use-system-font=false
 bold-color-set=false
 font='Source Code Pro Light 11'
 allow-bold=false
+use-theme-colors=false
 cursor-blink-mode='off'
 background-color='#263238'
