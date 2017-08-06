@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# svg2pdf < convert svg to png with inkscape
+
+# required
+command -v inkscape >/dev/null 2>&1 || { echo "I need inkscape installed." ; exit 1; }
+
+# action
+
+
+
+while [ $# -gt 0 ]; do
+
+    file=$(readlink -f "$1")       # abs link
+    baseext=$(basename "${1}")     # file.ext
+    base="${baseext%.*}"           # file
+    dir=$(dirname "${file}")          # directory
+
+    echo "$dir/$base".pdf
+    
+    inkscape "$file" --export-png="$dir/$base".png
+
+
+
+shift
+done
