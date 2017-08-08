@@ -1,4 +1,4 @@
 #!/bin/bash
 
 killall -w wbar
-wbar & 
+LC_NUMERIC=C wbar & 
