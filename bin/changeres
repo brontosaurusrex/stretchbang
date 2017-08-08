@@ -22,7 +22,7 @@ echo "hypervisor detected, running 4ever in loop"
         pgrep -x wbar
             if [ $? -eq 0 ]; then
               echo "kill wbar"
-              killall wbar && wbar
+              killall wbar && LC_NUMERIC=C wbar &
               echo "start wbar"
 
             fi
