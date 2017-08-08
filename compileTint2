@@ -16,9 +16,14 @@ cd build || exit
 
 cmake ..
 make
-sudo apt remove tint2
-# sudo make install # < fix this
-sudo checkinstall
-# if install would fail, then
-# sudo apt remove tint2
-# sudo dpkg -i build*.deb
+
+# make a soft link in ~/bin, at next login the new tint2 will be started
+
+newtint2="~/source/tint2/build/tint2"
+if [ -f $newtint2 ]; then
+   ln -s ~/source/tint2/build/tint2 ~/bin/tint2
+else
+   echo "something went wrong."
+fi
+
+
