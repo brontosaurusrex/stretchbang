@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# install firefox addons
+
+mkdir tmp
+cd ~/tmp || exit
+
+# wget and install uBlock and Scrollbar anywhere
+wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi
+wget https://addons.mozilla.org/firefox/downloads/latest/scrollbaranywhere/addon-292702-latest.xpi
+
+firefox-esr *.xpi
