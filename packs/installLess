@@ -8,4 +8,4 @@ apt install -y --no-install-recommends $(cat baseNoInstallRec.list)
 #apt install -y $(cat extra.list)
 
 # wbar
-sudo rm /etc/xdg/autostart/wbar.desktop # start wbar in ob autostart
+rm /etc/xdg/autostart/wbar.desktop # start wbar in ob autostart
