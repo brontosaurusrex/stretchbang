@@ -1,0 +1,13 @@
+# https://forums.bunsenlabs.org/viewtopic.php?id=4044
+
+# Colour in <Tab> completions
+set colored-stats on
+
+# Case-insensitive matching when completing. Increases comfort a lot.
+set completion-ignore-case on
+
+# Don't double-tab for completion suggestions when the pattern is ambigious.
+set show-all-if-ambiguous on
+
+# The common prefix of all completion suggestions is shown in a different color.
+set colored-completion-prefix on

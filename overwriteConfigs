@@ -47,13 +47,14 @@ cp -"$switch"rb bin/* ~/bin/
 cp -"$switch"b .bashrc ~
 cp -"$switch"b .bash_aliases ~
 cp -"$switch"b .conkyrc ~
-cp -"$switch"b .conkyrcdwm ~
+#cp -"$switch"b .conkyrcdwm ~
 cp -"$switch"b .gtkrc-2.0* ~
 cp -"$switch"b .Xresources ~
 cp -"$switch"b .profile ~
 cp -"$switch"b .xsessionrc ~
 cp -"$switch"b .tmux* ~
 cp -"$switch"b .wbar ~
+cp -"$switch"b .inputrc ~
 
 # sudo here
 # set +x # verbosity off
