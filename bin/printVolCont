@@ -12,8 +12,6 @@
 
 # 2017 by bronto, fixed by o9000
 
-#set -x
-
 (echo ""; stdbuf -oL alsactl monitor) |
 while read
 do
@@ -23,9 +21,6 @@ do
     volPercents=$(awk '{print $1; exit}' <(echo "$volPercents")) # just the first value
     mute=$(awk -F"[][]" '/dB/ { print $6 }' <(amixer sget Master))
     mute=$(awk '{print $1; exit}' <(echo "$mute")) # just the first value
-    
-    #echo "$volPercents" "$mute"
-
 
     if (( volPercents > 100 )); then
         volPercents=100
@@ -34,7 +29,6 @@ do
         volPercents=0
     fi
 
-    
     chars="20"
 
     fil="─"
@@ -72,15 +66,12 @@ do
     [ "$debug" = true ]  && { echo "$postloop postloop" ;}
 
 
-
-    
-    for i in $(seq 1 $preloop); do
+    a=$(for i in $(seq 1 $preloop); do
         printf "%s" "$fil" 
-    done
-        printf "%s" "$pos"
-    for i in $(seq 1 $postloop); do
+    done)
+    b=$(printf "%s" "$pos")
+    c=$(for i in $(seq 1 $postloop); do
         printf "%s" "$fil"
-    done
-    printf "\n"
-
+    done)
+    printf "$a$b$c\n"
 done
