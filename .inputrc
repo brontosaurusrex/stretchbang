@@ -11,3 +11,9 @@ set show-all-if-ambiguous on
 
 # The common prefix of all completion suggestions is shown in a different color.
 set colored-completion-prefix on
+
+# https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html#Readline-Init-File-Syntax
+# If set to ‘on’, the history code attempts to place the point (the current cursor position) 
+# at the same location on each history line retrieved with previous-history or next-history. 
+# The default is ‘off’
+set history-preserve-point on
