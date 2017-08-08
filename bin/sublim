@@ -1,6 +1,13 @@
+#!/bin/bash
+
+# if no arguments passed, perhaps find some files 
+shopt -s extglob
+(( $# )) || set -- *.@(mkv|mp4|avi); [[ -e $1 ]] || { echo "No mkv, mp4 or avi files in this dir"; stty sane; exit 1; }
+
+# loop
 while [ $# -gt 0 ]; do
 
-    $HOME/.local/bin/subliminal download -l sl -l en -s "$1"
+     $HOME/.local/bin/subliminal download -l sl -l en -s "$1"
 
 shift
 done
