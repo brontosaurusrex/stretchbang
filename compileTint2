@@ -19,7 +19,7 @@ make
 
 # make a soft link in ~/bin, at next login the new tint2 will be started
 
-newtint2="~/source/tint2/build/tint2"
+newtint2="$HOME/source/tint2/build/tint2"
 if [ -f $newtint2 ]; then
    ln -s ~/source/tint2/build/tint2 ~/bin/tint2
 else
