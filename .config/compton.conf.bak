@@ -3,8 +3,7 @@ shadow-exclude = [
     "class_g = 'xpad'",
     "name *= 'Cairo-Clock'",
     "name *= 'Tilix'",
-    "name *= 'transparent'",
-    "name *= 'slither'"
+    "name *= 'transparent'"
 
 ];
 
@@ -14,12 +13,12 @@ no-dnd-shadow = true;
 no-dock-shadow = true;
 
 clear-shadow = true;
-shadow-radius = 12;
-shadow-offset-x = -18;
-shadow-offset-y = -18;
+shadow-radius = 30;
+shadow-offset-x = -7;
+shadow-offset-y = -7;
 shadow-opacity = 0.5;
 
 # makes slither work faster on macpro with legacy nvidia
-# paint-on-overlay = true;
+paint-on-overlay = true;
 
 
