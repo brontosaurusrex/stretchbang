@@ -654,6 +654,12 @@
         <command>toggleCompton</command>
       </action>
     </keybind>
+    <!-- move window to next monitor -->
+    <keybind key="A-m">
+      <action name="MoveResizeTo">
+        <monitor>next</monitor>
+      </action>
+    </keybind>
     <!-- brontosaurusrex end -->
   </keyboard>
   <mouse>
