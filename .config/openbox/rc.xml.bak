@@ -636,6 +636,14 @@
         <x>center</x>
       </action>
     </keybind>
+    <!-- center x and y -->
+    <keybind key="W-A-c">
+      <action name="UnmaximizeFull"/>
+      <action name="MoveResizeTo">
+        <x>center</x>
+        <y>center</y>
+      </action>
+    </keybind>
     <!-- full width, almost full height in percents -->
     <keybind key="A-v">
       <action name="UnmaximizeFull"/>
