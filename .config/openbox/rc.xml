@@ -23,7 +23,7 @@
        mouse into it, also raise the window -->
   </focus>
   <placement>
-    <policy>Smart</policy>
+    <policy>UnderMouse</policy>
     <!-- 'Smart' or 'UnderMouse' -->
     <center>yes</center>
     <!-- whether to place windows in the center of the free area found or
@@ -45,7 +45,7 @@
       D: omnipresent (on all desktops).
   -->
     <keepBorder>no</keepBorder>
-    <animateIconify>no</animateIconify>
+    <animateIconify>yes</animateIconify>
     <font place="ActiveWindow">
       <name>Cuprum</name>
       <size>11</size>
@@ -118,9 +118,9 @@
   </desktops>
   <resize>
     <drawContents>yes</drawContents>
-    <popupShow>Never</popupShow>
+    <popupShow>Always</popupShow>
     <!-- 'Always', 'Never', or 'Nonpixel' (xterms and such) -->
-    <popupPosition>Fixed</popupPosition>
+    <popupPosition>Center</popupPosition>
     <!-- 'Center' or 'Top' -->
     <popupFixedPosition>
       <x>center</x>
