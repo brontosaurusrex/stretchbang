@@ -69,3 +69,5 @@ wbar-config
 coreutils
 ack
 gcal
+inotify-tools
+aptitude
