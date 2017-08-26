@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if cat $HOME/.gtkrc-2.0 | grep Adapta-Nokto ; then
+    echo "mkay"
+    GTK_THEME=Adapta /usr/bin/firefox "$@"
+else
+    echo "just using what's there"
+    /usr/bin/firefox "$@"
+fi
+
