@@ -5,8 +5,12 @@
 # apt install inotify-tools aptitude
 # https://gist.github.com/fduran/1870502
 
+# what file to monitor for changes
+# /var/log/dpkg.log
+file="/var/log/apt/history.log"
+
 # exit if file is not there
-[[ -f /var/log/apt/history.log ]] || exit 0
+[[ -f "$file" ]] || exit 0
 
 # counter
 count=0
@@ -20,7 +24,7 @@ num=$(aptitude search "~U" | wc -l); if [ $num != 0 ]; then echo "$num"; fi
 status 
 
 # spy and react
-while inotifywait -e modify /var/log/apt/history.log > /dev/null 2>&1 ; do
+while inotifywait -e modify "$file" > /dev/null 2>&1 ; do
 
     ((count+=1))
     >&2 echo "something happened! $count" # should show in cli only and not in tint2
