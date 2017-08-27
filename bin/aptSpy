@@ -20,9 +20,6 @@ status () {
 num=$(aptitude search "~U" | wc -l); if [ $num != 0 ]; then echo "$num"; fi
 }
 
-# first one is for free
-# status && >&2 echo "status"
-
 # spy and react
 spy () {
     while inotifywait -e modify "$file" > /dev/null 2>&1 ; do
