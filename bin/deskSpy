@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# deskSpy 
+
+# continuous desktop spy, to be used in tint2 
+# executor scripts with 'execp_continuous = 1'
+
+#act="■"
+#non="□"
+
+#act="^"
+#non="ˇ"
+
+#act=" : "
+#non=" . "
+
+act="_"
+non="-"
+
+count=0 # for debugging only
+
+(xprop -root -spy _NET_CURRENT_DESKTOP _NET_NUMBER_OF_DESKTOPS)  | 
+while read
+do
+
+    ((count+=1))
+
+    read -r _ _ desk <<< $(xprop -root _NET_CURRENT_DESKTOP) && ((desk+=1))
+    read -r _ _ num <<< $(xprop -root _NET_NUMBER_OF_DESKTOPS)
+        
+    # some real code here
+    sum=""
+    for n in $(seq "$num"); do
+    
+        if [ "$n" == "$desk" ]; then
+            sum="$sum$act"
+        else
+            sum="$sum$non"
+        fi
+    done
+
+    echo "$sum"    
+    >&2 echo "($count) desktop $desk / $num" # for debugging only
+    
+done
+
+
+# tint2rc
+
+# optional, this is weird
+# taskbar_distribute_size = 1 # under Taskbar
+
+## executor
+#-------------------------------------
+#execp = new
+#execp_centered = 0
+#execp_has_icon = 0
+#execp_command = deskSpy
+#execp_continuous = 1
+#execp_font = cuprum 22
+#execp_font_color = #111111 70
+#execp_padding = 0 0 0
+#execp_tooltip = desktop
+## This will depend on your rc.xml:
+#execp_lclick_command = xdotool key super+Tab
+#execp_uwheel_command = xdotool key meta+Left
+#execp_dwheel_command = xdotool key meta+Right
