@@ -14,8 +14,8 @@
 #act=" : "
 #non=" . "
 
-act="_"
-non="-"
+non="_"
+act="-"
 
 count=0 # for debugging only
 
@@ -45,13 +45,13 @@ do
 done
 
 
-# tint2rc
+## tint2rc
 
-# optional, this is weird
-# taskbar_distribute_size = 1 # under Taskbar
+## Taskbar
+# taskbar_mode = multi_desktop
+# taskbar_mode = single_desktop
 
 ## executor
-#-------------------------------------
 #execp = new
 #execp_centered = 0
 #execp_has_icon = 0
@@ -63,5 +63,5 @@ done
 #execp_tooltip = desktop
 ## This will depend on your rc.xml:
 #execp_lclick_command = xdotool key super+Tab
-#execp_uwheel_command = xdotool key meta+Left
-#execp_dwheel_command = xdotool key meta+Right
+#execp_uwheel_command = xdotool key ctrl+alt+Left
+#execp_dwheel_command = xdotool key ctrl+alt+Right
