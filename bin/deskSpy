@@ -63,5 +63,6 @@ done
 #execp_tooltip = desktop
 ## This will depend on your rc.xml:
 #execp_lclick_command = xdotool key super+Tab
+#execp_rclick_command = xdotool key super+space
 #execp_uwheel_command = xdotool key ctrl+alt+Left
 #execp_dwheel_command = xdotool key ctrl+alt+Right
