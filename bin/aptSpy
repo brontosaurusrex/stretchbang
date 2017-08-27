@@ -21,13 +21,27 @@ num=$(aptitude search "~U" | wc -l); if [ $num != 0 ]; then echo "$num"; fi
 }
 
 # first one is for free
-status 
+# status && >&2 echo "status"
 
 # spy and react
-while inotifywait -e modify "$file" > /dev/null 2>&1 ; do
+spy () {
+    while inotifywait -e modify "$file" > /dev/null 2>&1 ; do
 
-    ((count+=1))
-    >&2 echo "something happened! $count" # should show in cli only and not in tint2
-    status 
-    
-done 
+        ((count+=1))
+        >&2 echo "something happened! $count" # should show in cli only and not in tint2
+        
+        status && >&2 echo "status inside loop"
+        
+    done 
+}
+
+# spy in background
+spy & 
+
+# and at some interval
+while :
+do
+    status && >&2 echo "status on interval"
+    sleep 3600
+
+done
