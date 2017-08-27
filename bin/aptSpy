@@ -17,7 +17,7 @@ count=0
 
 # a function
 status () {
-num=$(aptitude search "~U" | wc -l); if [ $num != 0 ]; then echo "$num"; fi
+    num=$(aptitude search "~U" | wc -l); if [ $num != 0 ]; then echo "$num"; fi
 }
 
 # spy and react
