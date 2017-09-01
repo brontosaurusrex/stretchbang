@@ -15,6 +15,7 @@ thunar-archive-plugin
 tint2
 geany
 geany-plugin-overview
+geany-plugin-git-changebar
 gmrun
 htop
 inxi
