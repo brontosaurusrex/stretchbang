@@ -28,7 +28,7 @@ thirty () {
     echo ${result}
 }
 
-#normal=$(date +%s) # epoch in seconds
-normal=$(date +%y%m%d%H%M%S) # yymmddHHMMSS
+normal=$(date +%s) # epoch in seconds = shortest
+#normal=$(date +%y%m%d%H%M%S) # yymmddHHMMSS
 
 echo "$normal"; hex "$normal"; thirty "$normal"
