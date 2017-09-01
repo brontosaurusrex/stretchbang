@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# stardate, epoch date in hexadecimals or base36
+
+# dec to hex
+hex () {
+    var=$(printf '%x\n' "$1")
+    echo ${var^^}
+}
+
+# hex to dec
+dec () {
+    var="$1"
+    echo $((0x$var))
+}
+
+# https://en.wikipedia.org/wiki/Base36#bash_implementation
+thirty () { 
+    value="$1"
+    result=""
+    base36="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    while true; do
+        result=${base36:((value%36)):1}${result}
+        if [ $((value=${value}/36)) -eq 0 ]; then
+            break
+        fi
+    done
+    echo ${result}
+}
+
+normal=$(date +%s) # epoch in seconds
+
+
+echo "$normal"; hex "$normal"; thirty "$normal"
