@@ -51,6 +51,7 @@ sixty () {
 
 normal=$(date +%s) # epoch in seconds = shortest
 #normal=$(date +%Y%m%d%H%M%S) # yyyymmddHHMMSS
+#normal="441796964000000000" # seconds from big-bang
 
 echo "$normal"; hex "$normal"; thirty "$normal"; sixty "$normal"
 #ep2time "$normal"
