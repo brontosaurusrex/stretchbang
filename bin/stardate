@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# stardate, date in hexadecimal or base36
+# stardate, date in hexadecimal or base36 or base62
+
+# http://www.dcode.fr/base-n-convert
 
 # dec to hex
 hex () {
@@ -12,6 +14,11 @@ hex () {
 dec () {
     var="$1"
     echo $((0x$var))
+}
+
+# epoch to time
+ep2time () {
+    date -d @"$1"
 }
 
 # https://en.wikipedia.org/wiki/Base36#bash_implementation
@@ -28,7 +35,22 @@ thirty () {
     echo ${result}
 }
 
-normal=$(date +%s) # epoch in seconds = shortest
-#normal=$(date +%y%m%d%H%M%S) # yymmddHHMMSS
+# base 62
+sixty () { 
+    value="$1"
+    result=""
+    base62="0123456789aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ"
+    while true; do
+        result=${base62:((value%62)):1}${result}
+        if [ $((value=${value}/62)) -eq 0 ]; then
+            break
+        fi
+    done
+    echo ${result}
+}
 
-echo "$normal"; hex "$normal"; thirty "$normal"
+normal=$(date +%s) # epoch in seconds = shortest
+#normal=$(date +%Y%m%d%H%M%S) # yyyymmddHHMMSS
+
+echo "$normal"; hex "$normal"; thirty "$normal"; sixty "$normal"
+#ep2time "$normal"
