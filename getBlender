@@ -39,8 +39,8 @@ tar xjf "$tmpdir/blender-tmp" --directory "$tmpdir/blender" --strip-components=1
 # move away old one
 [[ -d $HOME/apps/blender ]] && mv "$HOME/apps/blender" "$HOME/apps/blender_bak_$RANDOM"
 
-# cp new 'blender' dir to ~/apps/blender
-cp -r "$tmpdir/blender" "$HOME/apps/"
+# mv new 'blender' dir to ~/apps/blender
+mv "$tmpdir/blender" "$HOME/apps/"
 
 # inform
 [[ -d $HOME/apps/blender ]] && echo "Your new blender should be in $HOME/apps/blender"
