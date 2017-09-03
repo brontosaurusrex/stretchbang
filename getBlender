@@ -4,7 +4,7 @@
 
 # getBlender
 
-# get and unpack latest stable x86_64 blender from
+# get and unpack latest stable blender from
 # https://builder.blender.org/download
 # This scripts assumes a lot = fragile.
 
