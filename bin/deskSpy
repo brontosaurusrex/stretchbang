@@ -8,11 +8,11 @@
 #act=" ■ "
 #non=" □ "
 
-#non="_"
-#act="-"
+non="_"
+act="-"
 
-non=" ◌ "
-act=" ◍ "
+#non=" ◌ "
+#act=" ◍ "
 
 # ^https://www.w3schools.com/charsets/ref_utf_geometric.asp
 
@@ -38,7 +38,7 @@ do
         fi
     done
 
-    echo "$sum"    
+    echo "$sum "    
     >&2 echo "($count) desktop $desk / $num" # for debugging only
     
 done
@@ -50,12 +50,12 @@ done
 #execp_has_icon = 0
 #execp_command = deskSpy
 #execp_continuous = 1
-#execp_font = cuprum 16
+#execp_font = cuprum 22
 #execp_font_color = #111111 70
 #execp_padding = 0 0 0
 #execp_tooltip = desktop
 ### This will depend on your rc.xml:
-#execp_lclick_command = xdotool key super+Tab
-#execp_rclick_command = xdotool key super+space
+#execp_rclick_command = xdotool key super+Tab
+#execp_lclick_command = xdotool key super+space
 #execp_uwheel_command = xdotool key ctrl+alt+Left
 #execp_dwheel_command = xdotool key ctrl+alt+Right
