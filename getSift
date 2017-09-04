@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# getSift
+
+mkdir -p "$HOME/tmp"
+cd ~/tmp || exit
+wget https://sift-tool.org/downloads/sift/sift_latest_linux_amd64.tar.gz -O sift.tar.gz || exit
+tar xvf sift.tar.gz --strip-components=1  || exit
+mv sift "$HOME/bin" || exit
+rm sift.tar.gz
+rm LICENSE
+echo "sift shold be in your ~bin"
+
+# example: find 'gpu' in some txt files
+# sift -i gpu *.txt
+# sift --help
