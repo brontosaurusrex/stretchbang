@@ -29,8 +29,22 @@ trap '[ -n "$tmpdir" ] && rm -fr "$tmpdir"' EXIT
 mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; exit 1; }
 
 # action
-url=$(lynx -listonly -nonumbers -dump https://builder.blender.org/download/ | grep "$bits" | grep linux | grep https | grep tar | head -1)
+url="$(lynx -listonly -nonumbers -dump https://builder.blender.org/download/ | grep "$bits" | grep linux | grep tar | head -1)"
+
 [[ -z "$url" ]] && (echo "no blender for you" && exit 1)
+
+# test for versions (by damo)
+# hash1=latest from blender.org
+hash1=$(echo "$url" | awk -F "-" '{print $3}') && echo "builder.blender.org: $hash1"
+# hash2= installed version
+buildhash2=$(echo "$($HOME/apps/blender/blender -v)" | grep hash)
+hash2=${buildhash2##* } && echo "Installed:           $hash2"
+if [[ "$hash1" == "$hash2" ]];then 
+    echo "Versions are the same. No updates today!"
+    exit 0
+fi
+
+# download to $tmpdir
 echo "downloading from $url"
 wget "$url" -O "$tmpdir/blender-tmp"
 
@@ -45,5 +59,3 @@ mv "$tmpdir/blender" "$HOME/apps/"
 
 # inform
 [[ -d $HOME/apps/blender ]] && echo "Your new blender should be in $HOME/apps/blender"
-
-
