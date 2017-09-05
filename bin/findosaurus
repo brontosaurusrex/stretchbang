@@ -37,7 +37,7 @@ elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     echo "-e or --ends arg      # search for ends-with arg"
     echo "-s or --starts arg    # search for starts-with arg"
     echo "-h or --help          # this help"
-    echo "findFiles is meant for interactive use only, always assuming 
+    echo "findosaurus is meant for interactive use only, always assuming 
 'this dir ./' is the dir we want to start with."
     
 # else search from here using each argument as "pattern"
