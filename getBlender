@@ -33,7 +33,7 @@ url="$(lynx -listonly -nonumbers -dump https://builder.blender.org/download/ | g
 
 [[ -z "$url" ]] && (echo "no blender for you" && exit 1)
 
-# test for versions (by damo)
+# remote to local version compare (by damo)
 # hash1=latest from blender.org
 hash1=$(echo "$url" | awk -F "-" '{print $3}') && echo "builder.blender.org: $hash1"
 # hash2= installed version
