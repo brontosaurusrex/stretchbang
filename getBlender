@@ -14,11 +14,12 @@ command -v awk >/dev/null 2>&1 || { >&2 echo "I need awk." ; exit 1; }
 command -v lynx >/dev/null 2>&1 || { >&2 echo "I need lynx." ; exit 1; }
 command -v tar >/dev/null 2>&1 || { >&2 echo "I need tar." ; exit 1; }
 
-# emtpy url
-url=""
-
 # install to where, subdir blender will be made
 where="$HOME/apps"
+# ^ You can change this.
+
+# emtpy url
+url=""
 
 # for what platform (example x86_64)
 bits=$(uname -m)
