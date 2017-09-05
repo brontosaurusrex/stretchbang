@@ -37,11 +37,10 @@ elif [ "$1" == "--and" ] || [ "$1" == "-a" ]; then
     while [ $# -gt 0 ]; do
           cons="$cons -iname "
           cons+="'*$1*'"
-          cons="$cons -a "
     shift
     done
     
-    cons=${cons::-4} # remove last 4 chars
+    # AND doesn't need -a or -and, it is implied
 
     #echo "find .$cons" # debug
     eval "$(echo "find .$cons")"
