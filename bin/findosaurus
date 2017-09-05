@@ -46,6 +46,10 @@ elif [ "$1" == "--and" ] || [ "$1" == "-a" ]; then
     #echo "find .$cons" # debug
     eval "$(echo "find .$cons")"
     # ^ Not sure how dumb this is.
+    # according to freenode#bash it would be correct to use arrays and arrays expansion, like:
+    # options=(-name '.*' -type f); find . "${options[@]}"
+    # but can't get that to work at this point in time.
+    # also: eval is evil.
     
 # if --help
 elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
