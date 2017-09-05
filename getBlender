@@ -10,7 +10,7 @@
 
 # required
 command -v wget >/dev/null 2>&1 || { >&2 echo "I need wget." ; exit 1; }
-command -v awk >/dev/null 2>&1 || { >&2 echo "I need awk." ; exit 1; }
+command -v awk >/dev/null 2>&1 || { >&2 echo "I need awk (gawk)." ; exit 1; }
 command -v lynx >/dev/null 2>&1 || { >&2 echo "I need lynx." ; exit 1; }
 command -v tar >/dev/null 2>&1 || { >&2 echo "I need tar." ; exit 1; }
 
