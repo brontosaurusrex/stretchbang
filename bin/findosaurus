@@ -54,7 +54,7 @@ elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     echo "-x or --exact arg     # search for exact arg" 
     echo "-e or --ends arg      # search for ends-with arg"
     echo "-s or --starts arg    # search for starts-with arg"
-    echo "-a or --and           # search for *foo* AND *bar*"
+    echo "-a or --and arg1 arg2 # search for *arg1* AND *arg2*"
     echo "-h or --help          # this help"
     echo "findosaurus is meant for interactive use only, always assuming 
 'this dir ./' is the dir we want to start with."
