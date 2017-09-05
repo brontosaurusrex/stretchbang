@@ -67,8 +67,7 @@ else
     done
 fi
 
-# AND -a or --and
-# find . -iname "*exp*" -a -iname "*sh*"
+
 
 
 
