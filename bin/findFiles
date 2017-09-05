@@ -1,0 +1,49 @@
+#!/bin/bash
+# findFiles # -h for help
+
+# if nothing or -t then find files modified in last 3 days
+if [ "$1" == "-t" ] || [ "$1" == "" ]; then
+
+            find . -type f -mtime -3
+# if -exact be exact
+elif [ "$1" == "-exact" ]; then
+    shift
+    while [ $# -gt 0 ]; do
+            find . -iname "$1"
+    shift
+    done
+    
+# if -ends
+elif [ "$1" == "-ends" ] || [ "$1" == "-e" ]; then
+    shift
+    while [ $# -gt 0 ]; do
+            find . -iname \*"$1"
+    shift
+    done
+
+# if -starts
+elif [ "$1" == "-starts" ] || [ "$1" == "-s" ]; then
+    shift
+    while [ $# -gt 0 ]; do
+            find . -iname "$1*"
+    shift
+    done
+    
+# if -h
+elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    echo "findfiles          # last 3 days mtime"
+    echo "arg1 arg2          # search for *arg1* *arg2*"
+    echo "-exact arg         # search for exact arg" 
+    echo "-e or -ends arg    # search for ends-with arg"
+    echo "-s or -starts arg  # search for starts-with arg"
+    echo "-h or --help       # this help"
+    echo "findFiles is meant for interactive use only, always assuming 
+'this dir ./' is the dir we want to start with."
+    
+# else search from here using each argument as "pattern"
+else
+    while [ $# -gt 0 ]; do
+            find . -iname "*$1*"
+    shift
+    done
+fi
