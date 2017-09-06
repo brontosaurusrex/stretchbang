@@ -53,7 +53,7 @@ elif [ "$1" == "--and" ] || [ "$1" == "-a" ]; then
     # historic note:
     # according to freenode#bash it would be correct to use arrays and arrays expansion, like:
     # options=(-name '.*' -type f); find . "${options[@]}"
-
+    # http://mywiki.wooledge.org/BashFAQ/005
     
 # if --help
 elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
