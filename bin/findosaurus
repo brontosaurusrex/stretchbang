@@ -32,23 +32,15 @@ elif [ "$1" == "--starts" ] || [ "$1" == "-s" ]; then
 # if --and
 elif [ "$1" == "--and" ] || [ "$1" == "-a" ]; then
     shift
+
     cons=() # = empty array
-    cons+=(find .) # add new array member
-    
-    while [ $# -gt 0 ]; do
+    for arg; do
           
-          # cons is array
-          cons+=( -iname )
-          cons+=( "*$1*" ) # spaces are irrelevant
-          
-    shift
+          cons+=( -iname "*$arg*" )
+        
     done
     
-    # find 'AND' doesn't need -a or -and, it is implied
-    # echo "${cons[@]}" # debug
-    
-    #set -x
-    "${cons[@]}" # < this is so called array expansion
+    find . "${cons[@]}"
 
     # historic note:
     # according to freenode#bash it would be correct to use arrays and arrays expansion, like:
@@ -67,12 +59,21 @@ elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     echo "findosaurus is meant for interactive use only, always assuming 
 'this dir ./' is the dir we want to start with."
     
-# else search from here using each argument as "pattern", this is sort of an OR
+# else search from here using each argument as "pattern", this is OR
 else
-    while [ $# -gt 0 ]; do
-            find . -iname "*$1*"
-    shift
+
+    cons=()
+    for arg; do 
+    
+        cons+=( -o -iname "*$arg*" )
+    
     done
+    
+    unset -v 'cons[0]' # remove first -o
+    
+    find . "${cons[@]}"
+    # ^ geirha
+    
 fi
 
 
