@@ -5,6 +5,9 @@
 # apt install inotify-tools aptitude
 # https://gist.github.com/fduran/1870502
 
+command -v inotifywait >/dev/null 2>&1 || { >&2 echo "I need inotify-tools." ; exit 1; }
+command -v aptitude >/dev/null 2>&1 || { >&2 echo "I need aptitude." ; exit 1; }
+
 # what file to monitor for changes
 # /var/log/dpkg.log
 file="/var/log/apt/history.log"
