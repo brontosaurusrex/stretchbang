@@ -45,3 +45,16 @@ do
     sleep 3600
 
 done
+
+
+### In tint2 you would add new E-xecutor, like
+#execp = new
+#execp_centered = 0
+#execp_has_icon = 0
+#execp_command = aptSpy
+#execp_continuous = 1
+#execp_font = cuprum 13
+#execp_font_color = #111111 100
+#execp_padding = 8 0 0
+#execp_tooltip = updates
+#execp_lclick_command = urxvt -e bash -c "sudo apt update && sudo apt dist-upgrade && sleep 5"
