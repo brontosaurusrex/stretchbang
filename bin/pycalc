@@ -11,22 +11,56 @@
 # what py modules to load by default
 modules="sys,math"
 
+# get ans if there is one and it's number
+test -f "$HOME/.pans.txt" && ans=$(cat "$HOME/.pans.txt")
+
+#set -x
+# function
+shopt -s extglob
+isNumber() {
+var="$1"
+# ˇ will fail for numbers like 4.044676226059745e-17 (so called scientific notation)
+if [[ $var = @(*[0-9]*|!([+-]|)) && $var = ?([+-])*([0-9])?(.*([0-9])) ]]; then 
+  #echo "fine"
+  ans="$var"
+  true  # return 0
+else 
+  #echo "bad"
+  ans="0"
+  false # return 1
+fi
+}
+
+isNumber "$ans"
+# ^ if things went fine, py3 interpreter will have variable 'ans' assigned to old ~/.pans.txt
+
 if [ "$1" == "-i" ] || [ "$1" == "" ]; then
 
     # interactive python shell action
-    script -q -a "$HOME/.pcalc.txt" -c "python3 -ic \"import $modules; sys.ps1=''\""
+    script -q -a "$HOME/.pcalc.txt" -c "python3 -ic \"import $modules; sys.ps1=''; ans=$ans\""
 
     # latest valid numeral result to file ~/.pans.txt
-    ans=$(grep -E '[[:digit:]]' "$HOME/.pcalc.txt" | tail -1)
-    echo "$ans" > "$HOME/.pans.txt"
-
+    ans=$(grep -E '[[:digit:]]' "$HOME/.pcalc.txt" | tail -1 | tr -d '\r')
+    if isNumber "$ans"; then
+        echo "storing ans $ans to $HOME/.pans.txt"
+        echo "$ans" > "$HOME/.pans.txt"
+    fi
+    
 elif [ "$1" == "-n" ]; then
 
     shift
-    ans=$(python3 -c "import $modules; print($@);") # this isn't user safe, can run any python.
-    echo "$ans" > "$HOME/.pans.txt"
-    echo "$ans" # tee ?
+    ans=$(python3 -c "import $modules; print($*);") # this isn't user safe, can run any python.
+    if isNumber "$ans"; then
+        #echo "storing $ans to $HOME/.pans.txt"
+        echo "$ans" > "$HOME/.pans.txt"
+        
+    fi
+    echo "$ans"
+fi
 
+# crop log
+if [ -f "$HOME/.pcalc.txt" ]; then
+    echo "$(tail -n 100 "$HOME/.pcalc.txt")" > "$HOME/.pcalc.txt"
 fi
 
 # alias ans='cat ~/.pans.txt'
