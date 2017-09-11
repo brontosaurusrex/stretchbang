@@ -59,8 +59,9 @@ elif [ "$1" == "-n" ]; then
 fi
 
 # crop log
-if [ -f "$HOME/.pcalc.txt" ]; then
-    echo "$(tail -n 100 "$HOME/.pcalc.txt")" > "$HOME/.pcalc.txt"
+file="$HOME/.pcalc.txt"
+if [ -f "$file" ]; then
+    tail -n 100 "$file" > "$file.tmp" && mv "$file.tmp" "$file"
 fi
 
 # alias ans='cat ~/.pans.txt'
