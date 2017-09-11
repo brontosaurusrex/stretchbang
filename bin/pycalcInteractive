@@ -3,7 +3,7 @@
 # pycalcInteractive
 
 # action
-script -q -a "$HOME/.pcalc.txt" -c "python3 -ic \"import sys; sys.ps1=''\""
+script -q -a "$HOME/.pcalc.txt" -c "python3 -ic \"import sys,math; sys.ps1=''\""
 
 # latest valid numeral result to file ~/.pans.txt
 ans=$(grep -E '[[:digit:]]' "$HOME/.pcalc.txt" | tail -1)
