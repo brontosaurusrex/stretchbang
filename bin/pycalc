@@ -20,7 +20,7 @@ if [ "$1" == "-i" ] || [ "$1" == "" ]; then
 elif [ "$1" == "-n" ]; then
 
     shift
-    ans=$(python3 -c "print($*)") # this isn't user safe, can run any python.
+    ans=$(python3 -c "import math; print($*)") # this isn't user safe, can run any python.
     echo "$ans" > "$HOME/.pans.txt"
     echo "$ans" # tee ?
 
