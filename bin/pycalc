@@ -29,4 +29,4 @@ elif [ "$1" == "-n" ]; then
 
 fi
 
-# alias ans='cat ~/.pans.txt
+# alias ans='cat ~/.pans.txt'
