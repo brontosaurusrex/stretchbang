@@ -8,10 +8,13 @@
 #                 and log will be in ~/.pcalc.txt
 # pycalc -n 1+1 # non-interactive
 
+# what py modules to load by default
+modules="sys,math"
+
 if [ "$1" == "-i" ] || [ "$1" == "" ]; then
 
     # interactive python shell action
-    script -q -a "$HOME/.pcalc.txt" -c "python3 -ic \"import sys,math; sys.ps1=''\""
+    script -q -a "$HOME/.pcalc.txt" -c "python3 -ic \"import $modules; sys.ps1=''\""
 
     # latest valid numeral result to file ~/.pans.txt
     ans=$(grep -E '[[:digit:]]' "$HOME/.pcalc.txt" | tail -1)
@@ -20,7 +23,7 @@ if [ "$1" == "-i" ] || [ "$1" == "" ]; then
 elif [ "$1" == "-n" ]; then
 
     shift
-    ans=$(python3 -c "import math; print($@);") # this isn't user safe, can run any python.
+    ans=$(python3 -c "import $modules; print($@);") # this isn't user safe, can run any python.
     echo "$ans" > "$HOME/.pans.txt"
     echo "$ans" # tee ?
 
