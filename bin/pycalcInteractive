@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# pycalcInteractive
+
+# logging
+script -q -a "$HOME/.pcalc.txt" -c "python3 -ic \"import sys; sys.ps1=''\""
+exit
+
+
+
+
