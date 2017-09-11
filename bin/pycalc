@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# pycalc
+
+# usage:
+# pycalc        # interactive, 
+#                 last result will be in ~/.pans.txt 
+#                 and log will be in ~/.pcalc.txt
+# pycalc -n 1+1 # non-interactive
+
+if [ "$1" == "-i" ] || [ "$1" == "" ]; then
+
+    # interactive python shell action
+    script -q -a "$HOME/.pcalc.txt" -c "python3 -ic \"import sys,math; sys.ps1=''\""
+
+    # latest valid numeral result to file ~/.pans.txt
+    ans=$(grep -E '[[:digit:]]' "$HOME/.pcalc.txt" | tail -1)
+    echo "$ans" > "$HOME/.pans.txt"
+
+elif [ "$1" == "-n" ]; then
+
+    shift
+    ans=$(python3 -c "print($*)") # this isn't user safe, can run any python.
+    echo "$ans" > "$HOME/.pans.txt"
+    echo "$ans" # tee ?
+
+fi
