@@ -34,5 +34,5 @@ xdotool search -name 'calculus' windowactivate && { echo "allready running" ; ex
 #(urxvt -bg black -title calculus -e wcalc & sleep "$sleep") && xdotool search --sync --name 'calculus' windowactivate windowsize "$ww" "$wh" windowmove "$centerw" "$centerh"
 
 # not really using any resolution calculations from above
-urxvt -g 40x13 -bg rgb:0000/1234/0000 -title calculus -e pycalc 
+urxvt -g 31x12 -bg rgb:0000/1234/0000 -title calculus -e pycalc 
 
