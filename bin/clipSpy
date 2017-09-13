@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# clipSpy
+
+def=" C "
+upd="---"
+echo "$def"
+
+update () {
+    xsel -ob | head -50 >&2
+}
+
+update
+
+clipSpy () {
+    while :; do
+
+        a=$(xsel -ob)
+        sleep 2
+        b=$(xsel -ob)
+        
+        if [ "$a" == "$b" ]; then  # Clipboard the same
+            false
+            
+        else                       # Clipboard changed
+            >&2 echo -en "\033[2J" # reset
+            update   
+            echo "$upd" && sleep 0.1 && echo "$def"
+        fi
+        
+    done 
+}
+
+clipSpy
+
+
+# in tint2 (>= 15.0)
+#-------------------------------------
+#execp = new
+#execp_centered = 1
+#execp_has_icon = 0
+#execp_command = clipSpy
+#execp_continuous = 1
+#execp_font = cuprum 10
+#execp_font_color = #111111 100
+#execp_padding = 0 0 0
