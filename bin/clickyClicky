@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# clickyClicky
+
+# copy paste window width/height (without wm decorations)
+# idea from https://forums.bunsenlabs.org/viewtopic.php?id=4121
+
+# clicky source
+echo "clicky source"
+read -r _ w _ h <<<$(xwininfo -shape | grep 'Width\|Height' | tr -d '\n') 
+echo $w $h
+
+# clicky destination
+echo "clicky destination"
+wmctrl -r :SELECT: -e 0,-1,-1,$w,$h
