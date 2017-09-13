@@ -86,80 +86,42 @@ URxvt.borderColor: #333333
 URxvt.iso14755:         false
 URxvt.iso14755_52:      false
 
-! dkeg something
+! Colorful colors
 ! special
-*.foreground:   #d3d3d3
-*.background:   #222D32
-*.cursorColor:  #d3d3d3
+*.foreground:   #ffffff
+*.background:   #000000
+*.cursorColor:  #ffffff
 
 ! black
-*.color0:       #382c2f
-*.color8:       #ac9377
+*.color0:       #151515
+*.color8:       #696969
 
 ! red
-*.color1:       #48393a
-*.color9:       #baa17e
+*.color1:       #ff8eaf
+*.color9:       #ed4c7a
 
 ! green
-*.color2:       #65534d
-*.color10:      #bca282
+*.color2:       #a6e25f
+*.color10:      #a6e179
 
 ! yellow
-*.color3:       #79665a
-*.color11:      #c1a67e
+*.color3:       #f8e578
+*.color11:      #ffdf6b
 
 ! blue
-*.color4:       #836e5e
-*.color12:      #cfb48e
+*.color4:       #a6e2f0
+*.color12:      #79d2ff
 
 ! magenta
-*.color5:       #8e7766
-*.color13:      #d1baa3
+*.color5:       #e85b92
+*.color13:      #bb5d79
 
 ! cyan
-*.color6:       #917781
-*.color14:      #dfc39b
+*.color6:       #5f868f
+*.color14:      #87a8af
 
 ! white
-*.color7:       #9a846d
-*.color15:      #eed8c4
+*.color7:       #d5f1f2
+*.color15:      #e2f1f6
 
-! override
 
-! neon
-! special
-*.foreground:   #f8f8f8
-*.background:   #171717
-*.cursorColor:  #f8f8f8
-
-! black
-*.color0:       #171717
-*.color8:       #38252c
-
-! red
-*.color1:       #d81765
-*.color9:       #ff0000
-
-! green
-*.color2:       #97d01a
-*.color10:      #76b639
-
-! yellow
-*.color3:       #ffa800
-*.color11:      #e1a126
-
-! blue
-*.color4:       #16b1fb
-*.color12:      #289cd5
-
-! magenta
-*.color5:       #ff2491
-*.color13:      #ff2491
-
-! cyan
-*.color6:       #0fdcb6
-*.color14:      #0a9b81
-
-! white
-*.color7:       #ebebeb
-*.color15:      #f8f8f8
