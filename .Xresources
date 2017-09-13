@@ -14,7 +14,7 @@ URxvt.iconFile:    SomePath/.icons/Papirus-GTK/32x32/apps/xterm-color.svg
 URxvt.lineSpace: 6
 
 ! add extensions here
-URxvt.perl-ext-common:  default,matcher
+URxvt.perl-ext-common:  default,matcher,selection-to-clipboard
 
 ! tabbed colors
 URxvt.tabbed.tabbar-fg: 8
