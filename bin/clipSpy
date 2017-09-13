@@ -21,10 +21,8 @@ clipSpy () {
         sleep 2
         b=$(xsel -ob)
         
-        if [ "$a" == "$b" ]; then  # Clipboard the same
-            false
-            
-        else                       # Clipboard changed
+        if [ "$a" != "$b" ]; then  # Clipboard changed
+        
             >&2 echo -en "\033[2J" # reset
             update   
             echo "$upd" && sleep 0.1 && echo "$def"
