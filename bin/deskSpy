@@ -59,3 +59,5 @@ done
 #execp_lclick_command = xdotool key super+space
 #execp_uwheel_command = xdotool key ctrl+alt+Left
 #execp_dwheel_command = xdotool key ctrl+alt+Right
+##ˇscript that copy/pastes window size
+#execp_mclick_command = clickyClicky
