@@ -2,6 +2,8 @@
 
 # clipSpy
 
+command -v xsel >/dev/null 2>&1 || { >&2 echo "I need xsel." ; exit 1; }
+
 def=" C "
 upd="---"
 echo "$def"
