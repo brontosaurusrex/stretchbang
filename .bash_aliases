@@ -12,3 +12,6 @@ alias weather="wget wttr.in 2>/dev/null -O - | grep -v 'New feature*\|Follow'"
 alias today='wget wttr.in/?0Q 2>/dev/null -O -'
 alias inform='curl -e "No Cookies Please, Do not track and spy. Do not inform me about my ad blocker. Go home and rethink your life."  -A "User"'
 alias space='gdmap -f . &'
+alias ans='cat ~/.pans.txt'
+alias asciize='img2txt -W "$( tput cols )" -f utf8 -d random'
+alias space='gdmap -f . &'
