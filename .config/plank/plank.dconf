@@ -1,0 +1,21 @@
+[/]
+icon-size=42
+show-dock-item=false
+position='bottom'
+dock-items=['urxvt.dockitem', 'geany.dockitem', 'Thunar.dockitem', 'firefox-esr.dockitem', 'galculator.dockitem', 'trash.dockitem']
+unhide-delay=0
+items-alignment='center'
+theme='Transparent'
+hide-mode='intelligent'
+pinned-only=false
+auto-pinning=true
+alignment='center'
+zoom-percent=110
+hide-delay=0
+zoom-enabled=true
+monitor='DP-1'
+lock-items=false
+tooltips-enabled=true
+pressure-reveal=false
+offset=0
+current-workspace-only=false
