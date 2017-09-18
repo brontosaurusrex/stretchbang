@@ -3,7 +3,7 @@ gimp
 inkscape
 krita
 ---
-slither.io,       chromium --app="http://slither.io"
+slither.io,       slitherRun
 viber,            /opt/viber/Viber
 libreoffice writter,    libreoffice --writer
 ---

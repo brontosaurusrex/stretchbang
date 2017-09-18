@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# slitherRun
+
+# mice speedup
+xset m 3/1 # slither
+echo "slither mice active"
+notify-send "slither mice active"
+    
+# launch
+google-chrome --window-size=940,900 --app="http://slither.io"
+
+# back to system defaults
+xset m default
+echo "default mice active"
+notify-send "default mice active"
