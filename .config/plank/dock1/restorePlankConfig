@@ -1,0 +1,8 @@
+# restore
+dconf load /net/launchpad/plank/docks/dock1/ < plank.dconf
+
+# backup
+# dconf dump /net/launchpad/plank/docks/dock1/ > plank.dconf
+#
+# needs dconf (packapge dconf-cli in Debian)
+ 
