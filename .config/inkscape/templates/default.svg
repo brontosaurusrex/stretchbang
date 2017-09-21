@@ -16,19 +16,21 @@
    id="svg8"
    inkscape:version="0.92.1 r15371"
    sodipodi:docname="default.svg">
+  <title
+     id="title4490">1920x1080</title>
   <defs
      id="defs2" />
   <sodipodi:namedview
      id="base"
-     pagecolor="#bcbcbc"
+     pagecolor="#636363"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="973.71771"
-     inkscape:cy="514.71573"
-     inkscape:document-units="mm"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="1007.3835"
+     inkscape:cy="510.34509"
+     inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:showpageshadow="false"
@@ -38,7 +40,40 @@
      inkscape:window-height="1088"
      inkscape:window-x="6"
      inkscape:window-y="46"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     guidecolor="#05157e"
+     guideopacity="0.13333333">
+    <sodipodi:guide
+       position="25.400001,0"
+       orientation="1,0"
+       id="guide4483"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(4,102,16)" />
+    <sodipodi:guide
+       position="482.60001,0"
+       orientation="1,0"
+       id="guide4485"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(3,73,12)" />
+    <sodipodi:guide
+       position="510.64585,14.2875"
+       orientation="0,1"
+       id="guide4487"
+       inkscape:locked="false"
+       inkscape:label="1920x1080, HDTV 10% title safe"
+       inkscape:color="rgb(3,73,12)" />
+    <sodipodi:guide
+       position="0,271.46251"
+       orientation="0,1"
+       id="guide4489"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(3,73,12)" />
+  </sodipodi:namedview>
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -47,8 +82,30 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title>1920x1080</dc:title>
+        <cc:license
+           rdf:resource="http://artlibre.org/licence/lal" />
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>brontosaurusrex</dc:title>
+          </cc:Agent>
+        </dc:publisher>
       </cc:Work>
+      <cc:License
+         rdf:about="http://artlibre.org/licence/lal">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+      </cc:License>
     </rdf:RDF>
   </metadata>
   <g
