@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# intercept (thunar weird quoting)
+
+# thunar custom action could look like:
+# intercept geany %F
+
+# echo
+notify-send "$*"
+
+# main
+exec="$1" # first parameter is command
+shift
+"$exec" "$@"
+
+# This entire script should be replaceable with simple 
+# "$@", but not working for some reason.
+
