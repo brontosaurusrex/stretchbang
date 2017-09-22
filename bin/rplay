@@ -179,7 +179,7 @@ if [ -f "$expanded" ] && mediainfo "$expanded" | egrep -qi 'audio'; then
 							
 								# mpv --msg-level=demux=no:cplayer=no:ffmpeg/audio=no:ffmpeg/demuxer=no:ffmpeg/video=no:ad=no --term-osd-bar --term-osd-bar-chars="··· ·" --consolecontrols --no-video --af volume="$correct" "$expanded"
 
-								mpv --no-video --af volume="$correct" "$expanded"
+								mpv --term-osd-bar --term-osd-bar-chars="··· ·" --no-video --af "" --af-add volume="$correct" "$expanded" 
 								
 								# mpv --msgmodule 
 								echo
