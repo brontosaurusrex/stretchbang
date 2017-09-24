@@ -9,11 +9,11 @@ set -x
 # 2nd one
 thunar ~/Downloads &
 twopid="$!"
-xdotool search --sync --onlyvisible --pid $twopid windowactivate windowsize 740 740 windowmove 965 46
+xdotool search --sync --onlyvisible --pid $twopid windowactivate windowsize 740 740 windowmove 965 46 &
 
 # 1st one
 thunar ~ &
 onepid="$!"
-xdotool search --sync --onlyvisible --pid $onepid windowactivate windowsize 740 740 windowmove 215 46
+xdotool search --sync --onlyvisible --pid $onepid windowactivate windowsize 740 740 windowmove 215 46 &
 
 
