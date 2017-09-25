@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# 2thunar, open 2 thunar windows side by side
+
+# Numbers are hardcoded, assumes screen width 1920 and top panel height 46.
+
+set -x
+
+# 2nd one
+thunar ~/downloads &
+twopid="$!"
+xdotool search --sync --onlyvisible --pid $twopid windowactivate windowsize 740 740 windowmove 960 46 
+
+# 1st one
+thunar ~ &
+onepid="$!"
+xdotool search --sync --onlyvisible --pid $onepid windowactivate windowsize 740 740 windowmove 220 46
+
+# id from pid
+id=$(pid2id $onepid)
+
+# eternal loop
+while :
+do
+
+    before=$(xwininfo -id $id | grep geometry || exit)
+
+    sleep 1
+
+    after=$(xwininfo -id $id | grep geometry || exit)
+    
+    # a lot of stuff here
+
+done
