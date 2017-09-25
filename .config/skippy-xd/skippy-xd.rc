@@ -65,8 +65,8 @@ showAll = true
 
 [normal]
 tint = black
-tintOpacity = 50
-opacity = 200
+tintOpacity = 100
+opacity = 120
 
 [highlight]
 tint = #101020
@@ -79,7 +79,7 @@ followsMouse = true
 offsetX = 20
 offsetY = 20
 align = left
-border = #ffffff
+border = #000000
 background = #404040
 opacity = 128
 text = #ffffff
