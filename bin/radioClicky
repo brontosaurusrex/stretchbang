@@ -1,0 +1,44 @@
+#!/bin/bash
+
+radio="http://wfmu.org/wfmu.pls"
+
+pidPath="$HOME/tmp/radiopid"
+
+mkdir -p "$HOME/tmp"
+
+if [ "$1" == "stop" ]; then
+
+    Rpid=$(cat "$pidPath")
+    kill "$Rpid" && rm "$pidPath"
+    echo "\\" # off
+
+elif [ "$1" == "play" ]; then
+
+    mpv --no-video --no-resume-playback --no-config "$radio" &>/dev/null &
+    Rpid="$!"
+    echo "$Rpid" > "$pidPath"
+    echo "/" # on
+
+else # status
+
+    if [ -f "$pidPath" ]; then
+        echo "/" # on
+    else
+        echo "\\" # off
+    fi
+
+fi
+
+## In tint2rc
+#execp = new
+#execp_centered = 1
+#execp_has_icon = 0
+#execp_command = radioClicky
+#execp_continuous = 0
+#execp_font = cuprum 12
+#execp_font_color = #111111 70
+#execp_padding = 0 0 0
+#execp_tooltip = radio wfmu
+#execp_lclick_command = radioClicky play
+#execp_rclick_command = radioClicky stop
+#execp_interval = 12
