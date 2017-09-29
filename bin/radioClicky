@@ -6,18 +6,18 @@ pidPath="$HOME/tmp/radiopid"
 
 mkdir -p "$HOME/tmp"
 
-if [ "$1" == "stop" ]; then
+if [ "$1" == "toggle" ]; then
 
-    Rpid=$(cat "$pidPath")
-    kill "$Rpid" && rm "$pidPath"
-    echo "\\" # off
-
-elif [ "$1" == "play" ]; then
-
-    mpv --no-video --no-resume-playback --no-config "$radio" &>/dev/null &
-    Rpid="$!"
-    echo "$Rpid" > "$pidPath"
-    echo "/" # on
+    if [ -f "$pidPath" ]; then
+        Rpid=$(cat "$pidPath")
+        kill "$Rpid" && rm "$pidPath"
+        echo "\\" # off
+    else
+        mpv --no-video --no-resume-playback --no-config "$radio" &>/dev/null &
+        Rpid="$!"
+        echo "$Rpid" > "$pidPath"
+        echo "/" # on
+    fi
 
 else # status
 
@@ -29,7 +29,7 @@ else # status
 
 fi
 
-## In tint2rc
+## tint2rc executor
 #execp = new
 #execp_centered = 1
 #execp_has_icon = 0
@@ -38,7 +38,7 @@ fi
 #execp_font = cuprum 12
 #execp_font_color = #111111 70
 #execp_padding = 0 0 0
-#execp_tooltip = radio wfmu
-#execp_lclick_command = radioClicky play
-#execp_rclick_command = radioClicky stop
+#execp_tooltip = radio
+#execp_lclick_command = radioClicky toggle
+#execp_rclick_command = radioClicky toggle
 #execp_interval = 12
