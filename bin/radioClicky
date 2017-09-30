@@ -1,6 +1,7 @@
 #!/bin/bash
 
 radio="http://wfmu.org/wfmu.pls"
+#radio="http://listen.xray.fm:8000/stream"
 
 on=" / "
 off=" \\ "
@@ -25,7 +26,12 @@ if [ "$1" == "toggle" ]; then
     
 elif [ "$1" == "notify" ]; then
 
-    icytitle="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)" && >&2 echo "$icytitle" && notify-send "$icytitle"
+    icytitle="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)" 
+    playing="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+
+    >&2 echo "$icytitle"; >&2 echo "$playing"
+    
+    notify-send -u normal "$icytitle" 2>/dev/null || notify-send -u normal "$playing" 2>/dev/null
 
 else # status
 
