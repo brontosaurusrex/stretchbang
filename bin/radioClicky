@@ -2,6 +2,9 @@
 
 radio="http://wfmu.org/wfmu.pls"
 
+on="/"
+off="\\"
+
 pidPath="$HOME/tmp/radiopid"
 
 mkdir -p "$HOME/tmp"
@@ -11,20 +14,20 @@ if [ "$1" == "toggle" ]; then
     if [ -f "$pidPath" ]; then
         Rpid=$(cat "$pidPath")
         kill "$Rpid" && rm "$pidPath"
-        echo "\\" # off
+        echo "$off" # off
     else
-        mpv --no-video --no-resume-playback --no-config --no-ytdl "$radio" &>/dev/null &
+        mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" &>/dev/null &
         Rpid="$!"
         echo "$Rpid" > "$pidPath"
-        echo "/" # on
+        echo "$on" # on
     fi
 
 else # status
 
     if [ -f "$pidPath" ]; then
-        echo "/" # on
+        echo "$on" # on
     else
-        echo "\\" # off
+        echo "$off" # off
     fi
 
 fi
