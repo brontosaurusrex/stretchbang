@@ -13,7 +13,7 @@ if [ "$1" == "toggle" ]; then
         kill "$Rpid" && rm "$pidPath"
         echo "\\" # off
     else
-        mpv --no-video --no-resume-playback --no-config "$radio" &>/dev/null &
+        mpv --no-video --no-resume-playback --no-config --no-ytdl "$radio" &>/dev/null &
         Rpid="$!"
         echo "$Rpid" > "$pidPath"
         echo "/" # on
