@@ -2,10 +2,11 @@
 
 radio="http://wfmu.org/wfmu.pls"
 
-on="/"
-off="\\"
+on=" / "
+off=" \\ "
 
 pidPath="$HOME/tmp/radiopid"
+mpvtxt="$HOME/tmp/mpv.txt"
 
 mkdir -p "$HOME/tmp"
 
@@ -16,11 +17,16 @@ if [ "$1" == "toggle" ]; then
         kill "$Rpid" && rm "$pidPath"
         echo "$off" # off
     else
-        mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" &>/dev/null &
+        #mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" &>/dev/null &
+        mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" > "$mpvtxt" 2>/dev/null &
         Rpid="$!"
         echo "$Rpid" > "$pidPath"
         echo "$on" # on
     fi
+    
+elif [ "$1" == "notify" ]; then
+
+    notify-send "$(cat "$mpvtxt" | grep icy-title | tail -1)"
 
 else # status
 
@@ -31,6 +37,7 @@ else # status
     fi
 
 fi
+
 
 ## tint2rc executor
 #execp = new
@@ -43,5 +50,5 @@ fi
 #execp_padding = 0 0 0
 #execp_tooltip = radio
 #execp_lclick_command = radioClicky toggle
-#execp_rclick_command = radioClicky toggle
+#execp_rclick_command = radioClicky notify
 #execp_interval = 12
