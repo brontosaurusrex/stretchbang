@@ -26,7 +26,7 @@ if [ "$1" == "toggle" ]; then
     
 elif [ "$1" == "notify" ]; then
 
-    notify-send "$(cat "$mpvtxt" | grep icy-title | tail -1)"
+    read -r _ _ icytitle <<< "$(grep icy-title "$mpvtxt" | tail -1)" && notify-send "$icytitle"
 
 else # status
 

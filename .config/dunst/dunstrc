@@ -1,7 +1,7 @@
 [global]
 font = Cuprum 10
 allow_markup = no
-format = "%s (%a)"
+format = "%s"
 sort = yes
 indicate_hidden = yes
 bounce_freq = 0
