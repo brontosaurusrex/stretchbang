@@ -1,6 +1,5 @@
 #!/bin/bash
 
-radio="http://mp3.rtvslo.si/val202"
 radio="http://wfmu.org/wfmu.pls"
 
 on=" / "
