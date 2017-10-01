@@ -12,12 +12,15 @@ mpvtxt="$store/mpv.txt"
 
 mkdir -p "$store"
 
-# crop/clean log
-file="$mpvtxt"
-if [ -f "$file" ]; then
-    tail -n 500 "$file" > "$file.tmp" && cp "$file.tmp" "$file" && rm "$file.tmp"
-    touch "$file"
-fi
+croplog () {
+    #>&2 echo "croplog"
+    # crop log, this shall only happen when mpv is not writing to file
+    file="$mpvtxt"
+    if [ -f "$file" ]; then
+        tail -n 500 "$file" > "$file.tmp" && cp "$file.tmp" "$file" && rm "$file.tmp"
+        touch "$file"
+    fi
+}
 
 # main
 if [ "$1" == "toggle" ]; then
@@ -26,6 +29,8 @@ if [ "$1" == "toggle" ]; then
         Rpid=$(cat "$pidPath")
         kill "$Rpid" && rm "$pidPath"
         echo "$off" # off
+        croplog
+
     else
         mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" >> "$mpvtxt" 2>/dev/null &
         Rpid="$!"
