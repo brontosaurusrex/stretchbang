@@ -1,7 +1,6 @@
 #!/bin/bash
 
-radio="http://wfmu.org/wfmu.pls"
-#radio="http://wruv.org/wruv256.m3u"
+array=("http://wfmu.org/wfmu.pls" "http://wruv.org/wruv256.m3u" "http://listen.xray.fm:8000/stream")
 
 on=" / "
 off=" \\ "
@@ -9,8 +8,28 @@ off=" \\ "
 store="$HOME/tmp"
 pidPath="$store/radiopid"
 mpvtxt="$store/mpv.txt"
+idPath="$store/id"
 
 mkdir -p "$store"
+
+# store station id to file
+storeid () {
+    echo "$id" > "$idPath"
+}
+
+# should read id number from store
+if [ -f "$idPath" ]; then
+    id=$(cat "$idPath")
+else
+    id="0"
+    storeid
+fi
+
+radio=${array[$id]}
+
+echoid () {
+    >&2 echo "id $id / radio $radio"
+}
 
 croplog () {
     #>&2 echo "croplog"
@@ -22,20 +41,59 @@ croplog () {
     fi
 }
 
+off () {
+    # if file
+    [ -f "$pidPath" ] && Rpid=$(cat "$pidPath")
+    # if var
+    [[ ! -z "$Rpid" ]] && kill "$Rpid"; rm "$pidPath"
+    echo "$off" # off
+    croplog
+}
+
+on () {
+    mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" >> "$mpvtxt" 2>/dev/null &
+    Rpid="$!"
+    echo "$Rpid" > "$pidPath"
+    echo "$on" # on
+}
+
+switch () {
+
+    # next station
+    if [ "$1" == "+" ]; then
+        ((id+=1))
+    # previous station
+    elif [ "$1" == "-" ]; then
+        ((id-=1))
+    else # next station, assume + if nothing is send
+        ((id+=1))
+    fi
+    
+    max=$(( ${#array[@]} - 1 ))
+    
+    if (( id > max )); then
+       id=0
+    elif (( id < 0 )); then
+       id="$max"
+    fi
+    
+    radio=${array[$id]}
+
+    echoid
+    storeid
+    off
+    on
+    
+    notify-send -u normal "$radio" 2>/dev/null
+}
+        
 # main
 if [ "$1" == "toggle" ]; then
 
     if [ -f "$pidPath" ]; then
-        Rpid=$(cat "$pidPath")
-        kill "$Rpid" && rm "$pidPath"
-        echo "$off" # off
-        croplog
-
+        off
     else
-        mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" >> "$mpvtxt" 2>/dev/null &
-        Rpid="$!"
-        echo "$Rpid" > "$pidPath"
-        echo "$on" # on
+        on
     fi
     
 elif [ "$1" == "notify" ]; then
@@ -46,6 +104,11 @@ elif [ "$1" == "notify" ]; then
     >&2 echo "$icytitle"; >&2 echo "$playing"
     
     notify-send -u normal "$icytitle" 2>/dev/null || notify-send -u normal "$playing" 2>/dev/null
+    
+elif [ "$1" == "switch" ]; then
+    
+    # "$2" must be + or -
+    switch "$2"
     
 elif [ "$1" == "last" ]; then
     
@@ -65,6 +128,7 @@ fi
 
 
 ## tint2rc executor
+
 #execp = new
 #execp_centered = 1
 #execp_has_icon = 0
@@ -76,4 +140,5 @@ fi
 #execp_tooltip = radio
 #execp_lclick_command = radioClicky toggle
 #execp_rclick_command = radioClicky notify
+#execp_mclick_command = radioClicky switch
 #execp_interval = 12
