@@ -6,10 +6,11 @@ radio="http://wfmu.org/wfmu.pls"
 on=" / "
 off=" \\ "
 
-pidPath="$HOME/tmp/radiopid"
-mpvtxt="$HOME/tmp/mpv.txt"
+store="$HOME/tmp/"
+pidPath="$store/radiopid"
+mpvtxt="$store/mpv.txt"
 
-mkdir -p "$HOME/tmp"
+mkdir -p "$store"
 
 if [ "$1" == "toggle" ]; then
 
