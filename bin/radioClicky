@@ -44,7 +44,9 @@ elif [ "$1" == "notify" ]; then
     
 elif [ "$1" == "last" ]; then
     
-    sed -n 's/^ icy-title: //p' "$mpvtxt" | uniq | tail -n 12
+    if [ -f "$mpvtxt" ]; then
+        sed -n 's/^ icy-title: //p' "$mpvtxt" | uniq | tail -n 12
+    fi
 
 else # status
 
