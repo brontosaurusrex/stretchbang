@@ -147,3 +147,8 @@ fi
 #execp_rclick_command = radioClicky notify
 #execp_mclick_command = radioClicky switch
 #execp_interval = 12
+
+## If using alsa, you may also add master volume to mice scroller
+
+#execp_uwheel_command = amixer set Master 1%-
+#execp_dwheel_command = amixer set Master 1%+
