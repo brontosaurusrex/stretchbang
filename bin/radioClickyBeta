@@ -1,0 +1,81 @@
+#!/bin/bash
+
+radio="http://wfmu.org/wfmu.pls"
+#radio="http://listen.xray.fm:8000/stream"
+
+on=" / "
+off=" \\ "
+
+store="$HOME/tmp/"
+pidPath="$store/radiopid"
+mpvtxt="$store/mpv.txt"
+
+mkdir -p "$store"
+
+# sleep seems to be needed for tint2, otherwise it won't refresh correctly.
+sleep="0.1"
+
+if [ "$1" == "toggle" ]; then
+
+    if [ -f "$pidPath" ]; then
+        Rpid=$(cat "$pidPath")
+        kill "$Rpid" && rm "$pidPath"
+        echo "$off" && sleep "$sleep" 
+        exit 0
+    else
+        mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" > "$mpvtxt" 2>/dev/null &
+        Rpid="$!"
+        echo "$Rpid" > "$pidPath"
+        echo "$on" && sleep "$sleep"
+        exit 0
+    fi
+    
+elif [ "$1" == "notify" ]; then
+
+    icytitle="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)" 
+    playing="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+
+    >&2 echo "$icytitle"; >&2 echo "$playing"
+    
+    notify-send -u normal "$icytitle" 2>/dev/null || notify-send -u normal "$playing" 2>/dev/null
+
+else 
+
+    # assign pid number to Rpid var if pidfile exists, else Rpid is Rpid
+    if [ -f "$pidPath" ]; then
+        Rpid=$(cat "$pidPath") 
+    fi
+
+    # search for mpv process with specific pid and create pidfile if needed
+    if pgrep -x mpv | grep "$Rpid" &> /dev/null
+        then
+            # mpv with Rpid is running, if pidfile is not there, make one
+            if [ ! -f "$pidPath" ]; then
+                echo "$Rpid" > "$pidPath"
+            fi
+            echo "$on" && sleep "$sleep"
+            exit 0
+        else
+            # mpv with Rpid is actually stoped, lets remove pidfile in case it's there
+            rm "$store/radiopid" &> /dev/null
+            echo "$off" && sleep "$sleep"
+            exit 0
+    fi
+
+
+fi
+
+
+## tint2rc executor
+#execp = new
+#execp_centered = 1
+#execp_has_icon = 0
+#execp_command = radioClicky
+#execp_continuous = 0
+#execp_font = cuprum 12
+#execp_font_color = #111111 70
+#execp_padding = 0 0 0
+#execp_tooltip = radio
+#execp_lclick_command = radioClicky toggle
+#execp_rclick_command = radioClicky notify
+#execp_interval = 12
