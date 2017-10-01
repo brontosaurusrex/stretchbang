@@ -1,7 +1,7 @@
 #!/bin/bash
 
 radio="http://wfmu.org/wfmu.pls"
-#radio="http://listen.xray.fm:8000/stream"
+#radio="http://wruv.org/wruv256.m3u"
 
 on=" / "
 off=" \\ "
@@ -12,6 +12,14 @@ mpvtxt="$store/mpv.txt"
 
 mkdir -p "$store"
 
+# crop/clean log
+file="$mpvtxt"
+if [ -f "$file" ]; then
+    tail -n 500 "$file" > "$file.tmp" && cp "$file.tmp" "$file" && rm "$file.tmp"
+    touch "$file"
+fi
+
+# main
 if [ "$1" == "toggle" ]; then
 
     if [ -f "$pidPath" ]; then
@@ -19,7 +27,7 @@ if [ "$1" == "toggle" ]; then
         kill "$Rpid" && rm "$pidPath"
         echo "$off" # off
     else
-        mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" > "$mpvtxt" 2>/dev/null &
+        mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" >> "$mpvtxt" 2>/dev/null &
         Rpid="$!"
         echo "$Rpid" > "$pidPath"
         echo "$on" # on
@@ -33,6 +41,10 @@ elif [ "$1" == "notify" ]; then
     >&2 echo "$icytitle"; >&2 echo "$playing"
     
     notify-send -u normal "$icytitle" 2>/dev/null || notify-send -u normal "$playing" 2>/dev/null
+    
+elif [ "$1" == "last" ]; then
+    
+    sed -n 's/^ icy-title: //p' "$mpvtxt" | uniq | tail -n 12
 
 else # status
 
