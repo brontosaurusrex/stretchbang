@@ -8,6 +8,7 @@ off=" \\ "
 store="$HOME/tmp"
 pidPath="$store/radiopid"
 mpvtxt="$store/mpv.txt"
+#mpverr="$store/mpv.err"
 idPath="$store/id"
 
 mkdir -p "$store"
@@ -51,7 +52,9 @@ off () {
 }
 
 on () {
-    mpv --no-video --no-resume-playback --no-ytdl --no-config  "$radio" >> "$mpvtxt" 2>/dev/null &
+    #mpv --no-config --no-video --no-resume-playback --no-ytdl --af=lavfi=[loudnorm=LRA=20] "$radio" >> "$mpvtxt" 2> /dev/null &
+    mpv --no-config --no-video --no-resume-playback --no-ytdl  "$radio" >> "$mpvtxt" 2> /dev/null &
+    
     Rpid="$!"
     echo "$Rpid" > "$pidPath"
     echo "$on" # on
@@ -84,7 +87,7 @@ switch () {
     off
     on
     
-    notify-send -u normal "$radio" 2>/dev/null
+    notify-send -u normal "id $id / radio $radio" 2>/dev/null
 }
         
 # main
