@@ -1,6 +1,11 @@
 #!/bin/bash
 
-array=("http://wfmu.org/wfmu.pls" "http://wruv.org/wruv256.m3u" "http://listen.xray.fm:8000/stream")
+array=( \
+"http://wfmu.org/wfmu.pls" "http://wruv.org/wruv256.m3u" "http://listen.xray.fm:8000/stream" \
+"http://mp3.rtvslo.si/val202" "http://kruljo.radiostudent.si:8000/ehiq" "http://93.103.13.156:8000" \
+"http://stream03.exit.si:8000/radiohit.m3u" \
+"http://onair-ha1.krone.at/kronehit-hd.mp3.m3u" \
+)
 
 on=" / "
 off=" \\ "
@@ -116,7 +121,7 @@ elif [ "$1" == "switch" ]; then
 elif [ "$1" == "last" ]; then
     
     if [ -f "$mpvtxt" ]; then
-        sed -n 's/^ icy-title: //p' "$mpvtxt" | uniq | tail -n 12
+        sed -n 's/^ icy-title: //p' "$mpvtxt" | grep -v '^$' | uniq | tail -n 12
     fi
 
 else # status
