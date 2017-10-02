@@ -8,6 +8,9 @@ https://kexp-mp3-128.streamguys1.com/kexp128.mp3    # 3 http://kexp.org
 http://relay.181.fm:8094                            # 4 pop
 http://relay.181.fm:8008                            # 5 rock
 http://relay.181.fm:8064                            # 6 rock
+http://streaming.radionomy.com:80/12Bar             # 7  blues
+http://relay.181.fm:8000                            # 8 80's
+http://relay.181.fm:8002                            # 9 pop, office
 )
 
 on="  / "
