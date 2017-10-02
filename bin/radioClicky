@@ -1,8 +1,8 @@
 #!/bin/bash
 
 array=(
-http://wfmu.org/wfmu.pls
-http://wruv.org/wruv256.m3u
+http://wfmu.org/wfmu.pls            # a comment
+http://wruv.org/wruv256.m3u         # here?
 http://listen.xray.fm:8000/stream
 http://relay.181.fm:8094
 http://relay.181.fm:8008
@@ -48,10 +48,11 @@ echoid () {
 
 croplog () {
     #>&2 echo "croplog"
-    # crop log, this shall only happen when mpv is not writing to file
+    # crop and clean log, this shall only happen when mpv is not writing to file
     file="$mpvtxt"
     if [ -f "$file" ]; then
-        tail -n 500 "$file" > "$file.tmp" && cp "$file.tmp" "$file" && rm "$file.tmp"
+        # let's just keep 'icy-title' and 'Playing' lines and crop to last 100 lines
+        grep -E "icy-title:|Playing:" "$mpvtxt" | uniq | tail -n 100 > "$file.tmp" && cp "$file.tmp" "$file" && rm "$file.tmp"
         touch "$file"
     fi
 }
