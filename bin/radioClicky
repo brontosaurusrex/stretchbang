@@ -1,7 +1,9 @@
 #!/bin/bash
 
-array=( \
-"http://wfmu.org/wfmu.pls" "http://wruv.org/wruv256.m3u" "http://listen.xray.fm:8000/stream" \
+array=(
+"http://wfmu.org/wfmu.pls"
+"http://wruv.org/wruv256.m3u"
+"http://listen.xray.fm:8000/stream"
 )
 
 on=" / "
