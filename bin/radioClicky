@@ -1,13 +1,13 @@
 #!/bin/bash
 
 array=(
-http://wfmu.org/wfmu.pls                            # http://wfmu.org
-http://wruv.org/wruv256.m3u                         # http://wruv.org
-http://listen.xray.fm:8000/stream                   # http://xray.fm
-https://kexp-mp3-128.streamguys1.com/kexp128.mp3    # http://kexp.org
-http://relay.181.fm:8094                            # pop
-http://relay.181.fm:8008                            # rock
-http://relay.181.fm:8064                            # rock
+http://wfmu.org/wfmu.pls                            # 0 http://wfmu.org
+http://wruv.org/wruv256.m3u                         # 1 http://wruv.org
+http://listen.xray.fm:8000/stream                   # 2 http://xray.fm
+https://kexp-mp3-128.streamguys1.com/kexp128.mp3    # 3 http://kexp.org
+http://relay.181.fm:8094                            # 4 pop
+http://relay.181.fm:8008                            # 5 rock
+http://relay.181.fm:8064                            # 6 rock
 )
 
 on="  / "
