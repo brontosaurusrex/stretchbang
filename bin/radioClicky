@@ -133,6 +133,11 @@ elif [ "$1" == "last" ]; then
     if [ -f "$mpvtxt" ]; then
         sed -n 's/^ icy-title: //p' "$mpvtxt" | grep -v '^$' | uniq | tail -n 12
     fi
+    
+elif [ "$1" == "id" ]; then
+
+    notify-send -u normal "id $id / radio $radio" 2>/dev/null
+    >&2 echo "id $id / radio $radio"
 
 else # status
 
@@ -158,7 +163,7 @@ fi
 #execp_tooltip = radio
 #execp_lclick_command = radioClicky toggle
 #execp_rclick_command = radioClicky notify
-#execp_mclick_command = radioClicky switch
+#execp_mclick_command = radioClicky id
 #execp_interval = 12
 #execp_uwheel_command = radioClicky switch +
 #execp_dwheel_command = radioClicky switch -
