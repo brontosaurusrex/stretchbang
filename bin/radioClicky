@@ -68,8 +68,7 @@ off () {
 
 on () {
     mpv --no-config --no-video --no-resume-playback --no-ytdl --cache-secs 7 --af=lavfi=[loudnorm=LRA=10:I=-17] "$radio" >> "$mpvtxt" 2> /dev/null &
-    #mpv --no-config --no-video --no-resume-playback --no-ytdl  "$radio" >> "$mpvtxt" 2> /dev/null &
-    
+
     Rpid="$!"
     echo "$Rpid" > "$pidPath"
     echo "$on" # on
