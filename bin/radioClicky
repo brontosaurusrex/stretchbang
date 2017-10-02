@@ -1,13 +1,23 @@
 #!/bin/bash
 
 array=(
-"http://wfmu.org/wfmu.pls"
-"http://wruv.org/wruv256.m3u"
-"http://listen.xray.fm:8000/stream"
+http://wfmu.org/wfmu.pls
+http://wruv.org/wruv256.m3u
+http://listen.xray.fm:8000/stream
+http://relay.181.fm:8094
+http://relay.181.fm:8008
+http://relay.181.fm:8064
+http://pub1.diforfree.org:8000/di_dubstep_hi
+http://pub1.diforfree.org:8000/di_mainstage_hi
+http://pub1.diforfree.org:8000/di_drumandbass_hi
+http://pub2.diforfree.org:8000/di_hardcore_hi
+http://pub2.diforfree.org:8000/di_bassline_hi
+http://pub2.diforfree.org:8000/di_classicvocaltrance_hi
+http://pub2.diforfree.org:8000/di_downtempolounge_hi
 )
 
-on=" / "
-off=" \\ "
+on="  / "
+off="  \\ "
 
 store="$HOME/tmp"
 pidPath="$store/radiopid"
@@ -56,8 +66,8 @@ off () {
 }
 
 on () {
-    #mpv --no-config --no-video --no-resume-playback --no-ytdl --af=lavfi=[loudnorm=LRA=20] "$radio" >> "$mpvtxt" 2> /dev/null &
-    mpv --no-config --no-video --no-resume-playback --no-ytdl  "$radio" >> "$mpvtxt" 2> /dev/null &
+    mpv --no-config --no-video --no-resume-playback --no-ytdl --cache-secs 7 --af=lavfi=[loudnorm=LRA=10:I=-17] "$radio" >> "$mpvtxt" 2> /dev/null &
+    #mpv --no-config --no-video --no-resume-playback --no-ytdl  "$radio" >> "$mpvtxt" 2> /dev/null &
     
     Rpid="$!"
     echo "$Rpid" > "$pidPath"
