@@ -170,5 +170,5 @@ fi
 #execp_rclick_command = radioClicky notify    # echo icy-title or playing
 #execp_mclick_command = radioClicky id        # echo station id, url
 #execp_interval = 12                          # echo status / or \ every N seconds
-#execp_uwheel_command = radioClicky switch +  # switch to next station
-#execp_dwheel_command = radioClicky switch -  # switch to previous station
+#execp_dwheel_command = radioClicky switch +  # switch to next station
+#execp_uwheel_command = radioClicky switch -  # switch to previous station
