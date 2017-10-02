@@ -52,7 +52,7 @@ croplog () {
     file="$mpvtxt"
     if [ -f "$file" ]; then
         # let's just keep 'icy-title' and 'Playing' lines and crop to last 100 lines
-        grep -E "icy-title:|Playing:" "$mpvtxt" | uniq | tail -n 100 > "$file.tmp" && cp "$file.tmp" "$file" && rm "$file.tmp"
+        grep -E "icy-title:|Playing:" "$mpvtxt" | grep -wv "^ icy-title: $" | uniq | tail -n 100 > "$file.tmp" && cp "$file.tmp" "$file" && rm "$file.tmp"
         touch "$file"
     fi
 }
