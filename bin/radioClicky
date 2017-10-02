@@ -43,6 +43,10 @@ echoid () {
     >&2 echo "id $id / radio $radio"
 }
 
+notifyid () {
+    notify-send -u normal "id $id / radio $radio" 2>/dev/null
+}
+
 croplog () {
     #>&2 echo "croplog"
     # crop and clean log, this shall only happen when mpv is not writing to file
@@ -97,8 +101,7 @@ switch () {
     storeid
     off
     on
-    
-    notify-send -u normal "id $id / radio $radio" 2>/dev/null
+    notifyid
 }
         
 # main
@@ -132,8 +135,8 @@ elif [ "$1" == "last" ]; then
     
 elif [ "$1" == "id" ]; then
 
-    notify-send -u normal "id $id / radio $radio" 2>/dev/null
-    >&2 echo "id $id / radio $radio"
+    notifyid
+    echoid
 
 else # status
 
