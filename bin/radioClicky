@@ -1,16 +1,16 @@
 #!/bin/bash
 
 array=(
-http://wfmu.org/wfmu.pls                            # 0 http://wfmu.org
-http://wruv.org/wruv256.m3u                         # 1 http://wruv.org
-http://listen.xray.fm:8000/stream                   # 2 http://xray.fm
-https://kexp-mp3-128.streamguys1.com/kexp128.mp3    # 3 http://kexp.org
-http://relay.181.fm:8094                            # 4 pop
-http://relay.181.fm:8008                            # 5 rock
-http://relay.181.fm:8064                            # 6 rock
-http://streaming.radionomy.com:80/12Bar             # 7 blues
-http://relay.181.fm:8000                            # 8 80's
-http://relay.181.fm:8002                            # 9 pop, office
+http://wfmu.org/wfmu.pls
+http://wruv.org/wruv256.m3u
+http://listen.xray.fm:8000/stream
+https://kexp-mp3-128.streamguys1.com/kexp128.mp3
+http://relay.181.fm:8094
+http://relay.181.fm:8008
+http://relay.181.fm:8064
+http://streaming.radionomy.com:80/12Bar
+http://relay.181.fm:8000
+http://relay.181.fm:8002
 )
 
 on="  / "
@@ -115,13 +115,19 @@ if [ "$1" == "toggle" ]; then
     
 elif [ "$1" == "notify" ]; then
 
-    icytitle="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)" 
-    playing="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+    # only last one of this two should be shown, where icy-title could be empty
+    # get last one and if icy-title and if empty ...
+    if ! grep -E "icy-title:|Playing:" "$mpvtxt" | tail -n 1 | grep -wv "^ icy-title: $" > /dev/null ; then
+        # icy-title is empty, get playing instead
+        tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+    else
+        # icy-title is fine, lets use that
+        tmpinfo="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)"
+    fi
+    
+    >&2 echo "$tmpinfo"
+    notify-send -u normal "$tmpinfo" 2>/dev/null
 
-    >&2 echo "$icytitle"; >&2 echo "$playing"
-    
-    notify-send -u normal "$icytitle" 2>/dev/null || notify-send -u normal "$playing" 2>/dev/null
-    
 elif [ "$1" == "switch" ]; then
     
     # "$2" must be + or -
