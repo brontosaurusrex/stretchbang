@@ -4,16 +4,10 @@ array=(
 http://wfmu.org/wfmu.pls            # comment
 http://wruv.org/wruv256.m3u         # here
 http://listen.xray.fm:8000/stream
+https://kexp-mp3-128.streamguys1.com/kexp128.mp3
 http://relay.181.fm:8094
 http://relay.181.fm:8008
 http://relay.181.fm:8064
-http://pub1.diforfree.org:8000/di_dubstep_hi
-http://pub1.diforfree.org:8000/di_mainstage_hi
-http://pub1.diforfree.org:8000/di_drumandbass_hi
-http://pub2.diforfree.org:8000/di_hardcore_hi
-http://pub2.diforfree.org:8000/di_bassline_hi
-http://pub2.diforfree.org:8000/di_classicvocaltrance_hi
-http://pub2.diforfree.org:8000/di_downtempolounge_hi
 )
 
 on="  / "
