@@ -101,7 +101,7 @@ switch () {
     storeid
     off
     on
-    notifyid
+    #notifyid
 }
         
 # main
@@ -146,6 +146,7 @@ elif [ "$1" == "id" ]; then
 
 else # status
 
+    echoid # for tooltip
     if [ -f "$pidPath" ]; then
         echo "$on" # on
     else
