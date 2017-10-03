@@ -166,10 +166,13 @@ fi
 #execp_font = cuprum 12
 #execp_font_color = #111111 70
 #execp_padding = 0 0 0
-#execp_tooltip = radio
 #execp_lclick_command = radioClicky toggle    # on/off
 #execp_rclick_command = radioClicky notify    # echo icy-title or playing
 #execp_mclick_command = radioClicky id        # echo station id, url
 #execp_interval = 12                          # echo status / or \ every N seconds
 #execp_dwheel_command = radioClicky switch +  # switch to next station
 #execp_uwheel_command = radioClicky switch -  # switch to previous station
+
+## for older tint2 < 15.2
+
+#execp_tooltip = radio
