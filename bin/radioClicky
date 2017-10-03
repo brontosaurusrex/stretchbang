@@ -13,9 +13,6 @@ http://relay.181.fm:8000
 http://relay.181.fm:8002
 )
 
-on="  / "
-off="  \\ "
-
 store="$HOME/tmp"
 pidPath="$store/radiopid"
 mpvtxt="$store/mpv.txt"
@@ -36,6 +33,9 @@ else
     id="0"
     storeid
 fi
+
+on=" / "
+off=" \\ "
 
 radio=${array[$id]}
 
@@ -83,6 +83,9 @@ switch () {
     # previous station
     elif [ "$1" == "-" ]; then
         ((id-=1))
+    # exact id (check if integer)
+    elif [[ $1 =~ ^-?[0-9]+$ ]]; then
+        id="$1"
     else # next station, assume + if nothing is send
         ((id+=1))
     fi
@@ -103,6 +106,27 @@ switch () {
     on
     #notifyid
 }
+
+status () {
+    echoid # for tooltip
+    if [ -f "$pidPath" ]; then
+        echo "$on" # on
+    else
+        echo "$off" # off
+    fi
+}
+
+getnotify () {
+    # only last one of this two should be shown, where icy-title could be empty
+    # get last one and if icy-title and if empty ...
+    if ! grep -E "icy-title:|Playing:" "$mpvtxt" | tail -n 1 | grep -wv "^ icy-title: $" > /dev/null ; then
+        # icy-title is empty, get playing instead
+        tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+    else
+        # icy-title is fine, lets use that
+        tmpinfo="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)"
+    fi
+}
         
 # main
 if [ "$1" == "toggle" ]; then
@@ -114,17 +138,8 @@ if [ "$1" == "toggle" ]; then
     fi
     
 elif [ "$1" == "notify" ]; then
-
-    # only last one of this two should be shown, where icy-title could be empty
-    # get last one and if icy-title and if empty ...
-    if ! grep -E "icy-title:|Playing:" "$mpvtxt" | tail -n 1 | grep -wv "^ icy-title: $" > /dev/null ; then
-        # icy-title is empty, get playing instead
-        tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
-    else
-        # icy-title is fine, lets use that
-        tmpinfo="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)"
-    fi
     
+    getnotify
     >&2 echo "$tmpinfo"
     notify-send -u normal "$tmpinfo" 2>/dev/null
 
@@ -143,20 +158,59 @@ elif [ "$1" == "id" ]; then
 
     notifyid
     echoid
+    
+elif [ "$1" == "openbox" ]; then # openbox pipe menu
+
+    # header
+    echo "<openbox_pipe_menu>"
+    
+    # stations
+    count="0"
+    for label in "${array[@]}"
+        do
+            # crop label and remove http, https
+            label="$(sed 's~http[s]*://~~g' <<< "${label:0:50}")"
+        
+            if [ "$count" == "$id" ]; then
+                title="$(status) $count $label" # $(status) 
+            else
+                title="$count $label"
+            fi
+            
+            # mark active station with separator at the top
+            # [ "$count" == "$id" ] && echo "<separator />"
+
+                echo "<item label='$title'>"
+                echo "    <action name='Execute'>"
+            # use active station as on/off switch
+            if [ "$count" == "$id" ]; then
+                echo "        <execute>radioClicky toggle</execute>"
+            else
+                echo "        <execute>radioClicky switch $count</execute>"
+            fi
+                echo "    </action>"
+                echo "</item>"
+                
+            # mark active station with separator at the bottom as well
+            # [ "$count" == "$id" ] && echo "<separator />"
+
+            ((count++))
+        done
+
+    # footer
+    echo "</openbox_pipe_menu>"
+
 
 else # status
 
-    echoid # for tooltip
-    if [ -f "$pidPath" ]; then
-        echo "$on" # on
-    else
-        echo "$off" # off
-    fi
+    status
 
 fi
 
 
-## tint2rc executor
+## tint2rc executor, to tint2rc 
+## add a new E to line that starts with
+## panel_items = 
 
 #execp = new
 #execp_centered = 1
@@ -173,6 +227,8 @@ fi
 #execp_dwheel_command = radioClicky switch +  # switch to next station
 #execp_uwheel_command = radioClicky switch -  # switch to previous station
 
-## for older tint2 < 15.2
+## openbox pipemenu, to menu.xml add:
+# <separator/>
+# <menu id="radio" label="radio" execute="radioClicky openbox" />
+# <separator/>
 
-#execp_tooltip = radio
