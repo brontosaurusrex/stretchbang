@@ -36,6 +36,7 @@ fi
 
 on=" / "
 off=" \\ "
+err="err"
 
 radio=${array[$id]}
 
@@ -110,9 +111,19 @@ switch () {
 status () {
     echoid # for tooltip
     if [ -f "$pidPath" ]; then
-        echo "$on" # on
+        Rpid=$(cat "$pidPath")
+
+        # check if player with that pid is actually running, else error
+        if pgrep -x mpv | grep "$Rpid" &> /dev/null; then
+            echo "$on" # on
+        else
+            echo "$on $err"
+        fi
+
     else
-        echo "$off" # off
+
+        echo "$off"
+            
     fi
 }
 
