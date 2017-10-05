@@ -158,6 +158,18 @@ elif [ "$1" == "switch" ]; then
     
     # "$2" must be + or -
     switch "$2"
+
+elif [ "$1" == "+" ]; then
+    
+    switch +
+    
+elif [ "$1" == "-" ]; then
+    
+    switch -
+    
+elif [[ $1 =~ ^-?[0-9]+$ ]]; then # if integer
+
+    switch "$1"
     
 elif [ "$1" == "last" ]; then
     
@@ -210,7 +222,25 @@ elif [ "$1" == "openbox" ]; then # openbox pipe menu
 
     # footer
     echo "</openbox_pipe_menu>"
+    
+elif [ "$1" == "help" ]; then
 
+cat << EOF
+radioClicky # show status
+toggle      # on/off
+notify      # notify-send icy-title or stream url
+last        # cli print last 12 quasi-unique icy-titles
+switch      # next station
+switch +    # next station
++           # next station
+switch -    # previous station
+-           # previous station
+switch 3    # station with id 3
+3           # station with id 3
+id          # echo station id, url
+openbox     # openbox pipemenu
+help        # this help
+EOF
 
 else # status
 
