@@ -36,7 +36,6 @@ fi
 
 on=" / "
 off=" \\ "
-err="err"
 
 radio=${array[$id]}
 
@@ -113,11 +112,12 @@ status () {
     if [ -f "$pidPath" ]; then
         Rpid=$(cat "$pidPath")
 
-        # check if player with that pid is actually running, else error
+        # check if player with that pid is actually running, else delete pidfile, and echo off
         if pgrep -x mpv | grep "$Rpid" &> /dev/null; then
             echo "$on" # on
         else
-            echo "$on $err"
+            rm "$pidPath"
+            echo "$off"
         fi
 
     else
