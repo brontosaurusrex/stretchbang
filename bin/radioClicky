@@ -243,7 +243,7 @@ elif [ "$1" == "head" ]; then # perl HEAD
         HEAD "$tmpinfo"
     fi    
     
-elif [ "$1" == "curl" ]; then # perl HEAD
+elif [ "$1" == "curl" ]; then # curl icy metadata
 
     if [ -f "$mpvtxt" ]; then
         tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
