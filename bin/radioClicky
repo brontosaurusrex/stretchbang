@@ -310,7 +310,16 @@ elif [ "$1" == "spam" ]; then # spamme continous
     
 elif [ "$1" == "list" ] || [ "$1" == "ls" ]; then
 
-    list
+    if [[ $2 =~ ^-?[0-9]+$ ]]; then # if integer
+        around="$2"
+        head=$(( id + around +1 ))
+        tail=$(( around*2 +1 ))
+        # ^ behaves on small ids, better math needed
+        # it would be better to just loop over array slice (didn't work so far)
+        list | head -n "$head" | tail -n "$tail"
+    else
+        list
+    fi
 
 elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 
@@ -325,6 +334,7 @@ stop or s       # off
 notify or n     # notify-send icy-title or stream url
 last or l       # cli print last 12 quasi-unique icy-titles
 list or ls      # cli list streams
+ls 3            # cli list around active id
 switch          # next station
 switch +        # next station
 +               # next station
