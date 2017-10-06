@@ -156,10 +156,13 @@ spam () { # continous = never exits, kill with killall radioClicky
             sleep 3
             tmpinfo="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)"
 
-                if ! [[ -z "$tmpinfo" ]]; then # if not empty
+                if ! [[ -z "$tmpinfo" ]] && [ "$tmpinfo" != "$tmpold" ]; then # if not empty and if not the same as old one
                     echo "$tmpinfo"
                     notify-send -u normal "$tmpinfo" 2>/dev/null
                 fi
+            tmpold="$tmpinfo"
+            
+            
         done
         
     fi
