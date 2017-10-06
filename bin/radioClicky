@@ -140,12 +140,24 @@ getnotify () {
 }
         
 # main
-if [ "$1" == "toggle" ]; then
+if [ "$1" == "toggle" ] || [ "$1" == "t" ]; then
 
     if [ -f "$pidPath" ]; then
         off
     else
         on
+    fi
+
+elif [ "$1" == "play" ]; then
+    
+    if ! [ -f "$pidPath" ]; then
+        on
+    fi
+
+elif [ "$1" == "stop" ]; then
+    
+    if [ -f "$pidPath" ]; then
+        off
     fi
     
 elif [ "$1" == "notify" ]; then
@@ -244,6 +256,9 @@ elif [ "$1" == "help" ]; then
 cat << EOF
 radioClicky # show status
 toggle      # on/off
+t           # on/off
+play        # on
+stop        # off
 notify      # notify-send icy-title or stream url
 last        # cli print last 12 quasi-unique icy-titles
 switch      # next station
