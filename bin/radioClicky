@@ -48,11 +48,11 @@ off=" \\ "
 radio=${array[$id]}
 
 echoid () {
-    >&2 echo "id $id / radio $radio"
+    >&2 echo "$id $radio"
 }
 
 notifyid () {
-    notify-send -u normal "id $id / radio $radio" 2>/dev/null
+    notify-send -u normal "$id $radio" 2>/dev/null
 }
 
 croplog () {
@@ -116,6 +116,19 @@ switch () {
     
 }
 
+list () {
+ 
+    for i in "${!array[@]}"; 
+        do
+            if (( id == i )); then
+                echo "$(statussimple)$i ${array[i]}"
+            else
+                echo "$i ${array[i]}"
+            fi
+        done
+    
+}
+
 status () {
     echoid # for tooltip
     if [ -f "$pidPath" ]; then
@@ -134,6 +147,17 @@ status () {
         echo "$off"
             
     fi
+}
+
+statussimple () {
+
+    status &> /dev/null
+    if [ -f "$pidPath" ]; then
+            echo -n "$on" # on
+    else
+            echo -n "$off"
+    fi
+
 }
 
 getnotify () {
@@ -283,6 +307,10 @@ elif [ "$1" == "curl" ]; then # curl icy metadata
 elif [ "$1" == "spam" ]; then # spamme continous
 
     spam
+    
+elif [ "$1" == "list" ] || [ "$1" == "ls" ]; then
+
+    list
 
 elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 
@@ -296,6 +324,7 @@ play or p       # on
 stop or s       # off
 notify or n     # notify-send icy-title or stream url
 last or l       # cli print last 12 quasi-unique icy-titles
+list or ls      # cli list streams
 switch          # next station
 switch +        # next station
 +               # next station
