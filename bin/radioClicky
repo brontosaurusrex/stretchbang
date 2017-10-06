@@ -102,9 +102,10 @@ switch () {
 
     echoid
     storeid
-    off
+    off &> /dev/null
     on
     #notifyid
+    
 }
 
 status () {
