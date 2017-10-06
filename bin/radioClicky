@@ -147,7 +147,24 @@ getnotify () {
         tmpinfo="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)"
     fi
 }
+
+spam () { # continous = never exits, kill with killall radioClicky
+    if [ -f "$mpvtxt" ]; then
+    
+        while inotifywait -e modify "$mpvtxt" > /dev/null 2>&1 ; do
         
+            sleep 3
+            tmpinfo="$(sed -n 's/^ icy-title: //p' "$mpvtxt" | tail -1)"
+
+                if ! [[ -z "$tmpinfo" ]]; then # if not empty
+                    echo "$tmpinfo"
+                    notify-send -u normal "$tmpinfo" 2>/dev/null
+                fi
+        done
+        
+    fi
+}        
+
 # main
 if [ "$1" == "toggle" ] || [ "$1" == "t" ]; then
 
@@ -258,11 +275,18 @@ elif [ "$1" == "curl" ]; then # curl icy metadata
         tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
         echo "$tmpinfo"
         curl -s -m 1 -H "Icy-MetaData: 1" -v "$tmpinfo" >/dev/null
-    fi    
+    fi
+    
+elif [ "$1" == "spam" ]; then # spamme continous
+
+    spam
 
 elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 
 cat << EOF
+radioClicky requires: 
+reasonably modern mpv, notify-send, sed, pgrep (procps), latest tint2, inotify-tools (optional, for spam function)
+
 radioClicky     # show status
 toggle or t     # on/off
 play or p       # on
@@ -280,6 +304,9 @@ id or i         # echo station id, url
 openbox         # openbox pipemenu
 head            # cli perl HEAD to last active stream
 curl            # cli curl icy metadata sniffing on last active stream
+spam            # something to be run from your gmrun or cli, 
+                # will notify on icy-title change (continous),
+                # kill with 'killall radioClicky'
 help or h       # this help
 EOF
 
