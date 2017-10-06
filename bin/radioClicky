@@ -316,6 +316,7 @@ elif [ "$1" == "list" ] || [ "$1" == "ls" ]; then
         tail=$(( around*2 +1 ))
         # ^ behaves on small ids, better math needed
         # it would be better to just loop over array slice (didn't work so far)
+        # for (( i = id - 2; i <= id + 2; ++i )); do printf '%d: %s\n' "$i" "${array[i]}"; done # ?
         list | head -n "$head" | tail -n "$tail"
     else
         list
