@@ -222,7 +222,23 @@ elif [ "$1" == "openbox" ]; then # openbox pipe menu
 
     # footer
     echo "</openbox_pipe_menu>"
+
+elif [ "$1" == "head" ]; then # perl HEAD
+
+    if [ -f "$mpvtxt" ]; then
+        tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+        echo "$tmpinfo"
+        HEAD "$tmpinfo"
+    fi    
     
+elif [ "$1" == "curl" ]; then # perl HEAD
+
+    if [ -f "$mpvtxt" ]; then
+        tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+        echo "$tmpinfo"
+        curl -s -m 1 -H "Icy-MetaData: 1" -v "$tmpinfo" >/dev/null
+    fi    
+
 elif [ "$1" == "help" ]; then
 
 cat << EOF
@@ -239,6 +255,8 @@ switch 3    # station with id 3
 3           # station with id 3
 id          # echo station id, url
 openbox     # openbox pipemenu
+head        # cli perl HEAD to last active stream
+curl        # cli curl icy metadata sniffing on last active stream
 help        # this help
 EOF
 
