@@ -129,6 +129,41 @@ list () {
     
 }
 
+listrange () {
+
+    around="$1"
+    max=$(( ${#array[@]} - 1 ))
+    
+    if (( around * 2 > max + 1)); then
+    
+        around=$(( max / 2 ))
+        #echo "around $around"
+    
+    fi
+    
+    for (( i = id - around; i <= id + around; ++i )); do
+
+            # limiter    
+            if (( i < 0 )); then
+                real=$((max + i + 1))
+                
+            elif (( i > max )); then
+                real=$((i - max - 1))
+            else
+                real="$i"
+            fi
+
+            # action
+            if (( id != i )); then
+                echo "$real" "${array[real]}"; 
+            else
+                echo "$(statussimple)$real" "${array[real]}";
+            fi
+
+    done 
+    
+}
+
 status () {
     echoid # for tooltip
     if [ -f "$pidPath" ]; then
@@ -182,7 +217,12 @@ spam () { # continous = never exits, kill with killall radioClicky
 
                 if ! [[ -z "$tmpinfo" ]] && [ "$tmpinfo" != "$tmpold" ]; then # if not empty and if not the same as old one
                     echo "$tmpinfo"
-                    notify-send -u normal "$tmpinfo" 2>/dev/null
+                    
+                    tty -s; # if not run from terminal, show notify popup as well
+                    if ! [ "0" == "$?" ]; then
+                        notify-send -u normal "$tmpinfo" 2>/dev/null
+                    fi
+                    
                 fi
             tmpold="$tmpinfo"
             
@@ -217,7 +257,12 @@ elif [ "$1" == "notify" ] || [ "$1" == "n" ]; then
     
     getnotify
     >&2 echo "$tmpinfo"
-    notify-send -u normal "$tmpinfo" 2>/dev/null
+    
+    tty -s; # if not run from terminal, show notify popup as well
+    if ! [ "0" == "$?" ]; then
+        notify-send -u normal "$tmpinfo" 2>/dev/null
+    fi
+    
 
 elif [ "$1" == "switch" ]; then
     
@@ -311,13 +356,9 @@ elif [ "$1" == "spam" ]; then # spamme continous
 elif [ "$1" == "list" ] || [ "$1" == "ls" ]; then
 
     if [[ $2 =~ ^-?[0-9]+$ ]]; then # if integer
-        around="$2"
-        head=$(( id + around +1 ))
-        tail=$(( around*2 +1 ))
-        # ^ behaves on small ids, better math needed
-        # it would be better to just loop over array slice (didn't work so far)
-        # for (( i = id - 2; i <= id + 2; ++i )); do printf '%d: %s\n' "$i" "${array[i]}"; done # ?
-        list | head -n "$head" | tail -n "$tail"
+        
+        listrange "$2"
+
     else
         list
     fi
