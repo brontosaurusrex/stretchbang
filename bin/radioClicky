@@ -391,7 +391,33 @@ curl            # cli curl icy metadata sniffing on last active stream
 spam            # something to be run from your gmrun or cli or autostart, 
                 # will notify on icy-title change (continous),
                 # kill with 'killall radioClicky'
+tint2           # tint2rc example
 help or h       # this help
+EOF
+
+elif [ "$1" == "tint2" ]; then
+
+cat << EOF
+a. to tint2rc add a new E to your panel_items, so it might look like:
+
+    panel_items = TESECEE
+
+b. add this to strategic place in your tint2rc (bottom should do):
+
+execp = new
+execp_centered = 1
+execp_has_icon = 0
+execp_command = radioClicky                  # echo status / or \\
+execp_continuous = 0
+execp_font = cuprum 12
+execp_font_color = #111111 70
+execp_padding = 0 0 0
+execp_mclick_command = radioClicky t         # on/off
+execp_rclick_command = radioClicky +         # next
+execp_lclick_command = radioClicky -         # prev
+execp_interval = 12                          # echo status / or \ every N seconds
+execp_dwheel_command = radioClicky n         # notify (icy-title)
+execp_uwheel_command = radioClicky i         # station id
 EOF
 
 else # status
@@ -400,25 +426,6 @@ else # status
 
 fi
 
-
-## tint2rc executor, to tint2rc 
-## add a new E to line that starts with
-## panel_items = 
-
-#execp = new
-#execp_centered = 1
-#execp_has_icon = 0
-#execp_command = radioClicky                  # echo status / or \
-#execp_continuous = 0
-#execp_font = cuprum 12
-#execp_font_color = #111111 70
-#execp_padding = 0 0 0
-#execp_mclick_command = radioClicky t         # on/off
-#execp_rclick_command = radioClicky +         # next
-#execp_lclick_command = radioClicky -         # prev
-#execp_interval = 12                          # echo status / or \ every N seconds
-#execp_dwheel_command = radioClicky n         # notify (icy-title)
-#execp_uwheel_command = radioClicky i         # station id
 
 ## openbox pipemenu, to menu.xml add:
 # <separator/>
