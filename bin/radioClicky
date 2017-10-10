@@ -413,12 +413,12 @@ fi
 #execp_font = cuprum 12
 #execp_font_color = #111111 70
 #execp_padding = 0 0 0
-#execp_lclick_command = radioClicky toggle    # on/off
-#execp_rclick_command = radioClicky notify    # echo icy-title or playing
-#execp_mclick_command = radioClicky id        # echo station id, url
+#execp_mclick_command = radioClicky t         # on/off
+#execp_rclick_command = radioClicky +         # next
+#execp_lclick_command = radioClicky -         # prev
 #execp_interval = 12                          # echo status / or \ every N seconds
-#execp_dwheel_command = radioClicky switch +  # switch to next station
-#execp_uwheel_command = radioClicky switch -  # switch to previous station
+#execp_dwheel_command = radioClicky n         # notify (icy-title)
+#execp_uwheel_command = radioClicky i         # station id
 
 ## openbox pipemenu, to menu.xml add:
 # <separator/>
