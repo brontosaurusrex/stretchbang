@@ -21,6 +21,7 @@ if [ -f "$extfile" ]; then
     done < "$extfile"
 fi
 
+# store paths
 store="$HOME/tmp"
 pidPath="$store/radiopid"
 mpvtxt="$store/mpv.txt"
@@ -42,9 +43,10 @@ else
     storeid
 fi
 
+# variables
 on=" / "
 off=" \\ "
-
+maxopenbox="20"
 radio=${array[$id]}
 
 echoid () {
@@ -129,38 +131,45 @@ list () {
     
 }
 
-listrange () {
-
-    around="$1"
+beforeafter () {
+ 
     max=$(( ${#array[@]} - 1 ))
     
-    if (( around * 2 > max + 1)); then
-    
-        around=$(( max / 2 ))
-        #echo "around $around"
-    
-    fi
-    
-    for (( i = id - around; i <= id + around; ++i )); do
+    if (( 2 * half > max )); then
+        half=$(( max / 2 ))
+    fi        
 
-            # limiter    
-            if (( i < 0 )); then
-                real=$((max + i + 1))
-                
-            elif (( i > max )); then
-                real=$((i - max - 1))
-            else
-                real="$i"
-            fi
+    if (( half > id )); then
+        before=$(( id )) 
+         after=$(( 2 * half - before ))
+    
+    elif (( id + half > max )); then
+         after=$(( max - id ))
+        before=$(( 2 * half - after ))
+    else 
+        before="$half"
+        after="$half"
+    fi   
+    
+}
+
+listrange () {
+
+    half="$1" && beforeafter # populates before and after
+    
+    #echo "before $before"
+    #echo "after  $after"
+    #echo "sum $(( before + after ))"
+        
+    for (( i = id - before; i <= id + after; ++i )); do
 
             # action
             if (( id != i )); then
-                echo "$real" "${array[real]}"; 
+                echo "$i" "${array[i]}"; 
             else
-                echo "$(statussimple)$real" "${array[real]}";
+                echo "$(statussimple)$i" "${array[i]}";
             fi
-
-    done 
+    done
     
 }
 
@@ -294,41 +303,36 @@ elif [ "$1" == "id" ] || [ "$1" == "i" ]; then
     
 elif [ "$1" == "openbox" ]; then # openbox pipe menu
 
+    half="$maxopenbox" && beforeafter # populates before and after
+
     # header
     echo "<openbox_pipe_menu>"
     
-    # stations
-    count="0"
-    for label in "${array[@]}"
-        do
+    for (( i = id - before; i <= id + after; ++i )); do
+
+            label="${array[i]}"
+
             # crop label and remove http, https
             label="$(sed 's~http[s]*://~~g' <<< "${label:0:50}")"
         
-            if [ "$count" == "$id" ]; then
-                title="$(status) $count $label" # $(status) 
+            if [ "$i" == "$id" ]; then
+                title="$(status) $i $label" # $(status) 
             else
-                title="$count $label"
+                title="$i $label"
             fi
             
-            # mark active station with separator at the top
-            # [ "$count" == "$id" ] && echo "<separator />"
-
                 echo "<item label='$title'>"
                 echo "    <action name='Execute'>"
             # use active station as on/off switch
-            if [ "$count" == "$id" ]; then
+            if [ "$i" == "$id" ]; then
                 echo "        <execute>radioClicky toggle</execute>"
             else
-                echo "        <execute>radioClicky switch $count</execute>"
+                echo "        <execute>radioClicky switch $i</execute>"
             fi
                 echo "    </action>"
                 echo "</item>"
-                
-            # mark active station with separator at the bottom as well
-            # [ "$count" == "$id" ] && echo "<separator />"
 
-            ((count++))
-        done
+    done
 
     # footer
     echo "</openbox_pipe_menu>"
