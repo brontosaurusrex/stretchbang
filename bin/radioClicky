@@ -325,7 +325,7 @@ elif [ "$1" == "openbox" ]; then # openbox pipe menu
             label="${array[i]}"
 
             # crop label and remove http, https
-            label="$(sed 's~http[s]*://~~g' <<< "${label:0:50}")"
+            label="$(sed 's~http[s]*://~~g' <<< "${label:0:100}")"
         
             if [ "$i" == "$id" ]; then
                 title="$(status) $i $label" # $(status) 
