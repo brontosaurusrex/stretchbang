@@ -46,7 +46,7 @@ fi
 # variables
 on=" / "
 off=" \\ "
-maxopenbox="20"
+maxopenbox="10"
 radio=${array[$id]}
 
 echoid () {
@@ -364,20 +364,20 @@ elif [ "$1" == "icy" ]; then # curl icy metadata filtered for humanity
 
     if [ -f "$mpvtxt" ]; then
     
-        # icy-title
+        # icy-title maybe
         getnotify
         # populates "$tmpinfo"
     
         # more icyness
         tmpinfo2="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
 
-        (echo "$tmpinfo" && echo "$tmpinfo2") | uniq
-
+        ((echo "$tmpinfo" && echo "$tmpinfo2") | uniq)
+        
 
         curl -s -m 1 -H "Icy-MetaData: 1" -v "$tmpinfo2" 2>&1 >/dev/null | grep -i "icy-" | grep -v -i -E "icy-metadata|icy-notice|icy-pub|icy-metaint" | \
         sed 's/< //' | uniq
         
-
+        echo "id $id"
     fi
     
 elif [ "$1" == "spam" ]; then # spamme continous
