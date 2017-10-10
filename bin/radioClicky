@@ -11,6 +11,10 @@ http://relay.181.fm:8064
 http://streaming.radionomy.com:80/12Bar
 http://relay.181.fm:8000
 http://relay.181.fm:8002
+http://stream-uk1.radioparadise.com/mp3-192
+http://19353.live.streamtheworld.com/977_HITS_SC
+http://icyrelay.181.fm/181-vibe_128k.mp3
+http://yp.shoutcast.com/sbin/tunein-station.pls?id=76490
 )
 
 extfile="$HOME/bin/radiolist"
