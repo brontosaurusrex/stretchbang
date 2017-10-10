@@ -432,7 +432,7 @@ id or i         # echo station id, url
 openbox         # openbox pipemenu
 head            # cli perl HEAD to last active stream
 curl            # cli curl icy metadata sniffing on last active stream
-icy             # cli curl icy metadata for human
+icy             # cli icy metadata for human
 spam            # something to be run from your gmrun or cli or autostart, 
                 # will notify on icy-title change (continous),
                 # kill with 'killall radioClicky'
