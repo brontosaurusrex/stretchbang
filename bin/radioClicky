@@ -377,7 +377,7 @@ elif [ "$1" == "openbox" ]; then # openbox pipe menu
             label="$(sed 's~http[s]*://~~g' <<< "${label:0:100}")"
         
             if [ "$i" == "$id" ]; then
-                title="$(status) $i $label" # $(status) 
+                title="$(status) $label" # $(status) ,removed $i here, new status got one included.
             else
                 title="$i $label"
             fi
