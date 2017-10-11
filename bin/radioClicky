@@ -284,6 +284,22 @@ icy () {
     fi     
 }
 
+sysinfo () {
+        br="-------------------"
+        mpv --version | head -n 1 | grep -v '^$' 
+        mpv --list-options | grep -i -E "lavfi|ytdl" ; echo "$br"
+        tint2 --version ; echo "$br"
+        notify-send --version ; echo "$br"
+        inotifywait -h | head -n 1 ; echo "$br"
+        grep --version | head -n 1 ; echo "$br"
+        pgrep --version ; echo "$br"
+        # host name, distroname
+        rel=$(lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1 || uname -om)
+        kernel=$(uname -r)
+        distro="$HOSTNAME @ $rel"
+        echo "$distro / $kernel"
+}
+
 
 # main
 if [ "$1" == "toggle" ] || [ "$1" == "t" ]; then
@@ -419,7 +435,7 @@ elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 
 cat << EOF
 radioClicky requires: 
-reasonably modern mpv, notify-send, sed, pgrep (procps), latest tint2, inotify-tools (optional, for spam function)
+reasonably modern mpv, notify-send, sed, grep, pgrep (procps), latest tint2, inotify-tools (optional, for spam function)
 
 radioClicky     # show status
 toggle or t     # on/off
@@ -430,12 +446,9 @@ last or l       # cli print last 12 quasi-unique icy-titles
 list or ls      # cli list streams
 ls 3            # cli list around active id
 switch          # next station
-switch +        # next station
-+               # next station
-switch -        # previous station
--               # previous station
-switch 3        # station with id 3
-3               # station with id 3
+switch + or +   # next station
+switch - or -   # previous station
+switch 3 or 3   # station with id 3
 id or i         # echo station id, url
 openbox         # openbox pipemenu
 head            # cli perl HEAD to last active stream
@@ -445,6 +458,7 @@ spam            # something to be run from your gmrun or cli or autostart,
                 # will notify on icy-title change (continous),
                 # kill with 'killall radioClicky'
 tint2           # tint2rc example
+sysinfo         # sysinfo (mpv --version and such)
 help or h       # this help
 EOF
 
@@ -472,6 +486,10 @@ execp_interval = 12                          # echo status / or \ every N second
 execp_dwheel_command = radioClicky n         # notify (icy-title)
 execp_uwheel_command = radioClicky i         # station id
 EOF
+
+elif [ "$1" == "sysinfo" ]; then
+
+    sysinfo
 
 else # status
 
