@@ -291,6 +291,7 @@ sysinfo () {
         tint2 --version ; echo "$br"
         notify-send --version ; echo "$br"
         inotifywait -h | head -n 1 ; echo "$br"
+        sed --version | head -n 1 ; echo "$br"
         grep --version | head -n 1 ; echo "$br"
         pgrep --version ; echo "$br"
         # host name, distroname
