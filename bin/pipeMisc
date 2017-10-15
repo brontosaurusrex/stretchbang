@@ -15,6 +15,9 @@
 #    <menu id="misc" label="misc" execute="pipeMisc" />
 #    <separator/>
 
+# var
+database="$HOME/bin/misc"
+
 # trim whitespace at start/end function
 # https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-a-bash-variable
 trim() {
@@ -30,6 +33,10 @@ trim() {
 cat << EOFMENU
 <openbox_pipe_menu>
 EOFMENU
+
+
+file="$database"
+if [ -f "$file" ]; then # start if database
 
 # main
 while read -r line; do
@@ -60,7 +67,18 @@ cat << EOFMENU
 EOFMENU
 fi
 
-done < "$HOME/bin/misc" # < This is where your database is
+done < "$database" # < This is where your database is
+
+fi # end if database
+
+# insert places pipemenu if there is pipePlaces script
+file="$HOME/bin/pipePlaces"
+if [ -f "$file" ]; then
+cat << EOFMENU
+<separator/>
+<menu id="places" label="places" execute="$HOME/bin/pipePlaces" />
+EOFMENU
+fi
 
 # footer
 cat << EOFMENU
