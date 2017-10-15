@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# sestevanka do 120, odstevanka do 100
+
+sestevaj () {
+c=130
+while (( c > 120 )); do
+    a=$(( ( RANDOM % 100 )  + 1 ))
+    b=$(( ( RANDOM % 100 )  + 1 ))
+    c=$(( a + b ))
+done
+
+echo -n "$a + $b = "
+read -r vnos
+
+if (( vnos == c )); then
+echo "res je!"
+else
+echo "ne, rezultat je $c"
+fi
+echo
+}
+
+odstevaj () {
+a=$(( ( RANDOM % 100 )  + 1 ))
+b=$(( ( RANDOM % 100 )  + 1 ))
+
+if (( b > a )); then
+    read -r a b <<<"$b $a"
+fi
+
+c=$(( a - b ))
+
+echo -n "$a - $b = "
+read -r vnos
+
+if (( vnos == c )); then
+echo "res je!"
+else
+echo "ne, rezultat je $c"
+fi
+echo
+}
+
+if [ "$1" == "+" ] ; then
+
+    sestevaj
+    
+elif [ "$1" == "-" ] ; then
+
+    odstevaj
+    
+else
+
+    echo "6 računov"
+    echo
+    sestevaj
+    odstevaj
+    sestevaj
+    odstevaj
+    sestevaj
+    odstevaj
+    
+fi
+
+
+
