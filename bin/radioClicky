@@ -33,6 +33,7 @@ pidPath="$store/radiopid"
 mpvtxt="$store/mpv.txt"
 #mpverr="$store/mpv.err"
 idPath="$store/id"
+recPath="$store/rec"
 
 mkdir -p "$store"
 
@@ -52,7 +53,6 @@ fi
 # variables
 on=" / "
 off=" \\ "
-maxopenbox="10"
 radio=${array[$id]}
 
 # functions
@@ -294,6 +294,7 @@ sysinfo () {
         sed --version | head -n 1 ; echo "$br"
         grep --version | head -n 1 ; echo "$br"
         pgrep --version ; echo "$br"
+        streamripper --version ; echo "$br"
         # host name, distroname
         rel=$(lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1 || uname -om)
         kernel=$(uname -r)
@@ -364,12 +365,10 @@ elif [ "$1" == "id" ] || [ "$1" == "i" ]; then
     
 elif [ "$1" == "openbox" ]; then # openbox pipe menu
 
-    half="$maxopenbox" && beforeafter # populates before and after
-
     # header
     echo "<openbox_pipe_menu>"
     
-    for (( i = id - before; i <= id + after; ++i )); do
+        for i in "${!array[@]}"; do
 
             label="${array[i]}"
 
@@ -418,6 +417,12 @@ elif [ "$1" == "icy" ] || [ "$1" == "c" ]; then # head/curl icy metadata filtere
 
     icy
     
+elif [ "$1" == "rec" ]; then # streamripper
+    
+    tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+    echo "$tmpinfo recording to $recPath, ctrl+c to stop"
+    streamripper "$tmpinfo" -d "$recPath" -s -u "Leclerc" 
+    
 elif [ "$1" == "spam" ]; then # spamme continous
 
     spam
@@ -455,6 +460,7 @@ openbox         # openbox pipemenu
 head            # cli perl HEAD to last active stream
 curl            # cli curl icy metadata sniffing on last active stream
 icy or c        # cli icy metadata for human
+rec             # cli streamripper (additional connection, doubles bandwidth)
 spam            # something to be run from your gmrun or cli or autostart, 
                 # will notify on icy-title change (continous),
                 # kill with 'killall radioClicky'
