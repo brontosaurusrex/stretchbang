@@ -417,11 +417,36 @@ elif [ "$1" == "icy" ] || [ "$1" == "c" ]; then # head/curl icy metadata filtere
 
     icy
     
-elif [ "$1" == "rec" ]; then # streamripper
+elif [ "$1" == "rec" ]; then # streamripper record
     
     tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
-    echo "$tmpinfo recording to $recPath, ctrl+c to stop"
-    streamripper "$tmpinfo" -d "$recPath" -s -u "Leclerc" 
+    
+    shift # propagate all remaining parameters to streamripper
+    echo "$tmpinfo recording to $recPath using streamripper, ctrl+c to stop"
+    if ! [[ -z "$@" ]]; then # echo remaining parameters if there are some
+        echo "$@"
+    fi
+    streamripper "$tmpinfo" -d "$recPath" -s -u "WinampMPEG/5.0" "$@"
+
+elif [ "$1" == "wrec" ]; then # wget record
+
+    tmpinfo="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+    echo "$tmpinfo recording to $recPath using wget, ctrl+c to stop"
+    
+        # random word dictionary function
+        randomword()  {
+            dict="/usr/share/dict/words"
+            shuf -n1 "$dict" | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]'
+        }
+        word=$(randomword)
+        # if dict gets us null length then replace with something else
+        [ -z "$word" ] && word="$HOSTNAME"
+        [ -z "$word" ] && word="rec"
+        date="$(date +%H%M%^b%d%y)"
+
+        #echo "$word.$date.mp3"
+        
+        wget -O "$recPath/$word.$date.mp3" "$tmpinfo"
     
 elif [ "$1" == "spam" ]; then # spamme continous
 
@@ -460,7 +485,8 @@ openbox         # openbox pipemenu
 head            # cli perl HEAD to last active stream
 curl            # cli curl icy metadata sniffing on last active stream
 icy or c        # cli icy metadata for human
-rec             # cli streamripper (additional connection, doubles bandwidth)
+rec             # cli streamripper recording (additional connection, doubles bandwidth)
+wrec            # cli wget recording (only use if streamripper fails or if you need instant recording)
 spam            # something to be run from your gmrun or cli or autostart, 
                 # will notify on icy-title change (continous),
                 # kill with 'killall radioClicky'
