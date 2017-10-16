@@ -17,6 +17,10 @@ http://streaming.radionomy.com/1291AlternativeRock
 http://streams.ffh.de/ffhchannels/aac/hqrock.m3u
 http://www.listenlive.eu/bandit_aac_hq.m3u
 http://broadcast.infomaniak.ch/energyrock-high.mp3.m3u
+http://krui.student-services.uiowa.edu:8000/listen.m3u
+http://dir.xiph.org/listen/1690383/listen.m3u
+http://dir.xiph.org/listen/495655/listen.m3u
+http://dir.xiph.org/listen/1735081/listen.m3u
 )
 
 extfile="$HOME/bin/radiolist"
@@ -447,7 +451,7 @@ elif [ "$1" == "wrec" ]; then # wget record
 
         #echo "$word.$date.mp3"
         
-        wget -O "$recPath/$word.$date.mp3" "$tmpinfo"
+        wget -O "$recPath/$word.$date.audio" "$tmpinfo"
     
 elif [ "$1" == "spam" ]; then # spamme continous
 
