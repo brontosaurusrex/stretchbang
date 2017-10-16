@@ -14,7 +14,9 @@ echo -n "$a + $b = "
 read -r vnos
 
 if (( vnos == c )); then
-echo "res je!"
+echo -n "Res je! "
+echo -n "Preverbi: "
+echo "$vnos - $a =" $(( vnos - a )) " in " "$vnos - $b =" $(( vnos - b ))
 else
 echo "ne, rezultat je $c"
 fi
@@ -35,7 +37,9 @@ echo -n "$a - $b = "
 read -r vnos
 
 if (( vnos == c )); then
-echo "res je!"
+echo -n "Res je! "
+echo -n "Preverbi: "
+echo "$a - $vnos =" $(( a - vnos )) " in " "$vnos + $b =" $(( vnos + b ))
 else
 echo "ne, rezultat je $c"
 fi
