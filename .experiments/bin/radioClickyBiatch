@@ -107,10 +107,11 @@ start () {
 off () {
 
     if isRunning; then # quit it and delete pipe
-        echo '{ "command": ["quit"] }' | socat - "$pipe" &> /dev/null
+        echo '{ "command": ["quit"] }' | socat - "$pipe" &> /dev/null 
         #rm "$pipe"
     fi
-
+    
+    sleep 0.3 # remove that !!! when continous tint2 version is available
     echo "$off" # off
     croplog
 }
@@ -427,9 +428,9 @@ elif [ "$1" == "openbox" ]; then # openbox pipe menu
                 echo "    <action name='Execute'>"
             # use active station as on/off switch
             if [ "$i" == "$id" ]; then
-                echo "        <execute>radioClicky toggle</execute>"
+                echo "        <execute>radioClickyBiatch toggle</execute>"
             else
-                echo "        <execute>radioClicky switch $i</execute>"
+                echo "        <execute>radioClickyBiatch switch $i</execute>"
             fi
                 echo "    </action>"
                 echo "</item>"
