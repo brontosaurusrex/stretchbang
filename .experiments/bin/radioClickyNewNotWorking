@@ -41,7 +41,7 @@ pipe="$store/pipe"
 
 mkdir -p "$store" || exit
 
-mkfifo "$pipe"
+#mkfifo "$pipe"
 
 # store station id to file
 storeid () {
@@ -84,7 +84,7 @@ croplog () {
 isRunning () {
 
     # lets query whatever to see if the thing is already running
-    if echo '{ "command": ["get_property", "mpv-version"] }' | socat - "$pipe" ; then 
+    if (echo '{ "command": ["get_property", "mpv-version"] }' | socat - "$pipe") &> /dev/null ; then 
         true
     else
         false
@@ -98,7 +98,7 @@ start () {
         # this only runs if not started before
         #rm -f "$pipe"
         #mkfifo "$pipe" #2> /dev/null
-        mpv --idle --no-config --no-video --no-resume-playback --no-ytdl --cache-secs 7 --af=lavfi=[loudnorm=LRA=20:I=-17] --input-ipc-server="$pipe" >> "$mpvtxt" & #2> /dev/null &
+        mpv --idle --no-config --no-video --no-resume-playback --no-ytdl --cache-secs 7 --af=lavfi=[loudnorm=LRA=20:I=-17] --input-ipc-server="$pipe" >> "$mpvtxt" 2> /dev/null &
         
     fi
 }
@@ -163,9 +163,12 @@ switch () {
     echoid
     storeid
 
-    # echo new radio url to pipe
-    echo "loadfile $radio" | socat - "$pipe"
-    
+    if isRunning; then
+        # echo new radio url to pipe
+        echo "loadfile $radio" | socat - "$pipe"
+    else
+        on
+    fi
 }
 
 list () {
@@ -345,6 +348,10 @@ if [ "$1" == "toggle" ] || [ "$1" == "t" ]; then
     else
         on
     fi
+    
+elif [ "$1" == "test" ]; then
+
+    isRunning
 
 elif [ "$1" == "play" ] || [ "$1" == "p" ]; then
     
