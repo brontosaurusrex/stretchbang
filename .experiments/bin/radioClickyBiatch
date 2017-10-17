@@ -84,7 +84,8 @@ croplog () {
 isRunning () {
 
     # lets query whatever to see if the thing is already running
-    if (echo '{ "command": ["get_property", "mpv-version"] }' | socat - "$pipe") &> /dev/null ; then 
+    if [ ! -f "$pipe" ] && (echo '{ "command": ["get_property", "mpv-version"] }' | socat - "$pipe") &> /dev/null ; then 
+        #echo "is running"
         true
     else
         false
