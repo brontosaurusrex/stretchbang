@@ -49,12 +49,16 @@ storeid () {
 }
 
 # should read id number from store
-if [ -f "$idPath" ]; then
+readid () {
+    if [ -f "$idPath" ]; then
     id=$(cat "$idPath")
 else
     id="0"
     storeid
 fi
+}
+
+readid
 
 # variables
 on=" / "
@@ -100,7 +104,7 @@ start () {
         # this only runs if not started before
         #rm -f "$pipe"
         #mkfifo "$pipe" #2> /dev/null
-        mpv --idle --no-config --no-video --no-resume-playback --no-ytdl --cache-secs 7 --af=lavfi=[loudnorm=LRA=20:I=-17] --input-ipc-server="$pipe" >> "$mpvtxt" 2> /dev/null &
+        mpv --idle --no-config --no-video --no-resume-playback --no-ytdl --cache-secs 7 --af=lavfi=[loudnorm=LRA=10:I=-17] --input-ipc-server="$pipe" >> "$mpvtxt" 2> /dev/null &
         
     fi
 }
@@ -112,7 +116,7 @@ off () {
         #rm "$pipe"
     fi
     
-    sleep 0.3 # remove that !!! when continous tint2 version is available
+    sleep 0.1 # not sure
     echo "$off" # off
     croplog
 }
@@ -247,7 +251,20 @@ statussimple () {
         else
             echo "$off"
         fi
+}
 
+# continous (better version would spy on mpv stream change)
+status4tint () {
+    
+    statussimple
+    while inotifywait -e modify "$mpvtxt" > /dev/null 2>&1 ; do
+    
+        readid
+        #echoid # for tooltip < this is bad
+        statussimple
+    
+    done
+    
 }
 
 getnotify () {
@@ -510,7 +527,7 @@ elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 
 cat << EOF
 radioClicky requires: 
-reasonably modern mpv, socat, notify-send, sed, grep, pgrep (procps), latest tint2, inotify-tools (optional, for spam function)
+reasonably modern mpv, socat, notify-send, sed, grep, pgrep (procps), latest tint2, inotify-tools
 
 radioClicky     # show status
 toggle or t     # on/off
@@ -536,6 +553,7 @@ spam            # something to be run from your gmrun or cli or autostart,
                 # kill with 'killall radioClicky'
 tint2           # tint2rc example
 sysinfo         # sysinfo (mpv --version and such)
+statuscont      # continus for tint2
 help or h       # this help
 EOF
 
@@ -548,25 +566,30 @@ a. to tint2rc add a new E to your panel_items, so it might look like:
 
 b. add this to strategic place in your tint2rc (bottom should do):
 
+#-------------------------------------
 execp = new
 execp_centered = 1
 execp_has_icon = 0
-execp_command = radioClicky                  # echo status / or \\
-execp_continuous = 0
+execp_command = radioClickyBiatch statuscont       # echo status
+execp_continuous = 1
+execp_tooltip = radioClicky
 execp_font = cuprum 12
 execp_font_color = #111111 70
 execp_padding = 0 0 0
-execp_mclick_command = radioClicky t         # on/off
-execp_rclick_command = radioClicky +         # next
-execp_lclick_command = radioClicky -         # prev
-execp_interval = 12                          # echo status / or \ every N seconds
-execp_dwheel_command = radioClicky n         # notify (icy-title)
-execp_uwheel_command = radioClicky i         # station id
+execp_mclick_command = radioClickyBiatch t         # on/off
+execp_rclick_command = radioClickyBiatch +         # next
+execp_lclick_command = radioClickyBiatch -         # prev
+execp_dwheel_command = radioClickyBiatch n         # notify (icy-title)
+execp_uwheel_command = radioClickyBiatch i         # station id
 EOF
 
 elif [ "$1" == "sysinfo" ]; then
 
     sysinfo
+    
+elif [ "$1" == "statuscont" ]; then
+
+    status4tint
 
 else # status
 
