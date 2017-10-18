@@ -18,6 +18,7 @@ http://streams.ffh.de/ffhchannels/aac/hqrock.m3u
 http://www.listenlive.eu/bandit_aac_hq.m3u
 http://broadcast.infomaniak.ch/energyrock-high.mp3.m3u
 http://us2.internet-radio.com:8046/listen.pls
+http://184.75.223.178:8067/listen.pls
 )
 
 extfile="$HOME/bin/radiolist"
