@@ -17,8 +17,10 @@ http://streaming.radionomy.com/1291AlternativeRock
 http://streams.ffh.de/ffhchannels/aac/hqrock.m3u
 http://www.listenlive.eu/bandit_aac_hq.m3u
 http://broadcast.infomaniak.ch/energyrock-high.mp3.m3u
-http://us2.internet-radio.com:8046/listen.pls
-http://184.75.223.178:8067/listen.pls
+http://krui.student-services.uiowa.edu:8000/listen.m3u
+http://dir.xiph.org/listen/1690383/listen.m3u
+http://dir.xiph.org/listen/495655/listen.m3u
+http://dir.xiph.org/listen/1735081/listen.m3u
 )
 
 extfile="$HOME/bin/radiolist"
@@ -31,15 +33,13 @@ fi
 
 # store paths
 store="$HOME/tmp"
+pidPath="$store/radiopid"
 mpvtxt="$store/mpv.txt"
 #mpverr="$store/mpv.err"
 idPath="$store/id"
 recPath="$store/rec"
-pipe="$store/pipe"
 
-mkdir -p "$store" || exit
-
-#mkfifo "$pipe"
+mkdir -p "$store"
 
 # store station id to file
 storeid () {
@@ -47,25 +47,17 @@ storeid () {
 }
 
 # should read id number from store
-readid () {
-    if [ -f "$idPath" ]; then
+if [ -f "$idPath" ]; then
     id=$(cat "$idPath")
 else
     id="0"
     storeid
 fi
-}
-
-readid
 
 # variables
 on=" / "
 off=" \\ "
-radio () {
-    radio=${array[$id]}
-}
-radio
-touch "$pipe"
+radio=${array[$id]}
 
 # functions
 echoid () {
@@ -87,60 +79,21 @@ croplog () {
     fi
 }
 
-isRunning () {
-
-    # lets query whatever to see if the thing is already running
-    if [ ! -f "$pipe" ] && (echo '{ "command": ["get_property", "mpv-version"] }' | socat - "$pipe") &> /dev/null ; then 
-        #echo "is running"
-        true
-    else
-        false
-    fi
-}
-
-
-start () {
-    
-    if ! isRunning; then 
-        # this only runs if not started before
-        #rm -f "$pipe"
-        #mkfifo "$pipe" #2> /dev/null
-        mpv --idle --no-config --no-video --no-resume-playback --no-ytdl --cache-secs 7 --af=lavfi=[loudnorm=LRA=10:I=-17] --input-ipc-server="$pipe" >> "$mpvtxt" 2> /dev/null &
-        
-    fi
-}
-
 off () {
-
-    if isRunning; then # quit it and delete pipe
-        echo '{ "command": ["quit"] }' | socat - "$pipe" &> /dev/null 
-        #rm "$pipe"
-    fi
-    
-    sleep 0.1 # not sure
+    # if file
+    [ -f "$pidPath" ] && Rpid=$(cat "$pidPath")
+    # if var
+    [[ ! -z "$Rpid" ]] && kill "$Rpid"; rm "$pidPath"
     echo "$off" # off
     croplog
 }
 
-
 on () {
+    mpv --no-config --no-video --no-resume-playback --no-ytdl --cache-secs 7 --af=lavfi=[loudnorm=LRA=20:I=-17] "$radio" >> "$mpvtxt" 2> /dev/null &
 
-    start # if not running
-
-    sleep 0.3
-    # check if mpv is ready and connected to pipe
-    if isRunning; then
-        echo "loadfile $radio" | socat - "$pipe"
-    else
-        sleep 3
-        echo "loadfile $radio" | socat - "$pipe"
-    fi
-    
-    # what if is still not running here?
-    if isRunning; then
-        echo "$on" # on
-    fi
-
+    Rpid="$!"
+    echo "$Rpid" > "$pidPath"
+    echo "$on" # on
 }
 
 switch () {
@@ -170,13 +123,10 @@ switch () {
 
     echoid
     storeid
-
-    if isRunning; then
-        # echo new radio url to pipe
-        echo "loadfile $radio" | socat - "$pipe"
-    else
-        on
-    fi
+    off &> /dev/null
+    on
+    #notifyid
+    
 }
 
 list () {
@@ -184,7 +134,7 @@ list () {
     for i in "${!array[@]}"; 
         do
             if (( id == i )); then
-                echo "$(statussimple) ${array[i]}"
+                echo "$(statussimple)$i ${array[i]}"
             else
                 echo "$i ${array[i]}"
             fi
@@ -217,56 +167,53 @@ beforeafter () {
 listrange () {
 
     half="$1" && beforeafter # populates before and after
-            
+    
+    #echo "before $before"
+    #echo "after  $after"
+    #echo "sum $(( before + after ))"
+        
     for (( i = id - before; i <= id + after; ++i )); do
 
             # action
             if (( id != i )); then
                 echo "$i" "${array[i]}"; 
             else
-                echo "$(statussimple)" "${array[i]}";
+                echo "$(statussimple)$i" "${array[i]}";
             fi
     done
     
 }
 
 status () {
-        
-        echoid # for tooltip
+    echoid # for tooltip
+    if [ -f "$pidPath" ]; then
+        Rpid=$(cat "$pidPath")
 
-        if isRunning &> /dev/null; then
+        # check if player with that pid is actually running, else delete pidfile, and echo off
+        if pgrep -x mpv | grep "$Rpid" &> /dev/null; then
             echo "$on$id" # on
+
         else
+            rm "$pidPath"
             echo "$off"
         fi
+
+    else
+
+        echo "$off"
+            
+    fi
 }
 
 statussimple () {
 
-        if isRunning &> /dev/null; then
-            echo "$on$id" # on
-        else
-            echo "$off"
-        fi
-}
+    status &> /dev/null
+    if [ -f "$pidPath" ]; then
+            echo -n "$on" # on
+    else
+            echo -n "$off"
+    fi
 
-# continous (better version would spy on mpv stream change)
-status4tint () {
-    
-    >&2 printf '\e[2J'
-    readid && radio && echoid
-    statussimple
-    
-    while inotifywait -e modify "$mpvtxt" > /dev/null 2>&1 ; do
-    
-        # https://gitlab.com/o9000/tint2/issues/676
-        >&2 printf '\e[2J' 
-        
-        readid && radio && echoid 
-        statussimple
-    
-    done
-    
 }
 
 getnotify () {
@@ -313,34 +260,46 @@ spam () { # continous = never exits, kill with killall radioClicky
 }
 
 icy () {
+    # only working for active stream, since 'playing' provides real url and not some playlist
+    if [ -f "$mpvtxt" ]; then
     
-    # lets just ask mpv
-    if isRunning; then
-        echo '{ "command": ["get_property", "metadata"] }' | socat - "$pipe" | jq -r .data | grep -i -v -E "{|}|icy-pub" | sed -e 's/^[ \t]*//' | sed -e 's/\"//g'
-        
-        #echo '{ "command": ["get_property", "metadata"] }' | socat - "$pipe" | jq -r .data
-        
-    else
-        echo "player must be running and playing and streaming."
-    fi
+        # icy-title maybe
+        getnotify
+        # populates "$tmpinfo"
     
+        # more icyness
+        tmpinfo2="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
+
+        (echo "$tmpinfo" && echo "$tmpinfo2") | uniq
+        
+        # try with head
+        a=$(HEAD "$tmpinfo2" | grep -i "icy-" | grep -v -i -E "icy-metadata|icy-notice|icy-pub|icy-metaint" | \
+        sed 's/< //' | uniq)
+
+        if [[ -z "$a" ]]; then # if head is empty
+        # try with curl
+            a=$(curl -s -m 1 -H "Icy-MetaData: 1" -v "$tmpinfo2" 2>&1 >/dev/null | grep -i "icy-" | grep -v -i -E "icy-metadata|icy-notice|icy-pub|icy-metaint" | \
+            sed 's/< //' | uniq)
+            echo "$a" | grep -v '^$' # echo curl version
+        else 
+            echo "$a" | grep -v '^$' # echo head version
+        fi
+        echo "id $id"
+    fi     
 }
 
 sysinfo () {
-
+        br="-------------------"
         mpv --version | head -n 1 | grep -v '^$' 
-        mpv --list-options | grep -i -E "lavfi" 
-        socat -V | head -n 2 | tail -n 1 
-        tint2 --version 
-        notify-send --version 
-        inotifywait -h | head -n 1 
-        sed --version | head -n 1 
-        grep --version | head -n 1 
-        pgrep --version 
-        streamripper --version 
-        wget --version | head -n 1 
-        curl --version | head -n 1 
-        jq --version 
+        mpv --list-options | grep -i -E "lavfi|ytdl" ; echo "$br"
+        tint2 --version ; echo "$br"
+        notify-send --version ; echo "$br"
+        inotifywait -h | head -n 1 ; echo "$br"
+        sed --version | head -n 1 ; echo "$br"
+        grep --version | head -n 1 ; echo "$br"
+        pgrep --version ; echo "$br"
+        streamripper --version ; echo "$br"
+        wget --version | head -n 1 ; echo "$br"
         # host name, distroname
         rel=$(lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1 || uname -om)
         kernel=$(uname -r)
@@ -352,25 +311,21 @@ sysinfo () {
 # main
 if [ "$1" == "toggle" ] || [ "$1" == "t" ]; then
 
-    if isRunning; then
+    if [ -f "$pidPath" ]; then
         off
     else
         on
     fi
-    
-elif [ "$1" == "test" ]; then
-
-    isRunning
 
 elif [ "$1" == "play" ] || [ "$1" == "p" ]; then
     
-    if ! isRunning; then
+    if ! [ -f "$pidPath" ]; then
         on
     fi
 
 elif [ "$1" == "stop" ] || [ "$1" == "s" ]; then
     
-    if isRunning; then
+    if [ -f "$pidPath" ]; then
         off
     fi
     
@@ -405,7 +360,7 @@ elif [[ $1 =~ ^-?[0-9]+$ ]]; then # if integer
 elif [ "$1" == "last" ] || [ "$1" == "l" ]; then
     
     if [ -f "$mpvtxt" ]; then
-        sed -n 's/^ icy-title: //p' "$mpvtxt" | grep -v '^$' | uniq | tail -n 21
+        sed -n 's/^ icy-title: //p' "$mpvtxt" | grep -v '^$' | uniq | tail -n 12
     fi
     
 elif [ "$1" == "id" ] || [ "$1" == "i" ]; then
@@ -516,14 +471,14 @@ elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 
 cat << EOF
 radioClicky requires: 
-reasonably modern mpv, socat, notify-send, sed, grep, pgrep (procps), latest tint2, inotify-tools, jq
+reasonably modern mpv, notify-send, sed, grep, pgrep (procps), latest tint2, inotify-tools (optional, for spam function)
 
 radioClicky     # show status
 toggle or t     # on/off
 play or p       # on
 stop or s       # off
 notify or n     # notify-send icy-title or stream url
-last or l       # cli print last 21 quasi-unique icy-titles
+last or l       # cli print last 12 quasi-unique icy-titles
 list or ls      # cli list streams
 ls 3            # cli list around active id
 switch          # next station
@@ -534,7 +489,7 @@ id or i         # echo station id, url
 openbox         # openbox pipemenu
 head            # cli perl HEAD to last active stream
 curl            # cli curl icy metadata sniffing on last active stream
-icy or c        # cli metadata for human (will ask mpv), needs 'jq'
+icy or c        # cli icy metadata for human
 rec             # cli streamripper recording (additional connection, doubles bandwidth)
 wrec            # cli wget recording (only use if streamripper fails or if you need instant recording)
 spam            # something to be run from your gmrun or cli or autostart, 
@@ -542,7 +497,6 @@ spam            # something to be run from your gmrun or cli or autostart,
                 # kill with 'killall radioClicky'
 tint2           # tint2rc example
 sysinfo         # sysinfo (mpv --version and such)
-statuscont      # continus for tint2
 help or h       # this help
 EOF
 
@@ -555,18 +509,18 @@ a. to tint2rc add a new E to your panel_items, so it might look like:
 
 b. add this to strategic place in your tint2rc (bottom should do):
 
-#-------------------------------------
 execp = new
 execp_centered = 1
 execp_has_icon = 0
-execp_command = radioClicky statuscont       # echo status
-execp_continuous = 1
+execp_command = radioClicky                  # echo status / or \\
+execp_continuous = 0
 execp_font = cuprum 12
 execp_font_color = #111111 70
 execp_padding = 0 0 0
 execp_mclick_command = radioClicky t         # on/off
 execp_rclick_command = radioClicky +         # next
 execp_lclick_command = radioClicky -         # prev
+execp_interval = 12                          # echo status / or \ every N seconds
 execp_dwheel_command = radioClicky n         # notify (icy-title)
 execp_uwheel_command = radioClicky i         # station id
 EOF
@@ -574,10 +528,6 @@ EOF
 elif [ "$1" == "sysinfo" ]; then
 
     sysinfo
-    
-elif [ "$1" == "statuscont" ]; then
-
-    status4tint
 
 else # status
 
