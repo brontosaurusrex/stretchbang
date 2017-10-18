@@ -17,7 +17,7 @@ http://streaming.radionomy.com/1291AlternativeRock
 http://streams.ffh.de/ffhchannels/aac/hqrock.m3u
 http://www.listenlive.eu/bandit_aac_hq.m3u
 http://broadcast.infomaniak.ch/energyrock-high.mp3.m3u
-http://krui.student-services.uiowa.edu:8000/listen.m3u
+http://us2.internet-radio.com:8046/listen.pls
 )
 
 extfile="$HOME/bin/radiolist"
@@ -421,7 +421,7 @@ elif [[ $1 =~ ^-?[0-9]+$ ]]; then # if integer
 elif [ "$1" == "last" ] || [ "$1" == "l" ]; then
     
     if [ -f "$mpvtxt" ]; then
-        sed -n 's/^ icy-title: //p' "$mpvtxt" | grep -v '^$' | uniq | tail -n 12
+        sed -n 's/^ icy-title: //p' "$mpvtxt" | grep -v '^$' | uniq | tail -n 21
     fi
     
 elif [ "$1" == "id" ] || [ "$1" == "i" ]; then
@@ -539,7 +539,7 @@ toggle or t     # on/off
 play or p       # on
 stop or s       # off
 notify or n     # notify-send icy-title or stream url
-last or l       # cli print last 12 quasi-unique icy-titles
+last or l       # cli print last 21 quasi-unique icy-titles
 list or ls      # cli list streams
 ls 3            # cli list around active id
 switch          # next station
