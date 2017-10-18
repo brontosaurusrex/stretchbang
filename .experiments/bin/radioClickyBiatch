@@ -184,7 +184,7 @@ list () {
     for i in "${!array[@]}"; 
         do
             if (( id == i )); then
-                echo "$(statussimple)$i ${array[i]}"
+                echo "$(statussimple) ${array[i]}"
             else
                 echo "$i ${array[i]}"
             fi
@@ -217,18 +217,14 @@ beforeafter () {
 listrange () {
 
     half="$1" && beforeafter # populates before and after
-    
-    #echo "before $before"
-    #echo "after  $after"
-    #echo "sum $(( before + after ))"
-        
+            
     for (( i = id - before; i <= id + after; ++i )); do
 
             # action
             if (( id != i )); then
                 echo "$i" "${array[i]}"; 
             else
-                echo "$(statussimple)$i" "${array[i]}";
+                echo "$(statussimple)" "${array[i]}";
             fi
     done
     
@@ -317,47 +313,34 @@ spam () { # continous = never exits, kill with killall radioClicky
 }
 
 icy () {
-    # only working for active stream, since 'playing' provides real url and not some playlist
-    if [ -f "$mpvtxt" ]; then
     
-        # icy-title maybe
-        getnotify
-        # populates "$tmpinfo"
-    
-        # more icyness
-        tmpinfo2="$(sed -n 's/^Playing: //p' "$mpvtxt" | tail -1)"
-
-        (echo "$tmpinfo" && echo "$tmpinfo2") | uniq
+    # lets just ask mpv
+    if isRunning; then
+        echo '{ "command": ["get_property", "metadata"] }' | socat - "$pipe" | jq -r .data | grep -i -v -E "{|}|icy-pub" | sed -e 's/^[ \t]*//' | sed -e 's/\"//g'
         
-        # try with head
-        a=$(HEAD "$tmpinfo2" | grep -i "icy-" | grep -v -i -E "icy-metadata|icy-notice|icy-pub|icy-metaint" | \
-        sed 's/< //' | uniq)
-
-        if [[ -z "$a" ]]; then # if head is empty
-        # try with curl
-            a=$(curl -s -m 1 -H "Icy-MetaData: 1" -v "$tmpinfo2" 2>&1 >/dev/null | grep -i "icy-" | grep -v -i -E "icy-metadata|icy-notice|icy-pub|icy-metaint" | \
-            sed 's/< //' | uniq)
-            echo "$a" | grep -v '^$' # echo curl version
-        else 
-            echo "$a" | grep -v '^$' # echo head version
-        fi
-        echo "id $id"
-    fi     
+        #echo '{ "command": ["get_property", "metadata"] }' | socat - "$pipe" | jq -r .data
+        
+    else
+        echo "player must be running and playing and streaming."
+    fi
+    
 }
 
 sysinfo () {
-        br="-------------------"
+
         mpv --version | head -n 1 | grep -v '^$' 
-        mpv --list-options | grep -i -E "lavfi|ytdl" ; echo "$br"
-        socat -V | head -n 2 ; echo "$br"
-        tint2 --version ; echo "$br"
-        notify-send --version ; echo "$br"
-        inotifywait -h | head -n 1 ; echo "$br"
-        sed --version | head -n 1 ; echo "$br"
-        grep --version | head -n 1 ; echo "$br"
-        pgrep --version ; echo "$br"
-        streamripper --version ; echo "$br"
-        wget --version | head -n 1 ; echo "$br"
+        mpv --list-options | grep -i -E "lavfi" 
+        socat -V | head -n 2 | tail -n 1 
+        tint2 --version 
+        notify-send --version 
+        inotifywait -h | head -n 1 
+        sed --version | head -n 1 
+        grep --version | head -n 1 
+        pgrep --version 
+        streamripper --version 
+        wget --version | head -n 1 
+        curl --version | head -n 1 
+        jq --version 
         # host name, distroname
         rel=$(lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1 || uname -om)
         kernel=$(uname -r)
@@ -533,7 +516,7 @@ elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 
 cat << EOF
 radioClicky requires: 
-reasonably modern mpv, socat, notify-send, sed, grep, pgrep (procps), latest tint2, inotify-tools
+reasonably modern mpv, socat, notify-send, sed, grep, pgrep (procps), latest tint2, inotify-tools, jq
 
 radioClicky     # show status
 toggle or t     # on/off
@@ -551,7 +534,7 @@ id or i         # echo station id, url
 openbox         # openbox pipemenu
 head            # cli perl HEAD to last active stream
 curl            # cli curl icy metadata sniffing on last active stream
-icy or c        # cli icy metadata for human
+icy or c        # cli metadata for human (will ask mpv), needs 'jq'
 rec             # cli streamripper recording (additional connection, doubles bandwidth)
 wrec            # cli wget recording (only use if streamripper fails or if you need instant recording)
 spam            # something to be run from your gmrun or cli or autostart, 
