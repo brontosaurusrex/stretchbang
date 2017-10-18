@@ -18,9 +18,6 @@ http://streams.ffh.de/ffhchannels/aac/hqrock.m3u
 http://www.listenlive.eu/bandit_aac_hq.m3u
 http://broadcast.infomaniak.ch/energyrock-high.mp3.m3u
 http://krui.student-services.uiowa.edu:8000/listen.m3u
-http://dir.xiph.org/listen/1690383/listen.m3u
-http://dir.xiph.org/listen/495655/listen.m3u
-http://dir.xiph.org/listen/1735081/listen.m3u
 )
 
 extfile="$HOME/bin/radiolist"
@@ -63,7 +60,10 @@ readid
 # variables
 on=" / "
 off=" \\ "
-radio=${array[$id]}
+radio () {
+    radio=${array[$id]}
+}
+radio
 touch "$pipe"
 
 # functions
@@ -256,11 +256,16 @@ statussimple () {
 # continous (better version would spy on mpv stream change)
 status4tint () {
     
+    >&2 printf '\e[2J'
+    radio && readid && echoid
     statussimple
+    
     while inotifywait -e modify "$mpvtxt" > /dev/null 2>&1 ; do
     
-        readid
-        #echoid # for tooltip < this is bad
+        # https://gitlab.com/o9000/tint2/issues/676
+        >&2 printf '\e[2J' 
+        
+        radio && readid && echoid 
         statussimple
     
     done
@@ -572,7 +577,6 @@ execp_centered = 1
 execp_has_icon = 0
 execp_command = radioClickyBiatch statuscont       # echo status
 execp_continuous = 1
-execp_tooltip = radioClicky
 execp_font = cuprum 12
 execp_font_color = #111111 70
 execp_padding = 0 0 0
