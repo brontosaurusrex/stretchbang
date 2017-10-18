@@ -257,7 +257,7 @@ statussimple () {
 status4tint () {
     
     >&2 printf '\e[2J'
-    radio && readid && echoid
+    readid && radio && echoid
     statussimple
     
     while inotifywait -e modify "$mpvtxt" > /dev/null 2>&1 ; do
@@ -265,7 +265,7 @@ status4tint () {
         # https://gitlab.com/o9000/tint2/issues/676
         >&2 printf '\e[2J' 
         
-        radio && readid && echoid 
+        readid && radio && echoid 
         statussimple
     
     done
