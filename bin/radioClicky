@@ -528,7 +528,7 @@ elif [ "$1" == "jump" ]; then # jump
     for i in "${!array[@]}"; 
         do
             switch "$i"
-            if [[ $2 =~ ^-?[0-9]+$ ]]; then
+            if [[ $2 =~ ^[0-9]+$ ]]; then # if positive integer
                 sleep "$2"
             else
                 sleep 30
