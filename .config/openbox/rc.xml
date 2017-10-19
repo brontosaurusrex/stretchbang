@@ -668,6 +668,24 @@
         <monitor>next</monitor>
       </action>
     </keybind>
+    <!-- toggleRadio -->
+    <keybind key="A-r">
+      <action name="Execute">
+        <command>r t</command>
+      </action>
+    </keybind>
+    <!-- Radio next -->
+    <keybind key="A-t">
+      <action name="Execute">
+        <command>r +</command>
+      </action>
+    </keybind>
+    <!-- Radio prev -->
+    <keybind key="A-e">
+      <action name="Execute">
+        <command>r -</command>
+      </action>
+    </keybind>
     <!-- brontosaurusrex end -->
   </keyboard>
   <mouse>
