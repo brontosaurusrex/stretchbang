@@ -519,9 +519,9 @@ elif [ "$1" == "spam" ]; then # spamme continous
     
 elif [ "$1" == "find" ] || [ "$1" == "f" ]; then # search cached metadata
 
-    shift
+    #shift
     cd "$metacache" || exit
-    grep -i -E "$@" -- * | sort -g
+    grep -i -E "$2" -- * | sort -g
     
 elif [ "$1" == "jump" ]; then # jump
 
