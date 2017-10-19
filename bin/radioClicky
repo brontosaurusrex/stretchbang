@@ -525,6 +525,8 @@ elif [ "$1" == "find" ] || [ "$1" == "f" ]; then # search cached metadata
     
 elif [ "$1" == "jump" ]; then # jump
 
+    beforeid="$id"
+
     for i in "${!array[@]}"; 
         do
             switch "$i"
@@ -535,6 +537,9 @@ elif [ "$1" == "jump" ]; then # jump
             fi
             
         done
+        
+    # back to where we were
+    switch "$beforeid"
     
 elif [ "$1" == "list" ] || [ "$1" == "ls" ]; then
 
