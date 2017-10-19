@@ -1150,12 +1150,14 @@
     <application class="Google-chrome" name="slither.io" role="pop-up" type="normal">
       <decor>no</decor>
     </application>
+<!--
     <application class="Gmrun" name="gmrun" type="normal">
       <skip_pager>yes</skip_pager>
       <skip_taskbar>yes</skip_taskbar>
       <focus>yes</focus>
       <decor>no</decor>
     </application>
+-->
     <application class="Chromium" name="slither.io" role="pop-up" type="normal">
       <decor>no</decor>
     </application>
