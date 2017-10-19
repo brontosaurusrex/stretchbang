@@ -83,3 +83,4 @@ libnotify-bin
 dunst
 jq
 socat
+wget
