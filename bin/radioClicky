@@ -41,8 +41,9 @@ mpvtxt="$store/mpv.txt"
 idPath="$store/id"
 recPath="$store/rec"
 pipe="$store/pipe"
+metacache="$store/meta"
 
-mkdir -p "$store" || exit
+mkdir -p "$store/meta" || exit
 
 #mkfifo "$pipe"
 
@@ -118,6 +119,7 @@ start () {
 off () {
 
     if isRunning; then # quit it and delete pipe
+        metacache # cache icy metadata
         echo '{ "command": ["quit"] }' | socat - "$pipe" &> /dev/null 
         #rm "$pipe"
     fi
@@ -149,6 +151,8 @@ on () {
 }
 
 switch () {
+    
+    metacache # cache icy metadata as seen by mpv
 
     # next station
     if [ "$1" == "+" ]; then
@@ -331,6 +335,12 @@ icy () {
     
 }
 
+metacache () {
+    
+    icy > "$metacache/$id"
+    
+}
+
 sysinfo () {
 
         mpv --version | head -n 1 | grep -v '^$' 
@@ -507,6 +517,25 @@ elif [ "$1" == "spam" ]; then # spamme continous
 
     spam
     
+elif [ "$1" == "find" ] || [ "$1" == "f" ]; then # search cached metadata
+
+    shift
+    cd "$metacache" || exit
+    grep -i -E "$@" -- * | sort -g
+    
+elif [ "$1" == "jump" ]; then # jump
+
+    for i in "${!array[@]}"; 
+        do
+            switch "$i"
+            if [[ $2 =~ ^-?[0-9]+$ ]]; then
+                sleep "$2"
+            else
+                sleep 30
+            fi
+            
+        done
+    
 elif [ "$1" == "list" ] || [ "$1" == "ls" ]; then
 
     if [[ $2 =~ ^-?[0-9]+$ ]]; then # if integer
@@ -548,6 +577,9 @@ spam            # something to be run from your gmrun or cli or autostart,
 tint2           # tint2rc example
 sysinfo         # sysinfo (mpv --version and such)
 statuscont      # continus for tint2
+find or f arg   # search cached metadata (arg is "rock" or "pop|rock" for OR)
+jump            # jump through all, 30 seconds each
+jump 7          # jump through all, 7 seconds each
 help or h       # this help
 EOF
 
