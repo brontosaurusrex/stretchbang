@@ -81,3 +81,5 @@ pngcrush
 pngquant
 libnotify-bin
 dunst
+jq
+socat
