@@ -84,3 +84,4 @@ dunst
 jq
 socat
 wget
+sed
