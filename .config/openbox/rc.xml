@@ -1,4 +1,5 @@
-<?xml version="1.0" ?><openbox_config xmlns="http://openbox.org/3.4/rc">
+<?xml version="1.0"?>
+<openbox_config xmlns="http://openbox.org/3.4/rc">
   <cornerRadius>4</cornerRadius>
   <resistance>
     <strength>10</strength>
@@ -686,6 +687,12 @@
         <command>r -</command>
       </action>
     </keybind>
+    <!-- Radio what song -->
+    <keybind key="A-n">
+      <action name="Execute">
+        <command>r n</command>
+      </action>
+    </keybind>
     <!-- brontosaurusrex end -->
   </keyboard>
   <mouse>
@@ -1107,7 +1114,6 @@
 
   # end of the example
 -->
-    
     <application class="Dwb" name="dwb" type="normal">
       <decor>no</decor>
     </application>
@@ -1123,7 +1129,6 @@
         <y>90</y>
       </position>
     </application>
-    
     <application class="URxvt" name="urxvt" type="normal">
       <decor>no</decor>
       <position force="no">
@@ -1131,11 +1136,13 @@
         <y>0</y>
       </position>
     </application>
-    
     <application class="mpv" name="*" type="normal">
       <decor>no</decor>
       <iconic>default</iconic>
-    <shade>no</shade><skip_taskbar>default</skip_taskbar><skip_pager>default</skip_pager></application>
+      <shade>no</shade>
+      <skip_taskbar>default</skip_taskbar>
+      <skip_pager>default</skip_pager>
+    </application>
     <application class="URxvt" name="transparent" type="normal">
       <decor>no</decor>
       <shade>no</shade>
