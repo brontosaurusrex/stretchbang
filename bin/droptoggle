@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# dropbox toggle, assuming dropbox.py is renamed to dropbox and somewhere on $PATH
+
+if dropbox running; then # is not running
+	dropbox start
+else	
+	dropbox stop
+fi
