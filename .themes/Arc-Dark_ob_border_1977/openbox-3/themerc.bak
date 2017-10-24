@@ -104,16 +104,15 @@ menu.items.active.text.color: #ffffff
 menu.items.active.disabled.text.color: #aeb0b6
 
 menu.items.bg: flat solid
-#menu.items.bg.color: #454a54
-menu.items.bg.color: #2F343F
+menu.items.bg.color: #454a54
 # bronto override
-menu.border.color: #2F343F
-menu.separator.color: #2F343F
+menu.border.color: #454a54
+menu.separator.color: #454a54
 
 menu.items.active.bg: flat solid
 menu.items.active.bg.color: #5294E2
 menu.title.bg: flat solid
-menu.title.bg.color: #2F343F
+menu.title.bg.color: #2d3036
 
 menu.title.text.justify: center
 
@@ -142,7 +141,7 @@ padding.height: 8
 
 menu.separator.padding.width:			12
 menu.separator.padding.height:			6
-menu.border.width: 				8
+menu.border.width: 				12
 
 !! window borders
 #border.width: 									1
