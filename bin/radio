@@ -1,6 +1,6 @@
 #!/bin/bash
 
-STREAM_FILE=~/bin/radiolist
+STREAM_FILE="$HOME/.config/radioClicky/radiolist"
 
 [[ ! -f "$STREAM_FILE" ]] && echo "$STREAM_FILE does not exist" && exit 1
 
