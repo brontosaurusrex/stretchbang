@@ -42,6 +42,7 @@ idPath="$store/id"
 recPath="$store/rec"
 pipe="$store/pipe"
 metacache="$store/meta"
+sound="$store/klik.wav"
 
 mkdir -p "$store/meta" || exit
 
@@ -104,6 +105,12 @@ isRunning () {
     fi
 }
 
+klik () { 
+    if [ -f "$sound" ]; then # play klik sound
+        mpv "$sound" --no-config --no-video --no-resume-playback --no-ytdl &> /dev/null &
+    fi
+}
+
 
 start () {
     
@@ -112,12 +119,13 @@ start () {
         #rm -f "$pipe"
         #mkfifo "$pipe" #2> /dev/null
         mpv --idle --no-config --no-video --no-resume-playback --no-ytdl --cache-secs 7 --af=lavfi=[loudnorm=LRA=10:I=-17] --input-ipc-server="$pipe" >> "$mpvtxt" 2> /dev/null &
-        
+        klik # sound
     fi
 }
 
 off () {
 
+    klik # sound
     if isRunning; then # quit it and delete pipe
         metacache # cache icy metadata
         echo '{ "command": ["quit"] }' | socat - "$pipe" &> /dev/null 
@@ -186,6 +194,7 @@ switch () {
     else
         on
     fi
+    klik # sound
 }
 
 list () {
