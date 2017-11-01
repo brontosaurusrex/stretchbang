@@ -20,7 +20,7 @@ shopt -s nullglob # Will prevent weird ** expansion if src dir is empty
 cd "$src" || exit
 
 #Run n processes in parallel (bash 4.3)
-c=0 n=4; 
+c=0 n=4;                                # parallel
 
 for i in ./**/*.flac; do # Whitespace-safe and recursive
 
@@ -51,6 +51,8 @@ for i in ./**/*.flac; do # Whitespace-safe and recursive
         echo "$ogg ... making one"
         encode2ogg "$i"
     
-    fi & done                           # parallel
+    fi &                                # parallel
+    
+done
     
 wait                                    # parallel
