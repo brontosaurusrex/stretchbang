@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Simple unidirectional model for driving child dir/subdir with a parent dir/subdir
+# Will not delete anything, so ogg files that have flac parent deleted will stay there
+
+src="$HOME/tmp/test/one" # flac dir
+dst="$HOME/tmp/test/two" # ogg dir
+
+encode2ogg () {
+    echo "encoding ..."
+    mkdir -p "$dst/$dir"
+    #oggenc "$1" -o "$ogg"
+    touch "$ogg"
+}
+
+shopt -s globstar
+shopt -s nullglob # Will prevent weird ** expansion if src dir is empty
+
+# This gives us relative path that will be used as extension to $dst
+cd "$src" || exit
+
+#Run n processes in parallel (bash 4.3)
+c=0 n=4; 
+
+for i in ./**/*.flac; do # Whitespace-safe and recursive
+
+    if (( c++ >= n )); then wait -n; fi # parallel
+    
+    baseext=${i##*/}        # file.ext
+    base=${baseext%.*}      # file
+    dir=${i%/*}             # directory
+    
+    echo "basext = $baseext, base = $base, dir = $dir"
+    
+    ogg="$dst/$dir/$base".ogg
+    #echo "$i to $ogg"
+    
+    if [ -f "$ogg" ]; then
+
+            # compare mtime
+            if [ "$ogg" -ot "$i" ]; then
+                echo "$ogg ... is older, making new one"
+                encode2ogg "$i"
+            else
+                echo "$ogg ... already there"
+            fi
+            
+            # Perhaps some sort of approximate duration check here
+    else
+        
+        echo "$ogg ... making one"
+        encode2ogg "$i"
+    
+    fi & done                           # parallel
+    
+wait                                    # parallel
