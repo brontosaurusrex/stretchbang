@@ -1,0 +1,128 @@
+First Time=true
+Version=2.5.0
+
+[Archives]
+Supported Packers=tar,gzip,bzip2,lzma,xz,unzip,zip,cbz,cpio,unrar,dpkg,7z
+
+[Colors]
+Alternate Background=Background
+Dim Inactive Colors=true
+Directory Foreground=192,192,192
+Enable Alternate Background=false
+Executable Foreground=0,255,255
+Foreground=160,160,164
+KDE Default=false
+Quicksearch Non-match Background=255,0,0
+Symlink Foreground=0,255,0
+
+[Custom Selection Mode]
+Immediate Context Menu=false
+Left Selects=false
+Right Preserves=true
+ShiftCtrl Left Selects=true
+Space Moves Down=false
+
+[Dependencies]
+7z=/usr/bin/7z
+bzip2=/bin/bzip2
+checksum utility=/usr/bin/md5sum
+cpio=/bin/cpio
+dpkg=/usr/bin/dpkg
+gzip=/bin/gzip
+krusader=/usr/bin/krusader
+locate=/usr/bin/locate
+lzma=/usr/bin/lzma
+md5sum=/usr/bin/md5sum
+mount=/bin/mount
+sha1sum=/usr/bin/sha1sum
+sha224sum=/usr/bin/sha224sum
+sha256sum=/usr/bin/sha256sum
+sha384sum=/usr/bin/sha384sum
+sha512sum=/usr/bin/sha512sum
+tar=/bin/tar
+umount=/bin/umount
+unrar=/usr/bin/unrar
+unzip=/usr/bin/unzip
+updatedb=/usr/bin/updatedb
+xz=/usr/bin/xz
+zip=/usr/bin/zip
+
+[General]
+Terminal=urxvt
+
+[Konfigurator]
+Window Height=680
+Window Maximized=false
+Window Width=900
+
+[KrInterDetailedView]
+AutoResizeColumns=false
+
+ShowPreviews=true
+With Icons=false
+
+[Look&Feel]
+Always sort dirs by name=false
+Back Button Visible=false
+Filelist Font=Roboto Condensed,12,-1,5,50,0,0,0,0,0
+Forward Button Visible=false
+Media Button Visible=true
+Mouse Selection=2
+Navigator Full Path=false
+Show Hidden=false
+ShowSpaceInformation=true
+Sort method=16
+
+[MediaMenu]
+ShowPath=true
+
+[MountMan]
+ShowOnlyRemovable=true
+Window Height=475
+Window Maximized=false
+Window Width=1033
+
+[PanelLayout]
+FrameColor=none
+FrameShadow=Plain
+FrameShape=NoFrame
+Layout=krusader:default
+
+[Private]
+Maximized=true
+
+
+
+[QueueManager]
+Active=0
+Queues=default
+Window Height=400
+Window Width=300
+Window X=1940
+Window Y=45
+
+[Search]
+ContainsText Completion=
+ContainsText History=
+SearchFor Completion=
+SearchFor History=
+
+[Startup]
+Left Side Is Active=false
+Show Cmd Line=false
+Show FN Keys=true
+Show Terminal Emulator=false
+Show actions tool bar=true
+Show status bar=true
+Show tool bar=true
+Splitter Sizes=954,954
+Start To Tray=false
+Starter Profile Name=
+
+Terminal Emulator Splitter Sizes=100,100
+ToolBarsMovable=Disabled
+UI Save Settings=true
+Vertical Mode=false
+Window-Maximized 1200x1920=true
+
+
