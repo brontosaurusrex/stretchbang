@@ -1,0 +1,14 @@
+# Set window geometry
+Width = 300
+
+# aliases withing gmrun
+# f: g: t: x:
+URL_f = firefox %s
+URL_g = geany
+URL_t = thunar %s
+url_x = urxvt %s
+
+# https://wiki.archlinux.org/index.php/Gmrun
+# Timeout (in milliseconds) after which gmrun will simulate a TAB press
+# Set this to NULL if do not like this feature.
+#TabTimeout = 300

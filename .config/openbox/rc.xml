@@ -1131,10 +1131,6 @@
     </application>
     <application class="URxvt" name="urxvt" type="normal">
       <decor>no</decor>
-      <position force="no">
-        <x>5</x>
-        <y>0</y>
-      </position>
     </application>
     <application class="mpv" name="*" type="normal">
       <decor>no</decor>
@@ -1150,14 +1146,13 @@
     <application class="Google-chrome" name="slither.io" role="pop-up" type="normal">
       <decor>no</decor>
     </application>
-<!--
     <application class="Gmrun" name="gmrun" type="normal">
-      <skip_pager>yes</skip_pager>
-      <skip_taskbar>yes</skip_taskbar>
-      <focus>yes</focus>
       <decor>no</decor>
+      <skip_taskbar>yes</skip_taskbar>
+      <skip_pager>default</skip_pager>
+      <focus>yes</focus>
+      <layer>above</layer>
     </application>
--->
     <application class="Chromium" name="slither.io" role="pop-up" type="normal">
       <decor>no</decor>
     </application>

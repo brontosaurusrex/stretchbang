@@ -55,6 +55,7 @@ cp -"$switch"b .xsessionrc ~
 cp -"$switch"b .tmux* ~
 cp -"$switch"b .wbar ~
 cp -"$switch"b .inputrc ~
+cp -"$switch"b .gmrunrc ~
 
 # sudo here
 # set +x # verbosity off
