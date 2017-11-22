@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# epg : aditional filter for tv_to_text
+
+# usage: 
+#    epg file.xml "What else to filter out"
+# example:
+#    epg 2017-11-22_discovery-europe.doc_tvprofil.net.xml "Discovery Channel"
+
+# required
+command -v tv_to_text >/dev/null 2>&1 || { echo "I need tv_to_text (xmltv)." ; exit 1; }
+
+# military local time now
+now=$(date +"%H%M")
+
+# main
+#tv_to_text "$1" 2> /dev/null | tr -d ':' | sed 's/--/-/g' | sed 's/\t/    /g' |  sed 's/  */ /g' | sed "s/$2//g"
+
+while read -r line
+do
+
+    read -r var _ <<<"$line"
+    var=${var#*-}                # take stuff after '-'
+    
+    if [ "$var" != "0000" ]; then
+        var="${var#"${var%%[!0]*}"}" # remove leading zeroes
+    fi
+
+    if (( now < var )); then
+        echo " $line"
+    elif [ "$var" = "0000" ]; then
+        echo " $line"
+    fi
+    
+done <<< $(tv_to_text "$1" 2> /dev/null | tail -n +2 | tr -d ':' | sed 's/--/-/g' | sed 's/\t/    /g' |  sed 's/  */ /g' | sed "s/$2//g" | grep -v "Generated from Phazer XML") | head -n 12
+
+# tail -n +2 < everything but first line
