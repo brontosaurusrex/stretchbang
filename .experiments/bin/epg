@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# epg : aditional filter for tv_to_text
+# epg : aditional filter for tv_to_text with the concept of 'now'
 
 # usage: 
 #    epg file.xml "What else to filter out"
