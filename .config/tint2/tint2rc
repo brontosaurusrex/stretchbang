@@ -176,7 +176,8 @@ task_iconified_icon_asb = 50 -100 -40
 task_active_background_id = 10
 mouse_left = toggle_iconify
 mouse_middle = close
-mouse_right = toggle
+# disabling this should enable showing openbox menu even over tasks:
+#mouse_right = toggle
 mouse_scroll_up = toggle
 mouse_scroll_down = iconify
 
