@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# toggle brightness of primary/connected monitor
+# for the benefit of reading an ebook
+# https://wiki.archlinux.org/index.php/xrandr
+
+normal="1.0"
+reader="0.70"
+
+now=$(xrandr --verbose | grep -i brightness | cut -f2 -d ' ') # no primary selector here, some luck needed.
+monitor=$(xrandr | grep -E " connected (primary )?[1-9]+" | sed -e "s/\([A-Z0-9]\+\) connected.*/\1/")
+
+
+if [ "$now" == "$reader" ]; then
+    xrandr --output "$monitor" --brightness "$normal" 
+elif [ "$now" == "$normal" ]; then
+    xrandr --output "$monitor" --brightness "$reader" 
+fi
