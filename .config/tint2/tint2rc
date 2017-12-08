@@ -217,7 +217,8 @@ clock_background_id = 0
 clock_tooltip = 
 clock_tooltip_timezone = 
 clock_lclick_command = gsimplecal
-clock_rclick_command = gsimplecal
+# https://brontosaurusrex.github.io/2017/12/08/dim-display/
+clock_rclick_command = toggleBrightness
 clock_mclick_command = 
 clock_uwheel_command = 
 clock_dwheel_command = 
