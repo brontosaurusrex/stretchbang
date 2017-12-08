@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# toggle brightness of primary/connected monitor
+# software toggle brightness of primary/connected monitor
 # for the benefit of reading an ebook
 # https://wiki.archlinux.org/index.php/xrandr
 
