@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# on tv now
+# usage examples: 
+# now "HBO"
+# now "HBO Comedy"
+# now "HBO 3"
+# now "National"
+# now "Discovery"
+
+guide="$HOME/source/autoepg/guide.xml"
+
+tv_grep --channel-name "$1" --on-after now "$guide" | tv_to_text | head -12
