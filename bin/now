@@ -8,6 +8,10 @@
 # now "National"
 # now "Discovery"
 
-guide="$HOME/source/autoepg/guide.xml"
+guidegit="$HOME/source/autoepg"
+guide="$guidegit/guide.xml"
+
+cd "$guidegit" || exit
+git pull > /dev/null
 
 tv_grep --channel-name "$1" --on-after now "$guide" | tv_to_text | head -12
