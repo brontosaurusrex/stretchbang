@@ -14,4 +14,9 @@ guide="$guidegit/guide.xml"
 cd "$guidegit" || exit
 git pull > /dev/null
 
-tv_grep --channel-name "$1" --on-after now "$guide" | tv_to_text | head -12
+date=$(date) # date now
+
+#set -x
+tv_grep --channel-name "$1" --on-after "$date" "$guide" 2>/dev/null | tv_to_text | head -12
+
+# There is also '--on-after now', but it seems like that is using UTC, which is not what would one want.
