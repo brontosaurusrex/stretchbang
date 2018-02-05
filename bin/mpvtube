@@ -23,11 +23,11 @@ regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]
 
 if [[ $url =~ $regex ]]
 then 
-    echo "Link seems valid"
+    echo "link seems valid"
     notify-send "opening $url with mpv"
     mpv "$url" # --ytdl-format=best
 else
-    echo "Link not valid"
+    echo "link not valid"
 fi
 
 
