@@ -31,7 +31,7 @@
 		</item>
 		<item label="mpv">
 			<action name="Execute">
-				<execute>mpv --force-window --idle</execute>
+				<execute>mpv --force-window --idle --autofit-larger=50% --geometry 49%+0+0</execute>
 			</action>
 		</item>
 		<separator/>
