@@ -1,0 +1,75 @@
+[/]
+prompt-on-close-process=false
+enable-wide-handle=false
+sidebar-on-right=false
+terminal-title-style='none'
+theme-variant='dark'
+window-style='borderless'
+
+[profiles]
+list=['2b7c4080-0ddd-46c5-8f23-563fd3ba789d', '5efa84ff-4275-41ef-bf5a-68506df0ad45']
+
+[profiles/5efa84ff-4275-41ef-bf5a-68506df0ad45]
+cursor-shape='block'
+cursor-colors-set=false
+bold-color-set=false
+terminal-bell='sound'
+scroll-on-keystroke=true
+cjk-utf8-ambiguous-width='narrow'
+default-size-rows=24
+encoding='UTF-8'
+triggers=@as []
+automatic-switch=@as []
+custom-command=''
+visible-name='transparent'
+use-theme-colors=false
+terminal-title='${id}: ${title}'
+login-shell=true
+exit-action='close'
+use-system-font=false
+backspace-binding='ascii-delete'
+rewrap-on-resize=true
+foreground-color='#A7A7A7'
+badge-text=''
+background-transparency-percent=100
+cursor-blink-mode='off'
+dim-transparency-percent=100
+default-size-columns=80
+background-color='#1E1E1E'
+palette=['#1E1E1E', '#CF6A4C', '#8F9D6A', '#F9EE98', '#7587A6', '#9B859D', '#AFC4DB', '#A7A7A7', '#5F5A60', '#CF6A4C', '#8F9D6A', '#F9EE98', '#7587A6', '#9B859D', '#AFC4DB', '#FFFFFF']
+cursor-foreground-color='#ffffff'
+allow-bold=false
+notify-silence-threshold=0
+highlight-foreground-color='#ffffff'
+badge-color='#ffffff'
+font='Source Code Pro Light 11'
+delete-binding='delete-sequence'
+badge-position='northeast'
+custom-hyperlinks=@as []
+scrollback-unlimited=false
+cursor-background-color='#000000'
+highlight-background-color='#000000'
+scroll-on-output=false
+use-custom-command=false
+badge-color-set=false
+highlight-colors-set=false
+scrollback-lines=8192
+bold-color='#ffffff'
+show-scrollbar=true
+
+[profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d]
+foreground-color='#A1B0B8'
+rewrap-on-resize=true
+visible-name='Default'
+login-shell=true
+palette=['#252525', '#FF5252', '#C3D82C', '#FFC135', '#42A5F5', '#D81B60', '#00ACC1', '#F5F5F5', '#708284', '#FF5252', '#C3D82C', '#FFC135', '#42A5F5', '#D81B60', '#00ACC1', '#F5F5F5']
+badge-color-set=false
+use-system-font=false
+cursor-colors-set=false
+highlight-colors-set=false
+use-theme-colors=false
+bold-color-set=false
+font='Source Code Pro Light 11'
+allow-bold=false
+cursor-blink-mode='off'
+background-color='#263238'
