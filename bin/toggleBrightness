@@ -10,15 +10,6 @@ reader="0.75"
 now=$(xrandr --verbose | grep -i brightness | cut -f2 -d ' ' | tail -1) # no primary selector here, some luck needed.
 monitor=$(xrandr | grep -E " connected (primary )?[1-9]+" | sed -e "s/\([A-Z0-9]\+\) connected.*/\1/" | tail -1)
 
-if [ "$now" == "$reader" ]; then
-    xrandr --output "$monitor" --brightness "$normal" 
-elif [ "$now" == "$normal" ]; then
-    xrandr --output "$monitor" --brightness "$reader" 
-else
-    xrandr --output "$monitor" --brightness "$normal" 
-fi
-
-
 if [ "$now" == "$normal" ]; then
     xrandr --output "$monitor" --brightness "$reader"  
 else
