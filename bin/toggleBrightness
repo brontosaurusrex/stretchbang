@@ -21,3 +21,10 @@ elif [ "$now" == "$normal" ]; then
 else
     xrandr --output "$monitor" --brightness "$normal" 
 fi
+
+
+if [ "$now" == "$normal" ]; then
+    xrandr --output "$monitor" --brightness "$reader"  
+else
+    xrandr --output "$monitor" --brightness "$normal" 
+fi
