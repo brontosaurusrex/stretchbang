@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# print ascii waveform to terminal
-# example: printWaveform *.mp3
+# print audio ascii waveform to terminal (and play)
+# example: printWaveform *.flac
 
 # needs: ffmpeg, caca-utils, imagemagick, mpv (for playback), tput
 
@@ -19,17 +19,29 @@ th="24"                      # height in terminal chars
 while [ $# -gt 0 ]; do
 
     # get pixels width from terminal char width x 2 (and use something for height)
-    tw="$(tput cols)"
-    w=$(( tw * 2 ))
-    h=$(( tw * 2 ))
+    tw="$(tput cols)"   # width in term columns
+    w=$(( tw * 2 ))     # width of tmp image in pixels
+    h=$(( tw ))         # height of tmp image in pixels
     
     ffmpeg -i "$1" -filter_complex \
     "aformat=channel_layouts=mono,showwavespic=scale=lin:s=${w}x${h}:colors=#000000" -y "$tmpimg" &>/dev/null && \
     
-    # crop and shave
-    #mogrify -trim "$tmpimg" && \  # < bad idea, this will trim left and right, those desync. Version that would just trim top and bottom could be usefull
+    # draw two black pixels on left/right as protection for following -trim operation
+    # (https://www.imagemagick.org/discourse-server/viewtopic.php?t=16656)
+    # whalf=$(( w / 2 ))
+    hhalf=$(( h / 2 ))
     
-    mogrify -gravity Center -shave 0x15% "$tmpimg" && \
+    # set -x
+    mogrify -draw "fill black color 0,${hhalf} point" "$tmpimg"    
+    wtmp=$(( w - 1 )) # for some reason we need to remove 1 pixel
+    mogrify -draw "fill black color ${wtmp},${hhalf} point" "$tmpimg"
+
+    # trim (behaves as audio display normalizer)
+    mogrify -trim "$tmpimg" && \
+    # ^ was bad idea, this would trim left and right as well, those desync. But now we have two black pixels as protection ^. (Triming however will not be identical on top and bottom.)
+    
+    # shave some more
+    mogrify -gravity Center -shave 0x5% "$tmpimg" && \
     
     # img 2 ascii
     img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$th" -f utf8 -d none "$tmpimg" # | head -12
@@ -42,4 +54,8 @@ shift
 done
 
 
-
+# stuff
+#convert "$tmpimg" -ping -format "%w x %h" info:
+#read -r rw rh <<< $(convert "$tmpimg" -ping -format "%w x %h" info:)
+#echo $rw 
+#echo $rh
