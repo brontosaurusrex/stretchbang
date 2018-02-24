@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# print ascii waveform to terminal
+# example: printWaveform *.mp3
+
+# needs: ffmpeg, caca-utils, imagemagick, mpv (for playback), tput
+
+# brontosaurusrex 2018
+
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmpdir="/tmp/$RANDOM-$$"
+trap '[ -n "$tmpdir" ] && rm -fr "$tmpdir"' EXIT
+mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; exit 1; }
+
+# config
+tmpimg="$tmpdir/wave.png"    # tmp image storage
+th="24"                      # height in terminal chars
+
+while [ $# -gt 0 ]; do
+
+    # get pixels width from terminal char width x 2 (and use something for height)
+    tw="$(tput cols)"
+    w=$(( tw * 2 ))
+    h=$(( tw * 2 ))
+    
+    ffmpeg -i "$1" -filter_complex \
+    "aformat=channel_layouts=mono,showwavespic=scale=lin:s=${w}x${h}:colors=#000000" -y "$tmpimg" &>/dev/null && \
+    
+    # crop and shave
+    #mogrify -trim "$tmpimg" && \  # < bad idea, this will trim left and right, those desync. Version that would just trim top and bottom could be usefull
+    
+    mogrify -gravity Center -shave 0x15% "$tmpimg" && \
+    
+    # img 2 ascii
+    img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$th" -f utf8 -d none "$tmpimg" # | head -12
+    
+    # playback, enable mpv line for some playback
+    echo "$1"
+    mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
+
+shift
+done
+
+
+
