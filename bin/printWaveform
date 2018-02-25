@@ -3,8 +3,7 @@
 # print audio ascii waveform to terminal (and play)
 # example: printWaveform *.flac
 
-# needs: ffmpeg, caca-utils, imagemagick, mpv (for playback), tput
-
+# needs: ffmpeg, caca-utils, imagemagick, mpv (for playback), tput, toilet
 # brontosaurusrex 2018
 
 # tmp dir http://mywiki.wooledge.org/BashFAQ/062
@@ -47,9 +46,14 @@ while [ $# -gt 0 ]; do
     # img 2 ascii
     img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$th" -f utf8 -d none "$tmpimg" #| head -$(( th / 2))
     
+    # echo file
+    if (( tw > 400 )); then
+        toilet "$1" -w "$tw" # enable for very hi-res display
+    else
+        echo "$1"
+    fi
+    
     # playback, enable mpv line for some playback
-    echo "$1"
-    #figlet "$1" -w "$tw" # enable for very hi-res display
     mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
 
     # benchmark end
