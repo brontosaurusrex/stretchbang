@@ -64,7 +64,7 @@ while [ $# -gt 0 ]; do
         echo "$1"
     fi
     
-    # playback if "$1" was not np or noplay
+    # playback if "$mpv" is 'true'
     "$mpv" && mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
 
     # benchmark end
