@@ -13,7 +13,7 @@ mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; ex
 
 # config
 tmpimg="$tmpdir/wave.png"    # tmp image storage
-th="24"                      # height in terminal chars, should be even number
+th=$(( 24 * 1 ))                      # height in terminal chars, should be even number
 
 while [ $# -gt 0 ]; do
 
