@@ -25,6 +25,7 @@ mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; ex
 # config
 tmpimg="$tmpdir/wave.png"    # tmp image storage
 th=$(( 24 * 1 ))             # height in terminal chars, should be even number
+hires="400"                  # how many term columns (width) are considered as hires
 
 while [ $# -gt 0 ]; do
 
@@ -54,11 +55,18 @@ while [ $# -gt 0 ]; do
     # shave some more
     mogrify -gravity Center -shave 0x5% "$tmpimg" && \
     
-    # img 2 ascii
-    img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$th" -f utf8 -d none "$tmpimg" #| head -$(( th / 2))
+    # if hires then increase the height of waveform display
+    if (( tw > hires )); then
+        thfinal=$(( th * 2 ))
+    else 
+        thfinal="$th"
+    fi
+    
+    # print waveform
+    img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$thfinal" -f utf8 -d none "$tmpimg" #| head -$(( th / 2))
     
     # echo file
-    if (( tw > 400 )); then
+    if (( tw > hires )); then
         toilet "$1" -w "$tw" # enable for very hi-res display
     else
         echo "$1"
@@ -74,5 +82,3 @@ while [ $# -gt 0 ]; do
 
 shift
 done
-
-
