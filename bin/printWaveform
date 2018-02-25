@@ -32,10 +32,10 @@ while [ $# -gt 0 ]; do
     # draw two black pixels on left/right as protection for following -trim operation
     # (https://www.imagemagick.org/discourse-server/viewtopic.php?t=16656)
     # whalf=$(( w / 2 ))
-    hhalf=$(( h / 2 ))
-    mogrify -draw "fill black color 0,${hhalf} point" "$tmpimg"    
+    hhalf=$(( h / 2 )) && \
+    mogrify -draw "fill black color 0,${hhalf} point" "$tmpimg" && \
     wtmp=$(( w - 1 )) # for some reason we need to remove 1 pixel
-    mogrify -draw "fill black color ${wtmp},${hhalf} point" "$tmpimg"
+    mogrify -draw "fill black color ${wtmp},${hhalf} point" "$tmpimg" && \
 
     # trim (behaves as audio display normalizer)
     mogrify -trim "$tmpimg" && \
@@ -50,7 +50,7 @@ while [ $# -gt 0 ]; do
     # playback, enable mpv line for some playback
     echo "$1"
     #figlet "$1" -w "$tw" # enable for very hi-res display
-    mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
+    #mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
 
     # benchmark end
     #END=$(date +%s.%N)
