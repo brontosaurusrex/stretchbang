@@ -1,10 +1,21 @@
 #!/bin/bash
 
 # print audio ascii waveform to terminal (and play)
-# example: printWaveform *.flac
+
+# examples: 
+# print waveform and play:    printWaveform *.flac, 
+# just print waveform:        printWaveform np *.flac
 
 # needs: ffmpeg, caca-utils, imagemagick, mpv (for playback), tput, toilet
 # brontosaurusrex 2018
+
+# to play or not to play
+if [ "$1" == "np" ] || [ "$1" == "noplay" ]; then
+    mpv="false"
+    shift
+else
+    mpv="true"
+fi
 
 # tmp dir http://mywiki.wooledge.org/BashFAQ/062
 tmpdir="/tmp/$RANDOM-$$"
@@ -53,8 +64,8 @@ while [ $# -gt 0 ]; do
         echo "$1"
     fi
     
-    # playback, enable mpv line for some playback
-    mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
+    # playback if "$1" was not np or noplay
+    "$mpv" && mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
 
     # benchmark end
     #END=$(date +%s.%N)
@@ -65,8 +76,3 @@ shift
 done
 
 
-# stuff
-#convert "$tmpimg" -ping -format "%w x %h" info:
-#read -r rw rh <<< $(convert "$tmpimg" -ping -format "%w x %h" info:)
-#echo $rw 
-#echo $rh
