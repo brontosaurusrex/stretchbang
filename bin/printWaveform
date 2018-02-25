@@ -50,7 +50,7 @@ while [ $# -gt 0 ]; do
     # playback, enable mpv line for some playback
     echo "$1"
     #figlet "$1" -w "$tw" # enable for very hi-res display
-    #mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
+    mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
 
     # benchmark end
     #END=$(date +%s.%N)
