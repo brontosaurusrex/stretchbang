@@ -14,24 +14,25 @@ mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; ex
 
 # config
 tmpimg="$tmpdir/wave.png"    # tmp image storage
-th="24"                      # height in terminal chars
+th="24"                      # height in terminal chars, should be even number
 
 while [ $# -gt 0 ]; do
+
+    # benchmark start
+    #START=$(date +%s.%N)
 
     # get pixels width from terminal char width x 2 (and use something for height)
     tw="$(tput cols)"   # width in term columns
     w=$(( tw * 2 ))     # width of tmp image in pixels
-    h=$(( tw ))         # height of tmp image in pixels
+    h=$(( tw * 1 ))     # height of tmp image in pixels
     
     ffmpeg -i "$1" -filter_complex \
-    "aformat=channel_layouts=mono,showwavespic=scale=lin:s=${w}x${h}:colors=#000000" -y "$tmpimg" &>/dev/null && \
-    
+    "aformat=channel_layouts=stereo,showwavespic=split_channels=0:scale=lin:s=${w}x${h}:colors=#000000" -y "$tmpimg" &>/dev/null && \
+            
     # draw two black pixels on left/right as protection for following -trim operation
     # (https://www.imagemagick.org/discourse-server/viewtopic.php?t=16656)
     # whalf=$(( w / 2 ))
     hhalf=$(( h / 2 ))
-    
-    # set -x
     mogrify -draw "fill black color 0,${hhalf} point" "$tmpimg"    
     wtmp=$(( w - 1 )) # for some reason we need to remove 1 pixel
     mogrify -draw "fill black color ${wtmp},${hhalf} point" "$tmpimg"
@@ -44,11 +45,17 @@ while [ $# -gt 0 ]; do
     mogrify -gravity Center -shave 0x5% "$tmpimg" && \
     
     # img 2 ascii
-    img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$th" -f utf8 -d none "$tmpimg" # | head -12
+    img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$th" -f utf8 -d none "$tmpimg" #| head -$(( th / 2))
     
     # playback, enable mpv line for some playback
     echo "$1"
+    #figlet "$1" -w "$tw" # enable for very hi-res display
     mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
+
+    # benchmark end
+    #END=$(date +%s.%N)
+    #DIFF=$(echo "$END - $START" | bc)
+    #echo "done in $DIFF seconds"
 
 shift
 done
