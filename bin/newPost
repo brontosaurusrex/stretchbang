@@ -44,7 +44,23 @@ echo "title: $1" >> "$post"
 
 shift # assume the rest are tags
 echo -n "tags: " >> "$post"
-echo -n "$@" >> "$post"
+
+# compare each tag with list of valid tags
+while [ $# -gt 0 ]; do
+    # configure this next line
+    validtag=("linux" "mine" "blender" "cli" "video" "web" "misc" "bash" "luv" "audio" "crypto" "books")
+    tag="$1"
+    for item in ${validtag[@]}; do
+       echo ${item}
+       if [ "${item}" = "${tag}" ]; then
+            echo -n "$item " >> "$post"
+       fi
+    done
+shift
+done
+
+
+# ending
 echo >> "$post"
 echo "---" >> "$post"
 
