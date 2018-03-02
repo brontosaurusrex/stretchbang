@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# make new jekyll _post
+# usage: newPost "the post title" tag1 tag2 tagN
+
+# brontosaurusrex 2018
+
+postname=${1// /-} # replace spaces with -
+
+[[ -z "$postname" ]] && echo "usage: newPost \"the post title\" tag1 tag2 tag3" && exit 1
+
+# configure this next line
+blog_root="/home/b/source/brontosaurusrex.github.io"
+
+[[ ! -d "$blog_root" ]] && echo "$blog_root not found, exiting" && exit 1
+
+today=$(date +%Y-%m-%d)
+
+post="${blog_root}/_posts/${today}-${postname}.md"
+
+# if file is already there, just open it with geany
+file="$post"
+if [ -f "$file" ]; then
+    echo "already there"
+    # just edit with something
+    # configure this next line 
+    geany -l 8 "$post" &
+    echo "just opening file"
+    exit 0
+fi
+
+echo "---" > "$post"
+echo "published: true" >> "$post"
+echo "layout: post" >> "$post"
+
+jdate=$(date +"%Y-%m-%d %H:%M")
+
+# date: '2018-03-02 16:54 +0100'
+
+echo "date: '$jdate'" >> "$post"
+echo "title: $1" >> "$post"
+
+# tags: jekyll blog github-page
+
+shift # assume the rest are tags
+echo -n "tags: " >> "$post"
+echo -n "$@" >> "$post"
+echo >> "$post"
+echo "---" >> "$post"
+
+# edit with something
+# configure this next line 
+geany -l 8 "$post" &
+
+exit
+
+# Example front matter:
+---
+published: true
+layout: post
+date: '2018-03-02 16:54'
+title: git cli credentials
+tags: cli
+---
+
