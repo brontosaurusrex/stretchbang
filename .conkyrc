@@ -37,9 +37,13 @@ conky.config = {
     show_graph_scale = false,
     show_graph_range = false,
     default_bar_width = 80,
-    default_bar_height = 6,
+    default_bar_height = 8,
 }
 
 conky.text = [[
-cpu ${cpubar} mem ${membar} home ${fs_bar /home} data ${fs_bar /home/b/data}
+${color #131E20}
+${if_match ${downspeedf enp10s0} >= 1} DL ${downspeed enp10s0}${endif} \
+${if_match ${upspeedf enp10s0} >=1 } UP ${upspeed enp10s0}${endif} \
+CPU ${cpubar} MEM ${membar} HOME ${fs_bar /home} \
+${if_match ${fs_used_perc /home/b/data} != 0} DATA ${fs_bar /home/b/data}${endif}
 ]]
