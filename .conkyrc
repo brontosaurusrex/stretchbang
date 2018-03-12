@@ -20,7 +20,7 @@ conky.config = {
     minimum_height = 5,
 	minimum_width = 25,
     net_avg_samples = 2,
-    no_buffers = true,
+    no_buffers = false,
     out_to_console = false,
     out_to_stderr = false,
     extra_newline = false,
@@ -42,8 +42,8 @@ conky.config = {
 
 conky.text = [[
 ${color #131E20}
-${if_match ${downspeedf enp10s0} >= 1} DL ${downspeed enp10s0}${endif} \
-${if_match ${upspeedf enp10s0} >=1 } UP ${upspeed enp10s0}${endif} \
+${if_match ${downspeedf enp10s0} >= 1}$alignr NET ˇ${downspeed enp10s0}${endif} \
+${if_match ${upspeedf enp10s0} >=1 }ˆ${upspeed enp10s0}${endif}
 CPU ${cpubar} MEM ${membar} HOME ${fs_bar /home} \
 ${if_match ${fs_used_perc /home/b/data} != 0} DATA ${fs_bar /home/b/data}${endif}
 ]]
