@@ -16,6 +16,7 @@ size="200"      # thumb size
 index="true"    # generate index.htm or not (set to "" for false)
 corners="true"  # rounded corners or not (set to "" for false)
 hidden="true"   # hidden thumb or not (set to "" for false)
+fps="1"         # decreasing this could get you more interesting thumbs (1/100), increasing might reduce ffmpeg errors (1).
 
 # no arguments
 if [ $# -eq 0 ]; then
@@ -88,13 +89,15 @@ while [ $# -gt 0 ]; do
             # move video head to somewhere after 1/3 of the length
             moverandom=$(shuf -i "$somedur"-"$endrange" -n 1)
             
-            # if moverandom is unset, then let it be 0
+            # if moverandom is unset, then let it be something
             if [ -z "$moverandom" ]; then
                 moverandom="0"
             fi
         
+            # toilet "$moverandom"
+        
             # ffmpeg (https://brontosaurusrex.github.io/2015/08/meaningful-thumbnails-for-a-video-using-ffmpeg)
-            ffmpeg -ss "$moverandom" -i "$1" -an -vf scale=iw*sar:ih,thumbnail -frames:v 1 -vf fps=fps=1/10 "$tmpdir/${base}.png" -y 2>/dev/null
+            ffmpeg -hide_banner -loglevel panic -stats -ss "$moverandom" -i "$1" -an -vf scale=iw*sar:ih,thumbnail -frames:v 1 -vf fps=fps="$fps" "$tmpdir/${base}.png" -y 
             # ^ Still can produce boring thumbs (like title only)
             
             # black borders removal
@@ -102,7 +105,7 @@ while [ $# -gt 0 ]; do
             
             }
         
-        stuff "$1"
+        stuff "$1" 
         
         # size check 1
         if [[ $(find "$tmpdir/${base}.png" -type f -size -100000c 2>/dev/null) ]]; then
