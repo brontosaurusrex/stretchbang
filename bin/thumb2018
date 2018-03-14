@@ -1,0 +1,203 @@
+#!/bin/bash
+
+# thumb2018 (based on dropimage and singularity/videothumb)
+# Script that generates some movie or image thumbs & some index.htm
+
+# usage:
+# thumb2018 *.avi
+
+# needed:
+# ffmpeg, ffprobe, mediainfo, imagemagick (convert & mogrify), pngquant, inkscape (for svg)
+
+# brex 2018
+
+# config
+size="200"      # thumb size
+index="true"    # generate index.htm or not (set to "" for false)
+corners="true"  # rounded corners or not (set to "" for false)
+hidden="true"   # hidden thumb or not (set to "" for false)
+
+# no arguments
+if [ $# -eq 0 ]; then
+    echo "Script that generates some movie or image thumbs & some index.htm"
+    exit 0
+fi
+
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmpdir="/tmp/$RANDOM-$$"
+trap '[ -n "$tmpdir" ] && rm -fr "$tmpdir"' EXIT
+mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; exit 1; }
+
+# checks
+command -v convert >/dev/null 2>&1 || { echo >&2 "I require imagemagicks but it's not installed, exiting."; exit 1; }
+command -v ffmpeg >/dev/null 2>&1 || { echo >&2 "I require ffmpeg but it's not installed, exiting."; exit 1; }
+command -v mediainfo >/dev/null 2>&1 || { echo >&2 "I require mediainfo but it's not installed, exiting."; exit 1; }
+command -v pngquant >/dev/null 2>&1 || { echo >&2 "I require pngquant but it's not installed, exiting."; exit 1; }
+command -v inkscape >/dev/null 2>&1 || { echo >&2 "I require inkscape but it's not installed, exiting."; exit 1; }
+
+# Returns true if file has video
+hasVideo() {
+        mediainfo "$1" 2>/dev/null | grep -qi "video" 
+}
+
+# Returns true is there is image mentioned
+isImage() {
+        file "$1" | grep -qi "image"
+}
+
+# main 
+while [ $# -gt 0 ]; do
+
+    basename=$(basename "${1}")     # basename                      file.avi
+    ext="${basename##*.}"           # ext
+    base="${basename%.*}"           # basename without extension    file
+    dir=$(dirname "${1}")           # dir only
+    
+    # echo
+    echo "$basename"
+    
+    # thumb
+    thumb="$dir/${base}_thumb.png"
+    
+    ## thumb already there?
+    #if [ -f "$thumb" ]; then
+        #echo "thumb ${base}_thumb.png already there"
+        #shift
+        #continue # skip the loop
+    #fi
+    
+    # is dir writable?
+    if [ -w "$dir" ]; then 
+        true
+        #echo "dir $dir is writable";
+    else
+        echo "dir $dir not writable"
+        shift
+        continue # skip the loop
+    fi
+    
+    if hasVideo "$1"; then
+    
+            stuff() {
+                
+            # movie duration/2
+            dur=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$1")
+            somedur=$(bc <<< "$dur / 3.00")
+            endrange=$(bc <<< "$dur / 2.00")
+        
+            # move video head to somewhere after 1/3 of the length
+            moverandom=$(shuf -i "$somedur"-"$endrange" -n 1)
+            
+            # if moverandom is unset, then let it be 0
+            if [ -z "$moverandom" ]; then
+                moverandom="0"
+            fi
+        
+            # ffmpeg (https://brontosaurusrex.github.io/2015/08/meaningful-thumbnails-for-a-video-using-ffmpeg)
+            ffmpeg -ss "$moverandom" -i "$1" -an -vf scale=iw*sar:ih,thumbnail -frames:v 1 -vf fps=fps=1/10 "$tmpdir/${base}.png" -y 2>/dev/null
+            # ^ Still can produce boring thumbs (like title only)
+            
+            # black borders removal
+            mogrify -fuzz 5% -trim -shave 1%x1% +repage "$tmpdir/${base}.png"
+            
+            }
+        
+        stuff "$1"
+        
+        # size check 1
+        if [[ $(find "$tmpdir/${base}.png" -type f -size -100000c 2>/dev/null) ]]; then
+            echo "small thumb once!"
+            stuff "$1"
+        fi
+        
+        # size check 2
+        if [[ $(find "$tmpdir/${base}.png" -type f -size -100000c 2>/dev/null) ]]; then
+            echo "small thumb twice!"
+            stuff "$1"
+        fi
+        
+        # size check 3
+        if [[ $(find "$tmpdir/${base}.png" -type f -size -100000c 2>/dev/null) ]]; then
+            echo "small thumb trice!"
+            #stuff "$1"
+        fi
+        
+        #ls -al "$tmpdir/${base}.png"
+        
+    else
+        if isImage "$1"; then
+            # just cp if input is an image
+            cp "$1" "$tmpdir/${base}.png"
+            
+            if [ "$ext" == "svg" ]; then # if ext is svg
+                echo "svg"
+                mv "$tmpdir/${base}.png" "$tmpdir/${base}.svg"
+                inkscape -d 96 -z "$tmpdir/${base}.svg" -e "$tmpdir/${base}.png"
+
+                
+            fi
+            
+        else
+            echo "$basename is not a movie or image file, skipping"
+            shift
+            continue # skip the loop
+        fi
+    fi
+   
+    # thumb
+    mogrify -background gray -define png:size=240x240 -thumbnail ${size}x${size}^ -gravity center -extent ${size}x${size} "$tmpdir/${base}.png"
+    
+    if [ "$corners" ]; then
+        # round corners http://www.imagemagick.org/Usage/thumbnails/
+        convert "$tmpdir/${base}.png"  \
+         \( +clone  -alpha extract \
+            -draw 'fill black polygon 0,0 0,5 5,0 fill white circle 5,5 5,0' \
+            \( +clone -flip \) -compose Multiply -composite \
+            \( +clone -flop \) -compose Multiply -composite \
+         \) -alpha off -compose CopyOpacity -composite "png:$tmpdir/${base}_.png"
+        mv "$tmpdir/${base}_.png" "$tmpdir/${base}.png"
+    fi
+    
+    # pngquant
+    pngquant --ext=.png --force "$tmpdir/${base}.png"
+    
+    # move to the orig dir
+    mv "$tmpdir/${base}.png" "$thumb"
+    
+    # rename if hidden (prepend with dot)
+    if [ "$hidden" ]; then 
+        mv "$thumb" "$dir/.${base}_thumb.png"
+        htmlname=".${base}_thumb.png"
+    else
+        htmlname="${base}_thumb.png"
+    fi
+    
+    # index.html
+    if [ "$index" ]; then
+        echo "<a href=\"${basename}\"><img src=\"$htmlname\"></a>" >> "$dir/index.htm"
+    fi
+
+    shift
+
+done
+
+if [ "$index" ]; then
+# Fix last known "$dir/index.htm" (assumes that all files belong to the same directory, which may not be true)
+
+# header
+cat > "$tmpdir/index.htm" << EOFMENU
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title></title></head><body>
+EOFMENU
+
+cat "$dir/index.htm" >> "$tmpdir/index.htm"
+
+# footer
+cat >> "$tmpdir/index.htm" << EOFMENU
+</body></html>
+EOFMENU
+
+# move back
+mv "$tmpdir/index.htm" "$dir/index.htm"
+
+fi
