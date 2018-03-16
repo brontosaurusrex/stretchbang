@@ -2,15 +2,21 @@
 
 # install firefox addons
 
-mkdir -p "$HOME/tmp"
-cd "$HOME/tmp" || exit
+#mkdir -p "$HOME/tmp"
+#cd "$HOME/tmp" || exit
 
-# wget and install uBlock and Scrollbar anywhere
-rm addon-607454-latest.xpi addon-292702-latest.xpi 2>/dev/null
-wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi
-wget https://addons.mozilla.org/firefox/downloads/latest/scrollbaranywhere/addon-292702-latest.xpi
+## wget and install uBlock and Scrollbar anywhere
+#rm addon-607454-latest.xpi addon-292702-latest.xpi 2>/dev/null
+#wget https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi
+#wget https://addons.mozilla.org/firefox/downloads/latest/scrollbaranywhere/addon-292702-latest.xpi
 
-firefox-esr addon-607454-latest.xpi
-firefox-esr addon-292702-latest.xpi
+#firefox-esr addon-607454-latest.xpi
+#firefox-esr addon-292702-latest.xpi
 
-rm addon-607454-latest.xpi addon-292702-latest.xpi 2>/dev/null
+#rm addon-607454-latest.xpi addon-292702-latest.xpi 2>/dev/null
+
+# click the blue button
+firefox-esr \
+https://addons.mozilla.org/en-US/firefox/addon/scrollbaranywhere \
+https://addons.mozilla.org/en-US/firefox/addon/enhancer-for-youtube \
+https://addons.mozilla.org/en-US/firefox/addon/ublock-origin
