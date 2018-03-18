@@ -29,15 +29,26 @@ do
         volPercents=0
     fi
 
-    chars="20"
+    #chars="20"
 
-    fil="─"
+    #fil="─"
+    #pos="│"
+    #pos=" $volPercents " # Enable this to have a display like ─────50─────
+    ## if mute
+    #if [ "$mute" == "off" ]; then
+        #pos=" ___ "
+    #fi
+    
+    chars="50"
+
+    fil="·"
     pos="│"
     pos=" $volPercents " # Enable this to have a display like ─────50─────
     # if mute
     if [ "$mute" == "off" ]; then
         pos=" ___ "
     fi
+
 
     [ "$debug" = true ]  && { echo "$pos pos" ;}
 
