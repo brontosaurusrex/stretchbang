@@ -146,5 +146,5 @@ menu.border.width: 				8
 
 !! window borders
 border.width: 									1
-window.active.border.color:                     #444444
+window.active.border.color:                     #EC5F13
 window.inactive.border.color:					#111111
