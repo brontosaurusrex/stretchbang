@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # fix paths in .wbar and .Xresources
 # .wbar paths
 sed -i "s=SomePath=$HOME/.config/stretchbang=" ~/.wbar
