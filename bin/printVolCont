@@ -2,26 +2,65 @@
 
 # printVolCont
 
-# continuously print alsa master volume as ascii slider ─────│───── ☐ Ξ  	· ‖ •
-# to be used with tint2 executor like:
-
-    #execp_command = printVolCont
-    #execp_continuous = 1
+# continuously print alsa or pulse 
+# master volume as ascii slider ─────│───── ☐ Ξ  	· ‖ •
+# to be used with tint2 executor (example at the bottom).
 
 # awk, bc needed
-
 # 2017 by bronto, fixed by o9000
 
-(echo ""; stdbuf -oL alsactl monitor) |
-while read
-do
-    debug="--true"
+debug="false"
 
+# pulse
+# https://unix.stackexchange.com/questions/132230/read-out-pulseaudio-volume-from-commandline-i-want-pactl-get-sink-volume
+pulse () {
+    sink=$( pactl list short sinks | sed -e 's,^\([0-9][0-9]*\)[^0-9].*,\1,' | head -n 1 )
+    volPercents=$( pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( sink + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,' )
+    
+    # missing mute
+    mute=$( pactl list sinks | grep 'Mute' | head -n $(( sink + 1 )) )
+    
+    # patch mute state to alsa (where 'off' equals 'Mute: yes')
+    if [[ "$mute" = *"yes"* ]]; then
+        mute="off"
+    fi
+    
+    # i'am pulse
+    mode=" Pulse" # Pulse
+
+}
+
+# alsa
+alsa () {
     volPercents=$(awk -F"[^0-9]*" '/dB/ { print $3 }' <(amixer sget Master))
     volPercents=$(awk '{print $1; exit}' <(echo "$volPercents")) # just the first value
     mute=$(awk -F"[][]" '/dB/ { print $6 }' <(amixer sget Master))
     mute=$(awk '{print $1; exit}' <(echo "$mute")) # just the first value
+    
+    # i'am alsa
+    mode="" # Alsa
+}
 
+alsaOrPulse () {
+    
+    alsa
+    #echo "alsa"
+    if [[ -z "$volPercents" ]]; then
+    pulse
+    #echo "pulse"
+    fi
+    
+}
+
+
+(echo ""; stdbuf -oL alsactl monitor) |
+while read
+do
+    
+    #alsa || pulse # if alsa function errors, use pulse function
+    
+    alsaOrPulse
+    
     if (( volPercents > 100 )); then
         volPercents=100
     fi
@@ -29,16 +68,6 @@ do
         volPercents=0
     fi
 
-    #chars="20"
-
-    #fil="─"
-    #pos="│"
-    #pos=" $volPercents " # Enable this to have a display like ─────50─────
-    ## if mute
-    #if [ "$mute" == "off" ]; then
-        #pos=" ___ "
-    #fi
-    
     chars="50"
 
     fil="·"
@@ -48,7 +77,6 @@ do
     if [ "$mute" == "off" ]; then
         pos=" ___ "
     fi
-
 
     [ "$debug" = true ]  && { echo "$pos pos" ;}
 
@@ -84,5 +112,22 @@ do
     c=$(for i in $(seq 1 $postloop); do
         printf "%s" "$fil"
     done)
-    printf "$a$b$c\n"
+    printf "$a$b$c$mode\n"
 done
+
+# tint2 executor example:
+
+#execp = new
+#execp_centered = 1
+#execp_has_icon = 0
+#execp_command = printVolCont
+#execp_continuous = 1
+#execp_font = cuprum 8
+#execp_font_color = #111111 100
+#execp_padding = 0 0 0
+#execp_tooltip = volume
+#execp_mclick_command = amixer set Master toggle
+#execp_rclick_command = amixer set Master 5%+
+#execp_lclick_command = amixer set Master 5%-
+#execp_uwheel_command = amixer set Master 1%-
+#execp_dwheel_command = amixer set Master 1%+
