@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# drawTerm
+
+# needs: scrot, urxvt, xdotool, wmctrl
+
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmpdir="/tmp/$RANDOM-$$"
+trap '[ -n "$tmpdir" ] && rm -fr "$tmpdir"' EXIT
+mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; exit 1; }
+
+cd "$tmpdir" || exit
+
+read -r w h <<< $(scrot -s '$wX$h.png' -e 'echo $w $h')
+
+#read -r xb yb _ _ <<< $(xmousepos)
+
+read -r xb yb <<< $(xdotool getmouselocation 2>/dev/null \
+   | awk 'BEGIN{RS=" ";ORS=RS} {split($0,a,":");} a[1]~/^[xy]$/{print a[2];}')
+
+x=$((xb-w))
+y=$((yb-h))
+
+echo $w $h $x $y
+
+cd "$HOME"
+urxvt  &
+
+sleep 0.5
+
+wmctrl -r :ACTIVE: -e 0,$x,$y,$w,$h
