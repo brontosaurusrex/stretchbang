@@ -9,7 +9,24 @@
 # needs: awk, bc, sed, grep, alsactl, amixer
 # 2017/2018 by bronto, fixed by o9000
 
+# license: WTFPL – Do What the **** You Want to Public License
+
+# config
+chars="50"
+fil="·"
+poschar="│"
+posnum="true"   # show percent number instead of "$poschar" char
+posmute=" ___ "
+
+# debug
 debug="false"
+
+# checks
+command -v awk >/dev/null 2>&1 || { echo "I need awk, exiting." >&2; exit 1; }
+command -v bc >/dev/null 2>&1 || { echo "I need bc, exiting." >&2; exit 1; }
+command -v sed >/dev/null 2>&1 || { echo "I need sed, exiting." >&2; exit 1; }
+command -v alsactl >/dev/null 2>&1 || { echo "I need alsactl, exiting." >&2; exit 1; }
+command -v amixer >/dev/null 2>&1 || { echo "I need amixer, exiting." >&2; exit 1; }
 
 # pulse
 # https://unix.stackexchange.com/questions/132230/read-out-pulseaudio-volume-from-commandline-i-want-pactl-get-sink-volume
@@ -41,45 +58,48 @@ alsa () {
     mode="" # Alsa
 }
 
+# automagic
 alsaOrPulse () {
     
     alsa
-    #echo "alsa"
+    
     if [[ -z "$volPercents" ]]; then
-    pulse
-    #echo "pulse"
+  
+        pulse
+  
+            if [[ -z "$volPercents" ]]; then
+                echo "error getting volume"
+            fi
     fi
     
 }
 
-
+# main
 (echo ""; stdbuf -oL alsactl monitor) |
 while read
 do
-    
-    #alsa || pulse # if alsa function errors, use pulse function
-    
+    # automagic
     alsaOrPulse
     
     if (( volPercents > 100 )); then
         volPercents=100
     fi
+    
     if (( volPercents < 0 )); then
         volPercents=0
     fi
-
-    chars="50"
-
-    fil="·"
-    pos="│"
-    pos=" $volPercents " # Enable this to have a display like ─────50─────
-    # if mute
-    if [ "$mute" == "off" ]; then
-        pos=" ___ "
+    
+    if [ "$posnum" == "true" ]; then
+        pos="$volPercents"
+    else
+        pos="$poschar"
     fi
 
+    if [ "$mute" == "off" ]; then
+        pos="$posmute"
+    fi
+    
     [ "$debug" = true ]  && { echo "$pos pos" ;}
-
     [ "$debug" = true ]  && { echo "$volPercents volPercents" ;}
 
     faktor=$(echo "scale=2;$chars/100" | bc)
