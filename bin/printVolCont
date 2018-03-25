@@ -6,7 +6,7 @@
 # master volume as ascii slider ─────│───── ☐ Ξ  	· ‖ •
 # to be used with tint2 executor (example at the bottom).
 
-# needs: awk, bc, sed, grep, alsactl
+# needs: awk, bc, sed, grep, alsactl, amixer
 # 2017/2018 by bronto, fixed by o9000
 
 debug="false"
