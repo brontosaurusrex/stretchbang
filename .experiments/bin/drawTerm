@@ -2,8 +2,6 @@
 
 # drawTerm
 
-# Note: This might not work if your shell (for example zsh) is naming term window.
-
 # needs: slop, urxvt, wmctrl
 
 # brex 2018
@@ -21,7 +19,10 @@ name="term$RANDOM"
 
 #(urxvt -title "$name" & sleep "$sleep") && xdotool search --name "$name" --sync windowactivate windowsize "$W" "$H" windowmove "$X" "$Y" &
 
-# Will try two times, only if first time fails
+# Will try 2nd time on active, only if first time by name fails
+# Note that urxvt has a habit of naming windows based on active command, so this is a bit of blackmagic
 (urxvt -title "$name" & sleep "$sleep") && \
 (echo "one" && wmctrl -r "$name" -e 0,"$x","$y","$w","$h") || \
-(sleep "$sleep" && echo "two" && wmctrl -r "$name" -e 0,"$x","$y","$w","$h")
+(sleep "$sleep" && echo "two" && wmctrl -r :ACTIVE: -e 0,"$x","$y","$w","$h")
+
+
