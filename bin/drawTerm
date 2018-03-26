@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# drawTerm
+
+# Note: This might not work if your shell (for example zsh) is naming term window.
+
+# needs: slop, urxvt, wmctrl
+
+# brex 2018
+
+# license: WTFPL – Do What the **** You Want to Public License
+
+set -x
+
+#slop -c 0.5,0.5,0.5 -b 1
+read -r x y w h < <(slop -f "%x %y %w %h")
+
+sleep="0.1"
+
+name="term$RANDOM"
+
+#(urxvt -title "$name" & sleep "$sleep") && xdotool search --name "$name" --sync windowactivate windowsize "$W" "$H" windowmove "$X" "$Y" &
+
+# Will try two times, only if first time fails
+(urxvt -title "$name" & sleep "$sleep") && \
+(echo "one" && wmctrl -r "$name" -e 0,"$x","$y","$w","$h") || \
+(sleep "$sleep" && echo "two" && wmctrl -r "$name" -e 0,"$x","$y","$w","$h")
