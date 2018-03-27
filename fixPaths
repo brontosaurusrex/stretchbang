@@ -2,9 +2,14 @@
 
 set -x
 
-# fix paths in .wbar and .Xresources
-# .wbar paths
+# fix paths
+
+# .wbar path
 sed -i "s=SomePath=$HOME/.config/stretchbang=" ~/.wbar
 
 # .Xresources urxvt icon path
 sed -i "s=SomePath=$HOME=" ~/.Xresources
+
+# nitrogen paths
+sed -i "s=SomePath=$HOME=" ~/.config/nitrogen/nitrogen.cfg
+sed -i "s=SomePath=$HOME=" ~/.config/nitrogen/bg-saved.cfg
