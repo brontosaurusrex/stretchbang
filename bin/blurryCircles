@@ -2,7 +2,7 @@
 
 # blurryCircles wallpaper maker
 
-# needs: scrot, schemer2 (https://github.com/thefryscorer/schemer2)
+# needs: imagemagick, scrot, schemer2 (https://github.com/thefryscorer/schemer2)
 
 # brex 2018
 
@@ -14,11 +14,13 @@ w="1920"
 h="1200"
 maxBright="220"
 minBright="50"
-howmany="5"
+howmany="5" # how many variations to render out
+scanlines="true" # use scanlinesSrc as alpha image if true
+scanlinesSrc="http://cdn.scrot.moe/images/2018/04/02/stripesNegative.png"
 
 beingRandom () {
     circlesSize=$((500 + RANDOM % 1420))
-    circlesOpacity=$((1 + RANDOM % 40))
+    circlesOpacity=$((1 + RANDOM % 20))
     circlesSizeVariance=$((100 + RANDOM % 200))
     threshold=$((1 + RANDOM % 100))
 }
@@ -30,6 +32,8 @@ cd "$where" || exit
 # checks
 command -v scrot >/dev/null 2>&1 || { echo "I need scrot, exiting." >&2; exit 1; }
 command -v schemer2 >/dev/null 2>&1 || { echo "I need schemer2 (https://github.com/thefryscorer/schemer2), exiting." >&2; exit 1; }
+command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
+command -v mogrify >/dev/null 2>&1 || { echo "I need imagemagick mogrify, exiting." >&2; exit 1; }
 
 # tmp dir http://mywiki.wooledge.org/BashFAQ/062
 tmpdir="/tmp/$RANDOM-$$"
@@ -43,9 +47,17 @@ randomword()  {
 }
 word=$(randomword)
 
+action () {
+    schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$where/$n$name" && \
+    if [ "$scanlines" = true ] ; then
+        convert "$where/$n$name" "$scanlinesSrc" -alpha off -compose copy_opacity -composite PNG32:"$tmpdir/$n$name"
+        mv "$tmpdir/$n$name" "$where/$n$name"
+    fi
+    }
+
 set -x
 
-# action
+# main
 name="$word"_$(date +%H%M%^b%d%y).png
 #maim -s -d 0.3 -c '0.1,0.1,0.1,0.3' "$tmpdir/$name"
 scrot -s -d 0.5 "$tmpdir/$name"
@@ -57,11 +69,13 @@ n=0
 while [[ $n -lt $howmany ]]; do
 
     beingRandom
-
-    schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$where/$n$name" ̉&
+    
+    action &
+    
     n=$((n+1))
     
 done
 
 wait
 
+     
