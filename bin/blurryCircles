@@ -12,7 +12,7 @@
 where="$HOME/Pictures/blurryCircles"
 w="1920"
 h="1200"
-circlesSize="1520"
+circlesSize="1020"
 circlesOpacity="10"
 circlesSizeVariance="800"
 maxBright="220"
