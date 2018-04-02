@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# blurryCircles wallpaper maker
+
+# needs: slop, maim, schemer2 (https://github.com/thefryscorer/schemer2)
+
+# brex 2018
+
+# license: WTFPL – Do What the **** You Want to Public License
+
+# config
+where="$HOME/Pictures/blurryCircles"
+w="1920"
+h="1200"
+circlesSize="1000"
+circlesOpacity="100"
+circlesSizeVariance="100"
+maxBright="230"
+minBright="50"
+howmany="3"
+
+# tests
+mkdir -p "$where"
+cd "$where" || exit
+
+# checks
+command -v slop >/dev/null 2>&1 || { echo "I need slop, exiting." >&2; exit 1; }
+command -v maim >/dev/null 2>&1 || { echo "I need maim, exiting." >&2; exit 1; }
+command -v schemer2 >/dev/null 2>&1 || { echo "I need schemer2 (https://github.com/thefryscorer/schemer2), exiting." >&2; exit 1; }
+
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmpdir="/tmp/$RANDOM-$$"
+trap '[ -n "$tmpdir" ] && rm -fr "$tmpdir"' EXIT
+mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; exit 1; }
+
+# random word dictionary function
+randomword()  {
+    dict="/usr/share/dict/words"
+    shuf -n1 "$dict" | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]'
+}
+word=$(randomword)
+
+set -x
+
+# action
+name="$word"_$(date +%H%M%^b%d%y).png
+maim -s -d 0.3 -c '0.1,0.1,0.1,0.3' "$tmpdir/$name"
+
+n=0
+while [[ $n -lt $howmany ]]; do
+    schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -width "$w" -height "$h" -out "$where/$n$name" ̉&
+    n=$((n+1))
+done
+
+wait
+
+
+
