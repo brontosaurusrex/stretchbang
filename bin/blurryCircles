@@ -12,13 +12,16 @@
 where="$HOME/Pictures/blurryCircles"
 w="1920"
 h="1200"
-circlesSize="1020"
-circlesOpacity="10"
-circlesSizeVariance="800"
 maxBright="220"
 minBright="50"
-threshold="50"
 howmany="5"
+
+beingRandom () {
+    circlesSize=$((500 + RANDOM % 1420))
+    circlesOpacity=$((1 + RANDOM % 40))
+    circlesSizeVariance=$((100 + RANDOM % 200))
+    threshold=$((1 + RANDOM % 100))
+}
 
 # tests
 mkdir -p "$where"
@@ -52,8 +55,12 @@ mogrify --version && mogrify -auto-level -normalize "$tmpdir/$name"
 
 n=0
 while [[ $n -lt $howmany ]]; do
+
+    beingRandom
+
     schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$where/$n$name" ̉&
     n=$((n+1))
+    
 done
 
 wait
