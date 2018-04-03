@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# blurryCircles wallpaper maker
+# blurryCircles (or rays) wallpaper maker
 
 # needs: imagemagick, scrot or maim/slop, 
 # schemer2 (https://github.com/thefryscorer/schemer2),
@@ -17,8 +17,11 @@ h="1200"
 maxBright="220"
 minBright="50"
 howmany="5" # how many variations to render out, this will happen in parallel fashion
+if [ "$1" == "rays" ] || [ "$1" == "r" ]; then
+    rays="true" # rays or circles
+fi
 maim="true" # use maim instead of scrot (and you should)
-scanlines="NOTtrue" # use scanlinesSrc as alpha image if true
+scanlines="true" # use scanlinesSrc as alpha image if true
 scanlinesSrc="http://cdn.scrot.moe/images/2018/04/03/stripesNegative3.png"
 # ^ this one needs internet, if that makes you nervous, copy the image to your hd and adjust this path.
 pngcrush="NOTtrue" # optimize/reduce size of output png images
@@ -61,10 +64,22 @@ word=$(randomword)
 
 # where the magic happens
 action () {
-    schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$tmpdir/$n$name" && \
+    
+    if [ "$rays" != true ] ; then
+        # circles
+        schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$tmpdir/$n$name" 
+    
+    else
+        # rays (upsizing a bit due to aliasing problem)
+        schemer2 -format img::img -in "$tmpdir/$name" -imageOutType rays -raysLargeToSmall -raysSize 16 -raysSizeVariance 22 -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width $(( w * 3 )) -height $(( h * 3 )) -out "$tmpdir/$n$name" 
+        # offset center
+        #mogrify -chop 19%x19% "$tmpdir/$n$name" # 19 is 38/2 (golden percent)
+        # scale back down
+        mogrify -resize "$w"x"$h" "$tmpdir/$n$name"
+    fi
+    
     if [ "$scanlines" = true ] ; then
         convert "$tmpdir/$n$name" \( "$scanlinesSrc" -resize "$w"x"$h"\! \) -alpha off -compose copy_opacity -composite PNG32:"$tmpdir/$n$name" # overwriting itself here
-        
     fi
     
     if [ "$pngcrush" = true ] ; then
