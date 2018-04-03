@@ -2,7 +2,9 @@
 
 # blurryCircles wallpaper maker
 
-# needs: imagemagick, scrot or maim/slop, schemer2 (https://github.com/thefryscorer/schemer2)
+# needs: imagemagick, scrot or maim/slop, 
+# schemer2 (https://github.com/thefryscorer/schemer2),
+# pngcrush (optional)
 
 # brex 2018
 
@@ -14,10 +16,12 @@ w="1920"
 h="1200"
 maxBright="220"
 minBright="50"
-howmany="5" # how many variations to render out
+howmany="5" # how many variations to render out, this will happen in parallel fashion
 maim="true" # use maim instead of scrot (and you should)
 scanlines="NOTtrue" # use scanlinesSrc as alpha image if true
-scanlinesSrc="http://cdn.scrot.moe/images/2018/04/02/stripesNegative.png"
+scanlinesSrc="http://cdn.scrot.moe/images/2018/04/03/stripesNegative3.png"
+# ^ this one needs internet, if that makes you nervous, copy the image to your hd and adjust this path.
+pngcrush="NOTtrue" # optimize/reduce size of output png images
 
 beingRandom () {
     circlesSize=$((500 + RANDOM % 1420))
@@ -40,7 +44,9 @@ fi
 command -v schemer2 >/dev/null 2>&1 || { echo "I need schemer2 (https://github.com/thefryscorer/schemer2), exiting." >&2; exit 1; }
 command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
 command -v mogrify >/dev/null 2>&1 || { echo "I need imagemagick mogrify, exiting." >&2; exit 1; }
-
+if [ "$pngcrush" = true ] ; then
+    command -v pngcrush >/dev/null 2>&1 || { echo "I need pngcrush, exiting." >&2; exit 1; }
+fi
 # tmp dir http://mywiki.wooledge.org/BashFAQ/062
 tmpdir="/tmp/$RANDOM-$$"
 trap '[ -n "$tmpdir" ] && rm -fr "$tmpdir"' EXIT
@@ -55,12 +61,20 @@ word=$(randomword)
 
 # where the magic happens
 action () {
-    schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$where/$n$name" && \
+    schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$tmpdir/$n$name" && \
     if [ "$scanlines" = true ] ; then
-        convert "$where/$n$name" "$scanlinesSrc" -alpha off -compose copy_opacity -composite PNG32:"$tmpdir/$n$name"
-        mv "$tmpdir/$n$name" "$where/$n$name"
+        convert "$tmpdir/$n$name" \( "$scanlinesSrc" -resize "$w"x"$h"\! \) -alpha off -compose copy_opacity -composite PNG32:"$tmpdir/$n$name" # overwriting itself here
+        
     fi
+    
+    if [ "$pngcrush" = true ] ; then
+        pngcrush -ow "$tmpdir/$n$name" &>/dev/null
+    fi
+    
+    mv "$tmpdir/$n$name" "$where/$n$name"
     }
+
+# \( "$scanlinesSrc" -resize "$w"x"$h" \!) < will resize alpha image to whatever is w and h in config.
 
 set -x
 
@@ -70,7 +84,7 @@ name="$word"_$(date +%H%M%^b%d%y).png
 if [ "$maim" = true ] ; then
     maim -s -d 0.3 -c '0.1,0.1,0.1,0.3' "$tmpdir/$name"
 else
-    scrot -s -d 0.5 "$tmpdir/$name"
+    scrot -s -d 1 "$tmpdir/$name"
 fi
 
 # autolevels if image magick mogrify is installed
