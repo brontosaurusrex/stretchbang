@@ -105,7 +105,7 @@ action () {
     mv "$tmpdir/$n$name" "$where/$n$name"
     }
 
-# \( "$scanlinesSrc" -resize "$w"x"$h" \!) < will resize alpha image to whatever is w and h in config.
+
 
 set -x
 
