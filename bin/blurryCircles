@@ -10,7 +10,7 @@
 
 # license: WTFPL – Do What the **** You Want to Public License
 
-# config
+# config general
 where="$HOME/Pictures/blurryCircles"
 w="1920"
 h="1200"
@@ -21,17 +21,25 @@ if [ "$1" == "rays" ] || [ "$1" == "r" ]; then
     rays="true" # rays or circles
 fi
 maim="true" # use maim instead of scrot (and you should)
-scanlines="true" # use scanlinesSrc as alpha image if true
+scanlines="true" # scanline fx, use scanlinesSrc as alpha image if true
 scanlinesSrc="http://cdn.scrot.moe/images/2018/04/03/stripesNegative3.png"
 # ^ this one needs internet, if that makes you nervous, copy the image to your hd and adjust this path.
 pngcrush="NOTtrue" # optimize/reduce size of output png images
-
+# config circles
 beingRandom () {
     circlesSize=$((500 + RANDOM % 1420))
     circlesOpacity=$((1 + RANDOM % 5))
     circlesSizeVariance=$((100 + RANDOM % 200))
     threshold=$((1 + RANDOM % 100))
 }
+# config rays
+rayMul="3" # ray oversampler multiplier when rayCrop is false
+raysSize="22" # Size of rays in output image (default 16)
+raysSizeVariance="12" # Maximum variance in rays size (default 8)
+rayCrop="NOTtrue" # move center of rays to corner
+rayCropMul="4" # ray oversampler when rayCrop is true
+rayCropGravity="SouthWest" # What part to crop
+
 
 # tests
 mkdir -p "$where"
@@ -70,10 +78,18 @@ action () {
         schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$tmpdir/$n$name" 
     
     else
+        # crop or not to crop
+        if [ "$rayCrop" = true ] ; then
+            rayMul="$rayCropMul"
+        fi
         # rays (upsizing a bit due to aliasing problem)
-        schemer2 -format img::img -in "$tmpdir/$name" -imageOutType rays -raysLargeToSmall -raysSize 16 -raysSizeVariance 22 -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width $(( w * 3 )) -height $(( h * 3 )) -out "$tmpdir/$n$name" 
+        schemer2 -format img::img -in "$tmpdir/$name" -imageOutType rays -raysLargeToSmall -raysSize "$raysSize" -raysSizeVariance "$raysSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width $(( w * rayMul )) -height $(( h * rayMul )) -out "$tmpdir/$n$name" 
         # offset center
         #mogrify -chop 19%x19% "$tmpdir/$n$name" # 19 is 38/2 (golden percent)
+        if [ "$rayCrop" = true ] ; then
+            mogrify -gravity "$rayCropGravity" -crop 50%x50%+0+0 +repage "$tmpdir/$n$name"
+            #mogrify -crop 99.5%x99.5%+0+0 +repage "$tmpdir/$n$name"
+        fi
         # scale back down
         mogrify -resize "$w"x"$h" "$tmpdir/$n$name"
     fi
