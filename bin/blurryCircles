@@ -30,13 +30,13 @@ beingRandom () {
     circlesSize=$((500 + RANDOM % 1420))
     circlesOpacity=$((1 + RANDOM % 5))
     circlesSizeVariance=$((100 + RANDOM % 200))
-    threshold=$((1 + RANDOM % 100))
+    threshold=$((1 + RANDOM % 50))
 }
 # config rays
 rayMul="3" # ray oversampler multiplier when rayCrop is false
 raysSize="22" # Size of rays in output image (default 16)
 raysSizeVariance="12" # Maximum variance in rays size (default 8)
-rayCrop="NOTtrue" # move center of rays to corner
+rayCrop="true" # move center of rays to corner
 rayCropMul="4" # ray oversampler when rayCrop is true
 rayCropGravity="SouthWest" # What part to crop
 
@@ -118,8 +118,10 @@ else
     scrot -s -d 1 "$tmpdir/$name"
 fi
 
-# autolevels if image magick mogrify is installed
-mogrify --version && mogrify -auto-level -normalize "$tmpdir/$name"
+# autolevels of input in circles mode
+if [ "$rays" != true ] ; then
+    mogrify -auto-level -normalize "$tmpdir/$name"
+fi
 
 # main loop
 n=0
