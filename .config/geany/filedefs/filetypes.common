@@ -1,0 +1,6 @@
+# https://github.com/geany/geany/blob/master/data/filedefs/filetypes.common
+[styling]
+# first argument: amount of space to be drawn above the line's baseline
+# second argument: amount of space to be drawn below the line's baseline
+line_height=1;1;
+

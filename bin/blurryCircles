@@ -5,10 +5,16 @@
 # needs: imagemagick, scrot or maim/slop, 
 # schemer2 (https://github.com/thefryscorer/schemer2),
 # pngcrush (optional)
+# bash 4.3
 
 # brex 2018
 
 # license: WTFPL – Do What the **** You Want to Public License
+
+# rays else circles
+if [ "$1" == "rays" ] || [ "$1" == "r" ]; then
+    rays="true" # rays or circles
+fi
 
 # config general
 where="$HOME/Pictures/blurryCircles"
@@ -16,29 +22,38 @@ w="1920"
 h="1200"
 maxBright="220"
 minBright="50"
-howmany="5" # how many variations to render out, this will happen in parallel fashion
-if [ "$1" == "rays" ] || [ "$1" == "r" ]; then
-    rays="true" # rays or circles
-fi
-maim="true" # use maim instead of scrot (and you should)
-scanlines="true" # scanline fx, use scanlinesSrc as alpha image if true
+howmany="5"                 # how many variations to render out
+parallel="5"                # How many in parallel
+maim="true"                 # use maim instead of scrot (and you should)
+scanlines="true"            # scanline fx, use scanlinesSrc as alpha image if true
 scanlinesSrc="http://cdn.scrot.moe/images/2018/04/03/stripesNegative3.png"
 # ^ this one needs internet, if that makes you nervous, copy the image to your hd and adjust this path.
-pngcrush="NOTtrue" # optimize/reduce size of output png images
-# config circles
+pngcrush="NOTtrue"          # optimize/reduce size of output png images
+# config randomness
 beingRandom () {
+    
+    # circles
     circlesSize=$((500 + RANDOM % 1420))
     circlesOpacity=$((1 + RANDOM % 5))
     circlesSizeVariance=$((100 + RANDOM % 200))
     threshold=$((1 + RANDOM % 50))
+    
+    # rays
+    angle=$((5 + RANDOM % 40)) # between 5 and 45 degrees
+
 }
 # config rays
-rayMul="3" # ray oversampler multiplier when rayCrop is false
-raysSize="22" # Size of rays in output image (default 16)
-raysSizeVariance="12" # Maximum variance in rays size (default 8)
-rayCrop="true" # move center of rays to corner
-rayCropMul="4" # ray oversampler when rayCrop is true
-rayCropGravity="SouthWest" # What part to crop
+rayMul="3"                  # ray oversampler multiplier when rayCrop or rayRotatePost are false
+# ^ reducing this will drastically increase render speed and decrease quality
+raysSize="22"               # Size of rays in output image (default 16)
+raysSizeVariance="12"       # Maximum variance in rays size (default 8)
+# either random rotate in post
+rayRotatePost="NOTtrue"     # random rotation of ray image in post (very slow due to large oversampling)
+rayRotateMul="6"            # ray oversampler when rayRotatePost is true, note that numbers > 5 are extremely slow
+# or crop mode
+rayCrop="NOTtrue"           # move center of rays to corner
+rayCropMul="4"              # ray oversampler when rayCrop is true
+rayCropGravity="SouthWest"  # What part to crop
 
 
 # tests
@@ -72,23 +87,39 @@ word=$(randomword)
 
 # where the magic happens
 action () {
-    
-    if [ "$rays" != true ] ; then
-        # circles
-        schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$tmpdir/$n$name" 
-    
-    else
+    # CIRCLES
+    if [ "$rays" != true ] ; then   
+        schemer2 -format img::img -in "$tmpdir/$name" -imageOutType circles -circlesBlurred -circlesFilled -circlesOpacity "$circlesOpacity" -circlesSize "$circlesSize" -circlesSizeVariance "$circlesSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width "$w" -height "$h" -out "$tmpdir/$n$name"
+        
+    # RAYS
+    else                            
         # crop or not to crop
         if [ "$rayCrop" = true ] ; then
             rayMul="$rayCropMul"
+        elif [ "$rayRotatePost" = true ] ; then
+            rayMul="$rayRotateMul"
         fi
-        # rays (upsizing a bit due to aliasing problem)
+        # upsizing a bit due to aliasing problem
         schemer2 -format img::img -in "$tmpdir/$name" -imageOutType rays -raysLargeToSmall -raysSize "$raysSize" -raysSizeVariance "$raysSizeVariance" -minBright "$minBright" -maxBright "$maxBright" -threshold "$threshold" -width $(( w * rayMul )) -height $(( h * rayMul )) -out "$tmpdir/$n$name" 
+        # -raysLargeToSmall
+        # -raysDistributeEvenly
+        
         # offset center
         #mogrify -chop 19%x19% "$tmpdir/$n$name" # 19 is 38/2 (golden percent)
         if [ "$rayCrop" = true ] ; then
             mogrify -gravity "$rayCropGravity" -crop 50%x50%+0+0 +repage "$tmpdir/$n$name"
             #mogrify -crop 99.5%x99.5%+0+0 +repage "$tmpdir/$n$name"
+        elif [ "$rayRotatePost" = true ] ; then
+                # just some rotation (https://stackoverflow.com/questions/29244011/imagemagick-convert-rotate-crop)
+                # angle is defined in beingRandom function
+                ratio=$(convert "$tmpdir/$n$name" -format \
+                     "%[fx:aa=$angle*pi/180; min(w,h)/(w*abs(cos(aa))+h*abs(sin(aa)))]" \
+                     info:)
+                crop="%[fx:floor(w*$ratio)]x%[fx:floor(h*$ratio)]"
+                crop="$crop+%[fx:ceil((w-w*$ratio)/2)]+%[fx:ceil((h-h*$ratio)/2)]"
+                convert "$tmpdir/$n$name" -set option:distort:viewport "$crop" \
+                          +distort SRT "$angle" +repage "$tmpdir/$n$name"
+            
         fi
         # scale back down
         mogrify -resize "$w"x"$h" "$tmpdir/$n$name"
@@ -124,17 +155,21 @@ if [ "$rays" != true ] ; then
 fi
 
 # main loop
-n=0
+n=0 # while counter
+c=0 # parallel counter
 while [[ $n -lt $howmany ]]; do
 
-    beingRandom
+    if (( c++ >= parallel )); then wait -n; fi
+
+        beingRandom
     
-    action &
+        action &
     
-    n=$((n+1))
+        n=$((n+1))
     
 done
 
 wait
 
-     
+# beep beep
+command -v beepspeakers >/dev/null 2>&1 && beepspeakers 2
