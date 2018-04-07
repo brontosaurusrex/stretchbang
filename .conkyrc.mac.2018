@@ -42,8 +42,8 @@ conky.config = {
 
 conky.text = [[
 ${color #131E20}
-${if_match ${downspeedf enp10s0} >= 1}$alignr NET ˇ${downspeed enp10s0}${endif} \
-${if_match ${upspeedf enp10s0} >=1 }ˆ${upspeed enp10s0}${endif}
+${if_match ${downspeedf enp10s0} >= 1}$alignr \/ ${downspeed enp10s0}${endif} \
+${if_match ${upspeedf enp10s0} >=1 }/\ ${upspeed enp10s0}${endif}
 CPU ${cpubar} MEM ${membar} HOME ${fs_bar /home} \
 ${if_match ${fs_used_perc /home/b/data} != 0} DATA ${fs_bar /home/b/data}${endif}
 ]]
