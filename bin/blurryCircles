@@ -11,6 +11,9 @@
 
 # license: WTFPL – Do What the **** You Want to Public License
 
+# benchmark start
+START=$(date +%s.%N)
+
 # rays else circles
 if [ "$1" == "rays" ] || [ "$1" == "r" ]; then
     rays="true" # rays or circles
@@ -20,14 +23,18 @@ fi
 where="$HOME/Pictures/blurryCircles"
 w="1920"
 h="1200"
-maxBright="220"
-minBright="50"
-howmany="5"                 # how many variations to render out
-parallel="5"                # How many in parallel
+maxBright="240"             # 220
+minBright="60"              # 50
+howmany="12"                # how many variations to render out
+parallel="4"                # How many in parallel
 maim="true"                 # use maim instead of scrot (and you should)
 scanlines="true"            # scanline fx, use scanlinesSrc as alpha image if true
 scanlinesSrc="http://cdn.scrot.moe/images/2018/04/03/stripesNegative3.png"
 # ^ this one needs internet, if that makes you nervous, copy the image to your hd and adjust this path.
+noise="true"                # add some random noise
+noiseAmount="0.07"          # noise amount 
+vignette="true"             # vignette (slow)
+vignetteBlur="150"          # softness
 pngcrush="NOTtrue"          # optimize/reduce size of output png images
 # config randomness
 beingRandom () {
@@ -43,12 +50,12 @@ beingRandom () {
 
 }
 # config rays
-rayMul="3"                  # ray oversampler multiplier when rayCrop or rayRotatePost are false
+rayMul="3"                  # (3) ray oversampler multiplier when rayCrop or rayRotatePost are false
 # ^ reducing this will drastically increase render speed and decrease quality
 raysSize="22"               # Size of rays in output image (default 16)
 raysSizeVariance="12"       # Maximum variance in rays size (default 8)
 # either random rotate in post
-rayRotatePost="NOTtrue"     # random rotation of ray image in post (very slow due to large oversampling)
+rayRotatePost="true"        # random rotation of ray image in post (very slow due to large oversampling)
 rayRotateMul="6"            # ray oversampler when rayRotatePost is true, note that numbers > 5 are extremely slow
 # or crop mode
 rayCrop="NOTtrue"           # move center of rays to corner
@@ -124,11 +131,22 @@ action () {
         # scale back down
         mogrify -resize "$w"x"$h" "$tmpdir/$n$name"
     fi
-    
+
+    # https://www.imagemagick.org/discourse-server/viewtopic.php?t=21381
+    if [ "$noise" = true ] ; then
+        convert "$tmpdir/$n$name" \( -size "$w"x"$h" xc:"gray(50%)" -seed "$circlesSizeVariance" +noise Poisson -modulate 100,0 -channel green -separate +channel \) \
+        +swap -compose Mathematics -define compose:args="0,1,$noiseAmount,-0.075" -composite "$tmpdir/$n$name" # overwriting itself here
+    fi
+
+    if [ "$vignette" = true ] ; then
+        convert "$tmpdir/$n$name" \( +clone -fill white -colorize 100 -background "gray(70%)" -vignette 0x"$vignetteBlur" \) \
+        -compose multiply -composite "$tmpdir/$n$name"
+    fi
+
     if [ "$scanlines" = true ] ; then
         convert "$tmpdir/$n$name" \( "$scanlinesSrc" -resize "$w"x"$h"\! \) -alpha off -compose copy_opacity -composite PNG32:"$tmpdir/$n$name" # overwriting itself here
     fi
-    
+
     if [ "$pngcrush" = true ] ; then
         pngcrush -ow "$tmpdir/$n$name" &>/dev/null
     fi
@@ -171,5 +189,10 @@ done
 
 wait
 
-# beep beep
-command -v beepspeakers >/dev/null 2>&1 && beepspeakers 2
+# beep 
+command -v beepspeakers >/dev/null 2>&1 && beepspeakers 1
+
+# benchmark end
+END=$(date +%s.%N)
+DIFF=$(echo "$END - $START" | bc)
+echo "done in $DIFF seconds"
