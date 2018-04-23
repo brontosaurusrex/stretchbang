@@ -35,7 +35,8 @@ window.active.client.color: #2d3036
 window.inactive.client.color: #2d3036
 
 window.active.label.text.color: #D3DAE3
-window.inactive.label.text.color: #7F8388
+#window.inactive.label.text.color: #7F8388
+window.inactive.label.text.color: #8fa1b3
 
 window.active.button.unpressed.image.color: #D3DAE3
 window.active.button.pressed.image.color: #5294E2
@@ -62,6 +63,7 @@ window.inactive.title.bg: flat solid
 window.inactive.title.bg.color: #2f343f
 window.inactive.label.bg: flat solid
 window.inactive.label.bg.color: #2f343f
+
 #window.inactive.handle.bg: texture
 #window.inactive.grip.bg: texture
 
