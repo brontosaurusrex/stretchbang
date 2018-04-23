@@ -104,42 +104,18 @@ background_color_pressed = #ffffff 0
 border_color_pressed = #111111 100
 
 # Background 10: Active task
-rounded = 10
+rounded = 1
 border_width = 2
 border_sides = T
-background_color = #ffffff 0
-border_color = #315666 90
-#border_color = #000000
+background_color = #222D32 0
+#222D32
+#border_color = #315666 90
+#border_color = #222D32 90
+border_color = #00BCD4 70
 background_color_hover = #ffffff 0
 border_color_hover = #111111 100
 background_color_pressed = #ffffff 0
 border_color_pressed = #111111 100
-
-#-------------------------------------
-# Panel
-panel_items = TSECEE
-panel_size = 96% 46
-panel_margin = 0 0
-panel_padding = 3 2 3
-panel_background_id = 0
-wm_menu = 1
-panel_dock = 0
-panel_position = top center horizontal
-panel_layer = bottom
-panel_monitor = 1
-primary_monitor_first = 0
-autohide = 0
-autohide_show_timeout = 0.3
-autohide_hide_timeout = 1.5
-autohide_height = 6
-strut_policy = follow_size
-panel_window_name = tint2
-disable_transparency = 0
-font_shadow = 0
-mouse_effects = 0
-mouse_hover_icon_asb = 50 0 100
-mouse_pressed_icon_asb = 50 0 50
-
 
 #-------------------------------------
 # Taskbar
@@ -164,6 +140,31 @@ task_align = center
 #taskbar_hide_different_desktop = 1
 
 #-------------------------------------
+# Panel
+panel_items = TSECEE
+panel_size = 96% 46
+panel_margin = 0 0
+panel_padding = 3 2 3
+panel_background_id = 0
+wm_menu = 1
+panel_dock = 0
+panel_position = top center horizontal
+panel_layer = bottom
+panel_monitor = 1
+primary_monitor_first = 0
+autohide = 0
+autohide_show_timeout = 0.3
+autohide_hide_timeout = 1.5
+autohide_height = 6
+strut_policy = follow_size
+panel_window_name = tint2
+disable_transparency = 0
+mouse_effects = 0
+font_shadow = 0
+mouse_hover_icon_asb = 100 -100 10
+mouse_pressed_icon_asb = 100 -90 -100
+
+#-------------------------------------
 # Task
 task_text = 0
 task_icon = 1
@@ -182,8 +183,8 @@ task_active_background_id = 10
 mouse_left = toggle_iconify
 mouse_middle = close
 #mouse_right = toggle
-mouse_scroll_up = toggle
-mouse_scroll_down = iconify
+mouse_scroll_down = toggle
+mouse_scroll_up = iconify
 task_thumbnail = 0
 task_thumbnail_size = 200
 
@@ -193,22 +194,8 @@ systray_padding = 5 0 10
 systray_background_id = 9
 systray_sort = right2left
 systray_icon_size = 24
-systray_icon_asb = 10 10 10
+systray_icon_asb = 70 -100 -100
 systray_monitor = 1
-
-#-------------------------------------
- #Launcher
-#launcher_padding = 0 0 0
-#launcher_background_id = 1
-#launcher_icon_background_id = 0
-#launcher_icon_size = 30
-#launcher_icon_asb = 100 -100 -34
-#launcher_icon_theme = Clarity
-#launcher_icon_theme_override = 0
-#startup_notifications = 1
-#launcher_tooltip = 1
-#launcher_apps_dir = "/usr/share/applications"
-#launcher_item_app =firefox-esr.desktop
 
 #-------------------------------------
 # Clock
@@ -218,12 +205,13 @@ time1_font = cuprum 10
 time1_timezone = 
 time2_timezone = 
 time2_font = cuprum 13
-clock_font_color = #3B4E4E 100
+clock_font_color = #111111 70
 clock_padding = 10 2
 clock_background_id = 0
 clock_tooltip = 
 clock_tooltip_timezone = 
 clock_lclick_command = gsimplecal
+# https://brontosaurusrex.github.io/2017/12/08/dim-display/
 clock_rclick_command = toggleBrightness
 clock_mclick_command = 
 clock_uwheel_command = 
@@ -266,7 +254,7 @@ execp_command = printVolCont
 # behaves well, looks good:
 execp_continuous = 1
 execp_font = cuprum 8
-execp_font_color = #3B4E4E 100
+execp_font_color = #111111 70
 execp_padding = 0 0 0
 # disable this tooltip to get update info
 execp_tooltip = volume
@@ -283,10 +271,10 @@ execp_centered = 1
 execp_has_icon = 0
 execp_command = deskSpy
 execp_continuous = 1
-execp_font = cuprum 22
-execp_font_color = #3B4E4E 100
+execp_font = cuprum 12
+execp_font_color = #111111 70
 execp_padding = 0 0 0
-execp_tooltip = desktop
+execp_tooltip = multipurpose
 # This will depend on your rc.xml:
 execp_lclick_command = $HOME/source/skippy-xd/skippy-xd
 execp_rclick_command = toggleBrightness
@@ -300,7 +288,7 @@ execp_has_icon = 0
 execp_command = radioClicky statuscont       # echo status
 execp_continuous = 1 
 execp_font = cuprum 12
-execp_font_color = #3B4E4E 100
+execp_font_color = #111111 70
 execp_padding = 0 0 0
 execp_mclick_command = radioClicky t         # on/off
 execp_rclick_command = radioClicky n         # notify (icy-title)
@@ -308,9 +296,6 @@ execp_lclick_command = radioClicky i         # station id
 execp_dwheel_command = radioClicky +         # next
 execp_uwheel_command = radioClicky -         # prev
 #execp_tooltip = radio
-
-
-
 
 # stuff?
 border_content_tint_weight = 0

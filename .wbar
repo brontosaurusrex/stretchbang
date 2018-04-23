@@ -1,5 +1,5 @@
 i: /usr/share/pixmaps/wbar/dock.png
-c: wbar --bpress --above-desk --nofont --pos bottom --offset 0 --isize 46 --idist 1 --zoomf 1.1 --balfa 0 --falfa 65
+c: wbar --bpress --above-desk --nofont --pos bottom --offset 0 --isize 46 --idist 1 --zoomf 1.1 --balfa 0 --falfa 40
 t: .fonts/Cuprum-Regular/10
 
 i: SomePath/images/wbar/black/debian.png

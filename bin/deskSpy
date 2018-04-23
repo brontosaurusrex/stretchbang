@@ -5,14 +5,14 @@
 # continuous desktop spy, to be used in tint2 
 # executor scripts with 'execp_continuous = 1'
 
-#act=" ■ "
-#non=" □ "
-
 non="_"
 act="-"
 
-#non=" ◌ "
-#act=" ◍ "
+non="◌"
+act="◍"
+
+non="□"
+act="■"
 
 # ^https://www.w3schools.com/charsets/ref_utf_geometric.asp
 
@@ -38,7 +38,8 @@ do
         fi
     done
 
-    echo "$sum "    
+    #echo "$sum "    
+    echo "[ $desk ̉]"
     >&2 echo "($count) desktop $desk / $num" # for debugging only
     
 done
