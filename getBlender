@@ -34,7 +34,7 @@ trap '[ -n "$tmpdir" ] && rm -fr "$tmpdir"' EXIT
 mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; exit 1; }
 
 # action
-url="$(lynx -listonly -nonumbers -dump https://builder.blender.org/download/ | grep "$bits.tar" | head -1)"
+url="$(lynx -listonly -nonumbers -dump https://builder.blender.org/download/ | grep "$bits.tar" | grep '2.79' | head -1)"
 [[ -z "$url" ]] && (echo "no blender for you" && exit 1)
 
 if [[ -d $where/blender ]]; then
