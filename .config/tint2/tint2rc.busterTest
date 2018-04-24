@@ -207,7 +207,7 @@ time1_timezone =
 time2_timezone = 
 time2_font = cuprum 13
 clock_font_color = #111111 70
-clock_padding = 10 2
+clock_padding = 6 0
 clock_background_id = 0
 clock_tooltip = 
 clock_tooltip_timezone = 
@@ -218,24 +218,24 @@ clock_mclick_command =
 clock_uwheel_command = 
 clock_dwheel_command = 
 
-#-------------------------------------
-# Battery
-battery_tooltip = 1
-battery_low_status = 20
-battery_low_cmd = notify-send "battery low"
-bat1_font = Cuprum 10
-bat2_font = Cuprum 10
-battery_font_color = #828282 100
-battery_padding = 2 0
-battery_background_id = 0
-battery_hide = 96
-battery_lclick_command = 
-battery_rclick_command = 
-battery_mclick_command = 
-battery_uwheel_command = 
-battery_dwheel_command = 
-ac_connected_cmd = 
-ac_disconnected_cmd = 
+##-------------------------------------
+## Battery
+#battery_tooltip = 1
+#battery_low_status = 20
+#battery_low_cmd = notify-send "battery low"
+#bat1_font = Cuprum 10
+#bat2_font = Cuprum 10
+#battery_font_color = #828282 100
+#battery_padding = 2 0
+#battery_background_id = 0
+#battery_hide = 96
+#battery_lclick_command = 
+#battery_rclick_command = 
+#battery_mclick_command = 
+#battery_uwheel_command = 
+#battery_dwheel_command = 
+#ac_connected_cmd = 
+#ac_disconnected_cmd = 
 
 #-------------------------------------
 # Tooltip
@@ -255,7 +255,7 @@ execp_command = printVolCont
 # behaves well, looks good:
 execp_continuous = 1
 execp_font = cuprum 8
-execp_font_color = #111111 70
+execp_font_color = #111111 90
 execp_padding = 0 0 0
 # disable this tooltip to get update info
 execp_tooltip = volume
