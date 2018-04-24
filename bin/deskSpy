@@ -5,14 +5,23 @@
 # continuous desktop spy, to be used in tint2 
 # executor scripts with 'execp_continuous = 1'
 
+#non="_"
+#act="-"
+
+non="◌"
+act="◍"
+
+non="0"
+act="1"
+
 non="_"
 act="-"
 
 non="◌"
 act="◍"
 
-non="□"
 act="■"
+non="□"
 
 # ^https://www.w3schools.com/charsets/ref_utf_geometric.asp
 
@@ -32,16 +41,15 @@ do
     for n in $(seq "$num"); do
     
         if [ "$n" == "$desk" ]; then
-            sum="$sum$act"
+            sum="$sum [ $desk ]"
         else
-            sum="$sum$non"
+            sum="$sum $n"
         fi
     done
 
-    #echo "$sum "    
-    echo "[ $desk ̉]"
-    >&2 echo "($count) desktop $desk / $num" # for debugging only
-    
+    echo "$sum"    
+    #>&2 echo "($count) desktop $desk / $num" # for debugging only
+    #echo "[$desk] / $num"
 done
 
 
@@ -60,5 +68,3 @@ done
 #execp_lclick_command = xdotool key super+space
 #execp_uwheel_command = xdotool key ctrl+alt+Left
 #execp_dwheel_command = xdotool key ctrl+alt+Right
-##ˇscript that copy/pastes window size
-#execp_mclick_command = clickyClicky
