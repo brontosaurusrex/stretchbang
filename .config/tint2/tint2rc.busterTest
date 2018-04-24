@@ -59,11 +59,11 @@ background_color_pressed = #111111 20
 border_color_pressed = #111111 50
 
 # Background 6: Active taskbar
-rounded = 2
-border_width = 0
-border_sides = BLR
+rounded = 45
+border_width = 1
+border_sides = B
 background_color = #111111 0
-border_color = #111111 50
+border_color = #111111 10
 
 background_color_hover = #111111 50
 border_color_hover = #111111 50
@@ -128,12 +128,12 @@ taskbar_name = 0
 taskbar_hide_inactive_tasks = 0
 taskbar_hide_different_monitor = 0
 taskbar_always_show_all_desktop_tasks = 0
-taskbar_name_padding = 0 0
+taskbar_name_padding = 10 0
 taskbar_name_background_id = 0
 taskbar_name_active_background_id = 0
-taskbar_name_font = Cuprum 10
-taskbar_name_font_color = #cccccc 100
-taskbar_name_active_font_color = #000000 100
+taskbar_name_font = Cuprum 12
+taskbar_name_font_color = #ffffff 10
+taskbar_name_active_font_color = #ffffff 30
 taskbar_distribute_size = 1
 taskbar_sort_order = none
 task_align = center
