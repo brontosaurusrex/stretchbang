@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# bw to png with transparency
+
+# # from http://www.imagemagick.org/discourse-server/viewtopic.php?t=21677
+
+
+# main 
+while [ $# -gt 0 ]; do
+
+    basename=$(basename "${1}")     # basename                      file.jpg
+    # ext="${basename##*.}"           # ext
+    base="${basename%.*}"           # basename without extension    file
+    dir=$(dirname "${1}")           # dir only
+
+    convert "$1" \
+    \( -clone 0 -fill black -colorize 100% \) \
+    \( -clone 0 -negate \) \
+    -delete 0 -alpha off -compose copy_opacity -composite PNG32:"$dir/$base"_alpha.png
+    
+    shift
+
+done
