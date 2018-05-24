@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ### WINDOW
-border.width: 2
+border.width: 1
 
 window.client.padding.width: 0
 window.client.padding.height: 0
