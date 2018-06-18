@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# showMeSomeFonts (urxvt)
+# Only supports xft fonts (no bitmaps)
+
+shopt -s nocasematch
+
+fc-list -f "%{file}\n" :mono | grep -ivE "bold|italic|black|light|icons|.pfb" | sort | while read -r line ; do
+
+    #woot=$(fc-query -f '%{family[0]}\n' "$line")
+    woot=$(fc-scan --format "%{postscriptname}\n" "$line")
+    
+    case "$woot" in # blacklist
+        *bold*|*light*|*italic*|*black*|*icons*|*oblique*|*medium*|*obli*|*webdings*|*psmt*) 
+
+        #echo "not good" 
+        continue
+        
+        ;; 
+    
+    esac
+
+    echo "$woot ($line)"
+
+    printf '\e]710;%s\007' "xft:$woot"
+    
+    sleep 5
+
+done
+
+
+
