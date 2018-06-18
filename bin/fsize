@@ -9,4 +9,4 @@ if [ -z "$size" ]; then # if $1 is null or unset
 fi
 
 
-printf '\33]50;%s%d\007' "xft:Terminus:pixelsize=" "$size"
+printf '\33]50;%s%d\007' "xft:Terminus:size=" "$size"
