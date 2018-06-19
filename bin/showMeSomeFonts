@@ -5,7 +5,9 @@
 
 shopt -s nocasematch
 
-fc-list -f "%{file}\n" :mono | grep -ivE "bold|italic|black|light|icons|.pfb" | sort | while read -r line ; do
+fc-list -f "%{file}\n" :mono | grep -ivE "bold|italic|black|light|icons|.pfb" | \
+grep -iE "\.ttf$|\.otf$|\.woff$|\.woff2$" | \
+sort | while read -r line ; do
 
     #woot=$(fc-query -f '%{family[0]}\n' "$line")
     woot=$(fc-scan --format "%{postscriptname}\n" "$line")
