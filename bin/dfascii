@@ -8,7 +8,7 @@
 # 3rd is title
 
 bar () {
-bar="|||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+bar="|||||||||||||||||||||||||"
 barlength=${#bar}
 
 perc="$1"
@@ -19,16 +19,16 @@ while ((i < perc)); do
   n=$((i*barlength / 100))
 
   printf "\r%-${barlength}s" "${bar:0:n}"
-  printf "$2\t $3"
+  printf "%s\t %s"  "$2" "$3"
 
   ((i += 1))
 
 done
-echo
+printf "\n"
 }
 
 # header
-printf "                                                         free\t mount\n"
+printf "                         free\t mount\n"
 
 # disk free action
 df -h -t ext4 -t vfat -t fuse.sshfs -t ntfs --output=target,pcent,avail | grep -v "boot" | tail -n +2 | \
