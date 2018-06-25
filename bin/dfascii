@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# dfascii (disk free in ascii percentages)
+
+# bar function
+# 1st parameter is percentage, 
+# 2nd is whatever you want printed on the right
+# 3rd is title
+
+bar () {
+bar="|||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+barlength=${#bar}
+
+perc="$1"
+i=0
+
+while ((i < perc)); do
+
+  n=$((i*barlength / 100))
+
+  printf "\r%-${barlength}s" "${bar:0:n}"
+  printf "$2\t $3"
+
+  ((i += 1))
+
+done
+echo
+}
+
+# header
+printf "                                                         free\t mount\n"
+
+# disk free action
+df -h -t ext4 -t vfat -t fuse.sshfs -t ntfs --output=target,pcent,avail | grep -v "boot" | tail -n +2 | \
+while read -r target pcent avail ; do
+
+    bar "${pcent%\%}" "$avail" "$target"
+ 
+done
+
+
