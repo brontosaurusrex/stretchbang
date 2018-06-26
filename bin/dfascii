@@ -30,12 +30,16 @@ printf "\n"
 # header
 printf "                         free\t mount\n"
 
+action () {
 # disk free action
-df -h -t ext4 -t vfat -t fuse.sshfs -t ntfs --output=target,pcent,avail | grep -v "boot" | tail -n +2 | \
+df -h -t ext4 -t vfat -t fuse.sshfs -t ntfs -t fuseblk --output=target,pcent,avail | grep -v "boot" | tail -n +2 | \
 while read -r target pcent avail ; do
 
     bar "${pcent%\%}" "$avail" "$target"
  
 done
+}
 
+out=$(action)
+echo "$out"
 
