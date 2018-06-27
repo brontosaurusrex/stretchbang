@@ -4,31 +4,30 @@
 
 # bar function
 # 1st parameter is percentage, 
-# 2nd is whatever you want printed on the right
-# 3rd is title
+# 2nd is avail space
+# 3rd is mount point
 
-bar () {
+# usage: dfascii
+# conky: ${font FantasqueSansMono-Regular:style=Regular:size=12}${execi 60 dfascii}
+
 bar="|||||||||||||||||||||||||"
 barlength=${#bar}
 
-perc="$1"
-i=0
+bar () {
 
-while ((i < perc)); do
+    perc="$1"
+    
+    n=$((perc*barlength / 100))
 
-  n=$((i*barlength / 100))
+    #printf "\r%-${barlength}s" "${bar:0:n}"
+    printf "%-${barlength}s" "${bar:0:n}"
+    printf "%s\t %s\n"  "$2" "$3"
 
-  printf "\r%-${barlength}s" "${bar:0:n}"
-  printf "%s\t %s"  "$2" "$3"
-
-  ((i += 1))
-
-done
-printf "\n"
 }
 
 # header
-printf "                         free\t mount\n"
+printf "%-${barlength}s" " " 
+printf "free\t mount\n"
 
 # disk free action
 df -h -t ext4 -t vfat -t fuse.sshfs -t ntfs --output=target,pcent,avail | grep -v "boot" | tail -n +2 | \
@@ -37,5 +36,3 @@ while read -r target pcent avail ; do
     bar "${pcent%\%}" "$avail" "$target"
  
 done
-
-
