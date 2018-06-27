@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# debug install
+
+# atom.list
+while read -r p; do
+    echo "$p"
+    yum install -y "$p" 
+    echo
+done <atom.list
+
+# base.list
+while read -r p; do
+    echo "$p"
+    yum install -y "$p" 
+    echo
+done <base.list
+
+# baseNoInstallRec.list
+while read -r p; do
+    echo "$p"
+    yum install -y "$p" 
+    echo
+done <baseNoInstallRec.list

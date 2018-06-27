@@ -58,7 +58,7 @@
 			</item>
 			<item label="wallpaper">
 				<action name="Execute">
-					<execute>nitrogen --sort=alpha</execute>
+					<execute>nitrogen</execute>
 				</action>
 			</item>
 			<item label="wbarConfig">
