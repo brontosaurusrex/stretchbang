@@ -2,9 +2,11 @@
 
 # internal ip
 echo -n "internal: "
-/sbin/ifconfig $1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}' | head -1
+#/sbin/ifconfig $1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}' | head -1
+# https://askubuntu.com/questions/430853/how-do-i-find-my-internal-ip-address
+ip route get 8.8.8.8 | awk '{print $NF; exit}'
 
-# two ways to get external ip, 2nd runs if first fails only
+# external
 echo -n "external: "
 
 curl -B http://wtfismyip.com/text
