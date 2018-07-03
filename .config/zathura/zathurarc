@@ -7,14 +7,29 @@ set recolor-darkcolor "#86A1A7"
 #set recolor-lightcolor "#002B36"
 set recolor-lightcolor "#333D4D"
 
+# but keep the image original color
+set recolor-reverse-video
+
 # give me icon
 set window-icon ~/.icons/Papirus-GTK/48x48/mimetypes/application-pdf.svg
+
+# dunno
+set smooth-scroll true
+set scroll-step 30
+
+# default window size
+set window-height 1093
+set window-width 955
+
+#stuff
+set adjust-open width
+set page-padding 0
 
 # colors
 #set statusbar-bg "#002B36"
 #set statusbar-fg "#93A1A1"
-#set default-fg "#93A1A1"
-#set default-bg "#002B36"
+set default-fg "#86A1A7"
+set default-bg "#222D32"
 
 # keybindings
 #map [fullscreen] a adjust_window best-fit
