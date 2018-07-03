@@ -7,6 +7,8 @@ set recolor-darkcolor "#86A1A7"
 #set recolor-lightcolor "#002B36"
 set recolor-lightcolor "#333D4D"
 
+# give me icon
+set window-icon ~/.icons/Papirus-GTK/48x48/mimetypes/application-pdf.svg
 
 # colors
 #set statusbar-bg "#002B36"
