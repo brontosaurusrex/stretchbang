@@ -25,6 +25,7 @@ i3lock
 dkms
 network-manager-gnome
 xfonts-terminus
+fonts-fantasque-sans
 git
 curl
 mpv
