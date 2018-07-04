@@ -1,54 +1,42 @@
-*.font:	        -*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*
-!*.boldFont:	    -*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*
+! URxvt font
+URxvt.font: xft:FantasqueSansMono-Regular:size=12
+URxvt.letterSpace: -1
 
-! set urxvt bold to empty to disable bold
-urxvt.boldFont:
+! URxvt look
+! set URxvt  bold to empty to disable bold
+URXvt.boldFont:
+URxvt*.scrollBar:           false
 
-! urxvt size in chars
+! URxvt size in chars
 URxvt.geometry: 120x25
 
-! urxvt icon - https://aur.archlinux.org/packages/rxvt-unicode-pixbuf/
+! URxvt icon - https://aur.archlinux.org/packages/rxvt-unicode-pixbuf/
 URxvt.iconFile:    SomePath/.icons/Papirus-GTK/32x32/apps/xterm-color.svg
 
-! line space > http://brontosaurusrex.github.io/2016/07/19/urxvt-lsp-3/
+! URxvt line space > http://brontosaurusrex.github.io/2016/07/19/urxvt-lsp-3/
 URxvt.lineSpace: 6
 
-! add extensions here
+! URxvt extensions
 URxvt.perl-ext-common:  default,matcher,selection-to-clipboard
 
-! tabbed colors
-URxvt.tabbed.tabbar-fg: 8
-URxvt.tabbed.tabbar-bg: 0
-URxvt.tabbed.tab-fg: 3
-URxvt.tabbed.tab-bg: 0
-
-! url matcher extension
+! URxvt url matcher extension
 URxvt*matcher.button:       1 
-Urxvt*matcher.pattern:      \\bwww\\.[\\w-]\\.[\\w./?&@#-]*[\\w/-]
+URxvt*matcher.pattern:      \\bwww\\.[\\w-]\\.[\\w./?&@#-]*[\\w/-]
 URxvt.mapAlert:             true
-
-! color bold, color italic
-*.colorBD:                  #7d7875
-*.colorIT:                  #7d7875 
 
 ! no idea what this is
 URxvt.selection.pattern-0:  ([[:word:]]+)
 URxvt*secondaryscroll:      true
 URxvt*scrollTtyOutput:      false
 
-! scroll in relation to buffer (with mouse scroll or Shift+Page Up)
+! URxvt scroll in relation to buffer (with mouse scroll or Shift+Page Up)
 URxvt*scrollWithBuffer:     true
 
-! scroll back to the bottom on keypress
+! URxvt scroll back to the bottom on keypress
 URxvt*scrollTtyKeypress:    true
 
 URxvt*dynamicColors:        on
 URxvt*depth:                24
-
-Xcursor.theme:              handhelds
-Xcursor.size:               8
-
-!URxvt*depth:32
 URxvt*transparent:	        false
 URxvt*shading:              15	
 URxvt*fading:		        0
@@ -56,12 +44,7 @@ URxvt.tintColor:            gray
 *.fadeColor:	            #252525
 *.borderless:	            true 
 
-
-Urxvt*termName:             rxvt-unicode-256color
-Urxvt*allow_bold:           false 
-*.scrollBar:                false
-
-*background:       	        #252525
+*background:       	        #222D32
 *.hightlightSection: 	    true	
 *.highlightColor:	        #1a1a1a
 *.highlightTextColor:       #008800
@@ -79,87 +62,89 @@ Xft.rgba:               rgb
 Xft.lcdfilter:          lcddefault
 
 ! adding stuff for dwm and urxvt
-URxvt.internalBorder:  1
+URxvt.internalBorder:  0
 URxvt.borderColor: #333333
 
 ! disable catching ctrl+shift, since I want ctrl+shift+r to be vims redo 
 URxvt.iso14755:         false
 URxvt.iso14755_52:      false
 
-! dkeg something
+! color scheme
+
+! google dark
+
 ! special
-*.foreground:   #d3d3d3
-*.background:   #111111
-*.cursorColor:  #d3d3d3
+*.foreground:   #c5c8c6
+*.background:   #1d1f21
+*.cursorColor:  #c5c8c6
 
 ! black
-*.color0:       #382c2f
-*.color8:       #ac9377
+!*.color0:       #1d1f21
+*.color0:       #222D32
+*.color8:       #969896
 
 ! red
-*.color1:       #48393a
-*.color9:       #baa17e
+*.color1:       #cc342b
+*.color9:       #cc342b
 
 ! green
-*.color2:       #65534d
-*.color10:      #bca282
+*.color2:       #198844
+*.color10:      #198844
 
 ! yellow
-*.color3:       #79665a
-*.color11:      #c1a67e
+*.color3:       #fba922
+*.color11:      #fba922
 
 ! blue
-*.color4:       #836e5e
-*.color12:      #cfb48e
+*.color4:       #3971ed
+*.color12:      #3971ed
 
 ! magenta
-*.color5:       #8e7766
-*.color13:      #d1baa3
+*.color5:       #a36ac7
+*.color13:      #a36ac7
 
 ! cyan
-*.color6:       #917781
-*.color14:      #dfc39b
+*.color6:       #3971ed
+*.color14:      #3971ed
 
 ! white
-*.color7:       #9a846d
-*.color15:      #eed8c4
+*.color7:       #c5c8c6
+*.color15:      #ffffff
 
-! override
-
-! neon
+! Colorful colors
 ! special
-*.foreground:   #f8f8f8
-*.background:   #171717
-*.cursorColor:  #f8f8f8
+*.foreground:   #ffffff
+!*.background:   #000000
+*.cursorColor:  #ffffff
 
 ! black
-*.color0:       #171717
-*.color8:       #38252c
+*.color0:       #151515
+*.color8:       #696969
 
 ! red
-*.color1:       #d81765
-*.color9:       #ff0000
+*.color1:       #ff8eaf
+*.color9:       #ed4c7a
 
 ! green
-*.color2:       #97d01a
-*.color10:      #76b639
+*.color2:       #a6e25f
+*.color10:      #a6e179
 
 ! yellow
-*.color3:       #ffa800
-*.color11:      #e1a126
+*.color3:       #f8e578
+*.color11:      #ffdf6b
 
 ! blue
-*.color4:       #16b1fb
-*.color12:      #289cd5
+*.color4:       #a6e2f0
+*.color12:      #79d2ff
 
 ! magenta
-*.color5:       #ff2491
-*.color13:      #ff2491
+*.color5:       #e85b92
+*.color13:      #bb5d79
 
 ! cyan
-*.color6:       #0fdcb6
-*.color14:      #0a9b81
+*.color6:       #5f868f
+*.color14:      #87a8af
 
 ! white
-*.color7:       #ebebeb
-*.color15:      #f8f8f8
+*.color7:       #d5f1f2
+*.color15:      #e2f1f6
