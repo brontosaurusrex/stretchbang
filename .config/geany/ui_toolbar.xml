@@ -18,9 +18,7 @@ at http://www.geany.org/manual/current/index.html#customizing-the-toolbar.
 		<toolitem action='Open' />
 		<toolitem action='Save' />
 		<toolitem action='New' />
-		<toolitem action='SearchEntry' />
 		<toolitem action='Search' />
-		<toolitem action='Replace' />
 
 	</toolbar>
 </ui>
