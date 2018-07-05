@@ -5,8 +5,10 @@
 size="$1"
 
 if [ -z "$size" ]; then # if $1 is null or unset
-    size="16"
+    size="12"
 fi
 
 
-printf '\33]50;%s%d\007' "xft:Terminus:pixelsize=" "$size"
+#printf '\33]50;%s%d\007' "xft:Terminus:pixelsize=" "$size"
+
+printf '\33]50;%s%d\007' "xft:FantasqueSansMono-Regular:size=" "$size"
