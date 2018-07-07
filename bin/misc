@@ -9,6 +9,7 @@ libreoffice writter,    libreoffice --writer
 ---
 urxvt transparent, urxvt -name transparent -depth 32 -bg rgba:2000/2000/2000/0000 -sh 0
 urxvt blurry, urxvt -blr 500x1 -tr -sh 65
+tty-clock, urxvt -depth 32 -bg rgba:2000/2000/2000/0000 -sh 0 -bl -g 36x7 -e tty-clock -cD
 scrotX -d 9
 ---
 #audiotool,        google-chrome --app="https://audiotool.com/app"
