@@ -1,3 +1,8 @@
+
+# Note: You need to close this geany session for menu to rebuild automagically,
+# or launch pipeMisc manually
+# pipeMisc will generate ~/bin/pipeMisc.xml based on this template
+
 Blender,     ~/apps/blender/blender
 gimp
 inkscape
@@ -16,4 +21,4 @@ scrotX -d 9
 ---
 Window size copy/paste,     clickyClicky
 ---
-edit ^,           geany ~/bin/misc
+edit ^, pipeMiscEditAndRebuild

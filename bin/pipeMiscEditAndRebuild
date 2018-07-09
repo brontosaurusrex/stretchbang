@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# pipeMiscEditAndRebuild
+
+# pipeMisc is now writing cache to ~/bin/misc.xml
+
+geany ~/bin/misc && pipeMisc && notify-send "pipe menu rebuild"

@@ -7,7 +7,7 @@
 			</action>
 		</item>
 		<separator/>
-		<menu execute="pipeMisc" id="misc" label="pipe"/>
+        <menu execute="cat ~/bin/misc.xml" id="pipeMisc_cached" label="pipe"/>
 		<separator/>
 		<item label="urxvt">
 			<action name="Execute">

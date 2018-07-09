@@ -17,6 +17,7 @@
 
 # var
 database="$HOME/bin/misc"
+outputMenu="$HOME/bin/misc.xml"
 
 # xmlescape and trim whitespace bash 
 # https://stackoverflow.com/questions/12873682/short-way-to-escape-html-in-bash
@@ -35,6 +36,9 @@ xmlescape () {
     #echo -n "$var"
 #}
 
+
+# MAIN
+action() {
 # header
 cat << EOFMENU
 <openbox_pipe_menu>
@@ -79,16 +83,10 @@ done < "$database" # < This is where your database is
 
 fi # end if database
 
-# insert places pipemenu if there is pipePlaces script
-file="$HOME/bin/pipePlaces"
-if [ -f "$file" ]; then
-cat << EOFMENU
-<separator/>
-<menu id="places" label="places" execute="$HOME/bin/pipePlaces" />
-EOFMENU
-fi
-
 # footer
 cat << EOFMENU
 </openbox_pipe_menu>
 EOFMENU
+}
+
+action > "$outputMenu"

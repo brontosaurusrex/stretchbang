@@ -1,0 +1,72 @@
+<openbox_pipe_menu>
+<item label="Blender">
+    <action name="Execute">
+        <execute>~/apps/blender/blender</execute>
+    </action>
+</item>
+<item label="gimp">
+    <action name="Execute">
+        <execute>gimp</execute>
+    </action>
+</item>
+<item label="inkscape">
+    <action name="Execute">
+        <execute>inkscape</execute>
+    </action>
+</item>
+<item label="krita">
+    <action name="Execute">
+        <execute>krita</execute>
+    </action>
+</item>
+<separator />
+<item label="slither.io">
+    <action name="Execute">
+        <execute>slitherRun</execute>
+    </action>
+</item>
+<item label="viber">
+    <action name="Execute">
+        <execute>/opt/viber/Viber</execute>
+    </action>
+</item>
+<item label="libreoffice writter">
+    <action name="Execute">
+        <execute>libreoffice --writer</execute>
+    </action>
+</item>
+<separator />
+<item label="urxvt transparent">
+    <action name="Execute">
+        <execute>urxvt -name transparent -depth 32 -bg rgba:2000/2000/2000/0000 -sh 0</execute>
+    </action>
+</item>
+<item label="urxvt blurry">
+    <action name="Execute">
+        <execute>urxvt -blr 500x1 -tr -sh 65</execute>
+    </action>
+</item>
+<item label="tty-clock">
+    <action name="Execute">
+        <execute>urxvt -depth 32 -bg rgba:2000/2000/2000/0000 -sh 0 -bl -g 36x7 -e tty-clock -cD</execute>
+    </action>
+</item>
+<item label="scrotX -d 9">
+    <action name="Execute">
+        <execute>scrotX -d 9</execute>
+    </action>
+</item>
+<separator />
+<separator />
+<item label="Window size copy/paste">
+    <action name="Execute">
+        <execute>clickyClicky</execute>
+    </action>
+</item>
+<separator />
+<item label="edit ^">
+    <action name="Execute">
+        <execute>pipeMiscEditAndRebuild</execute>
+    </action>
+</item>
+</openbox_pipe_menu>
