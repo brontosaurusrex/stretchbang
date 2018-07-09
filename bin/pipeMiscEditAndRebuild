@@ -4,4 +4,4 @@
 
 # pipeMisc is now writing cache to ~/bin/misc.xml
 
-geany ~/bin/misc && pipeMisc && notify-send "pipe menu rebuild"
+geany -i ~/bin/misc && pipeMisc && notify-send "pipe menu rebuild"
