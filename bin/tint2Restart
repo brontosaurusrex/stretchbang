@@ -1,6 +1,6 @@
 #!/bin/bash
 
-killall -SIGUSR1 tint2
+#killall -SIGUSR1 tint2
 
-#killall -w tint2
-#tint2 &
+killall -w tint2
+tint2 &
