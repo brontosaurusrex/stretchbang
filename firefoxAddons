@@ -17,6 +17,10 @@
 
 # click the blue button
 firefox-esr \
-https://addons.mozilla.org/en-US/firefox/addon/scrollbaranywhere \
 https://addons.mozilla.org/en-US/firefox/addon/enhancer-for-youtube \
 https://addons.mozilla.org/en-US/firefox/addon/ublock-origin
+
+echo "Click the blue buttons (if you wish) and then restart the browser."
+
+# retired
+# https://addons.mozilla.org/en-US/firefox/addon/scrollbaranywhere
