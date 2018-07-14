@@ -14,14 +14,18 @@
 
 compton & # check .config/compton.conf
 
-## restore wallpaper
-nitrogen --restore & tint2 & (sleep 3 && LC_NUMERIC=C wbar) &
+## tint2
+tint2 &
 
-## Run conky with slight delay
-#(sleep 3 && conky) &  
-
-## power manager
-# xfce4-power-manager &
+## nitrogen and wbar
+# check if nitrogen is even there before any logic
+if hash nitrogen 2>/dev/null; then
+    # wbar should wait for nitrogen
+    nitrogen --restore && wbar &
+else
+    # if there is no nitrogen, then just start wbar
+    wbar &
+fi
 
 ## Detect and configure touchpad. See 'man synclient' for more info.
 #if egrep -iq 'touchpad' /proc/bus/input/devices; then
@@ -49,3 +53,17 @@ xset s off         # don't activate screensaver
 xset -dpms         # disable DPMS (Energy Star) features.
 xset s noblank     # don't blank the video device
 
+## disabled stuff 
+
+## Run conky with slight delay
+#(sleep 3 && conky) &  
+
+## power manager
+# xfce4-power-manager &
+
+# automount 
+# https://wiki.archlinux.org/index.php/thunar#Automounting_of_large_external_drives
+# udiskie -2 &
+
+# mountpi
+# sshfs pi@192.168.1.6:/media/usb/filmi ~/pi
