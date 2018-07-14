@@ -21,9 +21,8 @@ tint2 &
 # check if nitrogen is even there before any logic
 if hash nitrogen 2>/dev/null; then
     # wbar should wait for nitrogen
-    nitrogen --restore && wbar &
+    (nitrogen --restore && wbar) &
 else
-    # if there is no nitrogen, then just start wbar
     wbar &
 fi
 
