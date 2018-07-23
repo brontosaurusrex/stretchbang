@@ -14,6 +14,12 @@ tint2,$HOME/.config/tint2/tint2rc,restart
 wbar,$HOME/.wbar,restart
 conky,$HOME/.conkyrc,restart
 xresources,$HOME/.Xresources,reloadXresources
+openbox,$HOME/.config/openbox/autostart,none
+openbox,$HOME/.config/openbox/menu.xml,openboxReconfigure
+openbox,$HOME/.config/openbox/rc.xml,openboxReconfigure
+gtk2,$HOME/.gtkrc-2.0,gtk2Reconfigure
+gtk3,$HOME/.config/gtk-3.0/settings.ini,none
+gtk3,$HOME/.config/gtk-3.0/gtk.css,none
 )
 
 # make stuff
@@ -43,6 +49,22 @@ fi
 # custom methods of restarting
 reloadXresources () {
     xrdb ~/.Xresources
+}
+openboxReconfigure () {
+    openbox --reconfigure
+}
+gtk2Reconfigure () {
+python - <<END
+import gtk
+
+events=gtk.gdk.Event(gtk.gdk.CLIENT_EVENT)
+data=gtk.gdk.atom_intern("_GTK_READ_RCFILES", False)
+events.data_format=8
+events.send_event=True
+events.message_type=data
+events.send_clientmessage_toall()
+
+END
 }
 
 # arguments
@@ -119,6 +141,15 @@ elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
                 elif [ "$method" = "reloadXresources" ]; then
                     echo "reloading .Xresources"
                     reloadXresources &> /dev/null
+            
+                elif [ "$method" = "openboxReconfigure" ]; then
+                    echo "reloading openbox"
+                    openboxReconfigure &> /dev/null
+                    
+                elif [ "$method" = "gtk2Reconfigure" ]; then
+                    echo "reloading gtk2"
+                    gtk2Reconfigure &> /dev/null
+            
                 fi
             else
                 echo "$config" "${config##*/} are the same"
