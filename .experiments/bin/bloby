@@ -18,8 +18,8 @@ openbox,$HOME/.config/openbox/autostart,none
 openbox,$HOME/.config/openbox/menu.xml,openboxReconfigure
 openbox,$HOME/.config/openbox/rc.xml,openboxReconfigure
 gtk2,$HOME/.gtkrc-2.0,gtk2Reconfigure
-gtk3,$HOME/.config/gtk-3.0/settings.ini,none
-gtk3,$HOME/.config/gtk-3.0/gtk.css,none
+gtk3,$HOME/.config/gtk-3.0/settings.ini,unknown
+gtk3,$HOME/.config/gtk-3.0/gtk.css,unknown
 )
 
 # make stuff
@@ -164,16 +164,20 @@ elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
 # if --defined
 elif [ "$1" == "-d" ] || [ "$1" == "--defined" ]; then
 
-    echo "app, config, restart method"
-    while read -r line; do
-        IFS=, read -r app config method <<< "$line"
+    defined () {
+        echo "app, config, restart method"
+        echo "---, ------, --------------"
+        while read -r line; do
+            IFS=, read -r app config method <<< "$line"
 
-        
-        echo "$app, $config, $method"
-        
-      
-    done < <(printf '%s\n' "${configs[@]}")
+            
+            echo "$app, $config, $method" 
+            
+          
+        done < <(printf '%s\n' "${configs[@]}")
+    }
 
+defined | column -s, -t
 
 
 # if --list
