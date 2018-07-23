@@ -63,24 +63,25 @@ if [ "$1" == "-s" ] || [ "$1" == "--store" ]; then
         # store
         cp "$config" "$store/$folder/${config##*/}"
         
-        # but only keep it if different than all the others (no duplicates allowed)
-        
-        # loop over existing folders and exit if the same thing is already there
-        cd "$store" || exit
-        for dir in ./*/; do 
-        
-            #echo "dir $dir versus $folder"
-
-            if diff -rq "$folder" "$dir" &> /dev/null && ! [[ $folder -ef $dir ]]; then
-                rm -rf "$folder" && echo "same as $dir, $folder is not a keeper"
-                break
-            else
-                ((verbose)) && echo "$folder is unique (or first one)"
-            fi
-        done
-
     done < <(printf '%s\n' "${configs[@]}")
     # end loop over array
+        
+    # loop over existing folders and remove/exit if the same thing is already there
+    cd "$store" || exit
+    ((verbose)) && echo "---"
+    for dir in ./*/; do 
+    
+        #echo "dir $dir versus $folder"
+
+        if diff -rq "$folder" "$dir" &> /dev/null && ! [[ $folder -ef $dir ]]; then
+            rm -rf "$folder" && echo "same as $dir, not a keeper"
+            break
+        else
+            ((verbose)) && echo "$folder is unique (or first one)"
+        fi
+    done
+
+
 
 # if --apply
 elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
