@@ -53,30 +53,26 @@ if [ "$1" == "-s" ] || [ "$1" == "store" ]; then
         # store
         cp "$config" "$store/$folder/${config##*/}"
         
-    done
+        # but only keep if different than all the others
         
-    # but only keep if different than all the others
-    cd "$store" || exit
-    
-    # loop over existing folders and exit if the same thing is allready there
-    for dir in ./*/; do 
-    
-        echo "dir $dir versus $folder"
+        # loop over existing folders and exit if the same thing is allready there
+        cd "$store" || exit
+        for dir in ./*/; do 
+        
+            echo "dir $dir versus $folder"
 
-        if diff -rq "$folder" "$dir" && ! [[ $folder -ef $dir ]]; then
-            echo "same as $dir"
-            rm -rf "$folder" && echo "$folder deleted"
-            break
-        else
-            echo "$folder is unique (or first one)"
-        fi
+            if diff -rq "$folder" "$dir" && ! [[ $folder -ef $dir ]]; then
+                echo "same as $dir"
+                rm -rf "$folder" && echo "$folder deleted"
+                break
+            else
+                echo "$folder is unique (or first one)"
+            fi
+            
+        done
         
-    done
-        
-        
-        
-
-    
+done
+            
 fi
 
 
