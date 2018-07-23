@@ -53,17 +53,17 @@ border_width = 0
 border_sides = TBLR
 background_color = #111111 0
 border_color = #111111 25
-background_color_hover = #111111 20
+background_color_hover = #111111 40
 border_color_hover = #111111 50
 background_color_pressed = #111111 20
 border_color_pressed = #111111 50
 
 # Background 6: Active taskbar
-rounded = 45
-border_width = 1
-border_sides = B
+rounded = 16
+border_width = 0
+border_sides = RLB
 background_color = #111111 0
-border_color = #111111 10
+border_color = #111111 50
 
 background_color_hover = #111111 50
 border_color_hover = #111111 50
@@ -117,6 +117,13 @@ border_color_hover = #111111 100
 background_color_pressed = #ffffff 0
 border_color_pressed = #111111 100
 
+# Background 11: execp
+rounded = 1
+border_width = 1
+#border_sides = T
+border_color = #111111 70
+
+
 #-------------------------------------
 # Taskbar
 taskbar_mode = multi_desktop
@@ -124,16 +131,16 @@ taskbar_mode = multi_desktop
 taskbar_padding = 0 0 0
 taskbar_background_id = 5
 taskbar_active_background_id = 6
-taskbar_name = 0
+taskbar_name = 1
 taskbar_hide_inactive_tasks = 0
 taskbar_hide_different_monitor = 0
 taskbar_always_show_all_desktop_tasks = 0
-taskbar_name_padding = 10 0
+taskbar_name_padding = 40 0
 taskbar_name_background_id = 0
 taskbar_name_active_background_id = 0
 taskbar_name_font = Cuprum 12
-taskbar_name_font_color = #ffffff 10
-taskbar_name_active_font_color = #ffffff 30
+taskbar_name_font_color = #ffffff 0
+taskbar_name_active_font_color = #ffffff 20
 taskbar_distribute_size = 1
 taskbar_sort_order = none
 task_align = center
@@ -246,6 +253,52 @@ tooltip_background_id = 2
 tooltip_font_color = #d0d0d0 100
 tooltip_font = cuprum 10
 
+
+# https://en.wikipedia.org/wiki/Block_Elements
+#-------------------------------------
+#execp = new
+#execp_centered = 1
+#execp_has_icon = 0
+#execp_command = echo "▌"      
+#execp_continuous = 0
+#execp_font = cuprum 46
+#execp_font_color = #111111 70
+#execp_padding = 0 0 0
+#execp_lclick_command = xdotool key alt+z
+#execp_dwheel_command = xdotool key super+s
+#execp_uwheel_command = xdotool key super+s
+#execp_tooltip = window position left
+#execp_background_id = 11
+##-------------------------------------
+#execp = new
+#execp_centered = 1
+#execp_has_icon = 0
+#execp_command = echo "▐"      
+#execp_continuous = 0
+#execp_font = cuprum 46
+#execp_font_color = #111111 70
+#execp_padding = 0 0 0
+#execp_lclick_command = xdotool key alt+x
+#execp_dwheel_command = xdotool key super+s
+#execp_uwheel_command = xdotool key super+s
+#execp_tooltip = window position right
+#execp_background_id = 11
+##-------------------------------------
+#execp = new
+#execp_centered = 1
+#execp_has_icon = 0
+#execp_command = echo "◼"      
+#execp_continuous = 0
+#execp_font = cuprum 46
+#execp_font_color = #111111 70
+#execp_padding = 0 0 0
+#execp_lclick_command = xdotool key alt+super+c
+#execp_dwheel_command = xdotool key super+s
+#execp_uwheel_command = xdotool key super+s
+#execp_tooltip = window center
+#execp_background_id = 11
+
+
 #-------------------------------------
 execp = new
 execp_centered = 1
@@ -297,6 +350,8 @@ execp_lclick_command = radioClicky i         # station id
 execp_dwheel_command = radioClicky +         # next
 execp_uwheel_command = radioClicky -         # prev
 #execp_tooltip = radio
+
+
 
 # stuff?
 border_content_tint_weight = 0
