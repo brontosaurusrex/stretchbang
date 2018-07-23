@@ -95,7 +95,7 @@ elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
     fi
 
     cd "$store/$applyfolder" || exit
-    ls -lha
+    #ls -lha
     echo "applying $applyfolder"
 
 # loop over array
