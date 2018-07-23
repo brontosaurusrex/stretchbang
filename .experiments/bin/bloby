@@ -55,7 +55,7 @@ if [ "$1" == "-s" ] || [ "$1" == "store" ]; then
         
         # but only keep if different than all the others
         
-        # loop over existing folders and exit if the same thing is allready there
+        # loop over existing folders and exit if the same thing is already there
         cd "$store" || exit
         for dir in ./*/; do 
         
