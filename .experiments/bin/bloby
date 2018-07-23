@@ -1,14 +1,20 @@
 #!/bin/bash
 
+# bloby
+
+# required: tree, diff
+
 # storage
 store="$HOME/.config/bloby"
+verbose="1"
 
-# Associative array http://wiki.bash-hackers.org/syntax/arrays
- declare -A configs=(
- [tint2]=$HOME/.config/tint2/tint2rc
- [wbar]=$HOME/.wbar
- [conky]=$HOME/.conkyrc
- )
+# Array with 'app,path-to-config,method-of-restarting'
+configs=(
+tint2,$HOME/.config/tint2/tint2rc,restart
+wbar,$HOME/.wbar,restart
+conky,$HOME/.conkyrc,restart
+xresources,$HOME/.Xresources,reloadXresources
+)
 
 # make stuff
 mkdir -p "$store" || exit
@@ -16,7 +22,10 @@ mkdir -p "$store" || exit
 # random word dictionary function
 randomword()  {
     dict="/usr/share/dict/words"
-    shuf -n1 "$dict" | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]'
+    word=$(shuf -n1 "$dict" | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]')
+    # if dict gets us null length then replace with something else
+    [ -z "$word" ] && word="$RANDOM"
+    echo "$word"
 }
 
 # restart app (will only work for singular apps)
@@ -31,49 +40,146 @@ else
 fi
 }
 
- #for app in "${!configs[@]}"; do 
- 
-    #config="${configs[$app]}"
-    #echo "$app $config"
- 
- #done
+# custom methods of restarting
+reloadXresources () {
+    xrdb ~/.Xresources
+}
 
 # arguments
-if [ "$1" == "-s" ] || [ "$1" == "store" ]; then
+# if --store
+if [ "$1" == "-s" ] || [ "$1" == "--store" ]; then
 
     folder="$(randomword)"
     echo "$folder"
     mkdir -p "$store/$folder" || exit;
     
-    for app in "${!configs[@]}"; do 
-     
-        config="${configs[$app]}"
-        #echo "$app $config ${config##*/}"
+    # loop over array
+    while read -r line; do
+        IFS=, read -r app config method <<< "$line"
+
+        # verbose
+        ((verbose)) && echo "$app $config $method"
         
         # store
         cp "$config" "$store/$folder/${config##*/}"
         
-        # but only keep if different than all the others
+        # but only keep it if different than all the others (no duplicates allowed)
         
         # loop over existing folders and exit if the same thing is already there
         cd "$store" || exit
         for dir in ./*/; do 
         
-            echo "dir $dir versus $folder"
+            #echo "dir $dir versus $folder"
 
-            if diff -rq "$folder" "$dir" && ! [[ $folder -ef $dir ]]; then
-                echo "same as $dir"
-                rm -rf "$folder" && echo "$folder deleted"
+            if diff -rq "$folder" "$dir" &> /dev/null && ! [[ $folder -ef $dir ]]; then
+                rm -rf "$folder" && echo "same as $dir, $folder is not a keeper"
                 break
             else
-                echo "$folder is unique (or first one)"
+                ((verbose)) && echo "$folder is unique (or first one)"
+            fi
+        done
+
+    done < <(printf '%s\n' "${configs[@]}")
+    # end loop over array
+
+# if --apply
+elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
+  
+    shift # next one shall be the name of the stored and not empty
+    if [[ -z "$1" ]]; then
+        echo "which one?, use -l to list them all" 
+        exit 1
+    else
+        applyfolder="$1"
+    fi
+
+    cd "$store/$applyfolder" || exit
+    ls -lha
+    echo "applying $applyfolder"
+
+# loop over array
+    while read -r line; do
+        IFS=, read -r app config method <<< "$line"
+
+        # verbose
+        #echo "${config##*/} ${config%/*} | $app $method"
+        
+        if [[ -f "${config##*/}" ]] ; then
+        
+            #((verbose)) && echo "$config" "${config##*/}"
+        
+            # only copy/restart if they differ
+            if ! diff "$config" "${config##*/}" ; then
+                cp -vb "${config##*/}" "${config%/*}"
+                if [ "$method" = "restart" ]; then
+                    echo "restarting $app"
+                    restart "$app" &> /dev/null
+                # It appears it is better to be specific
+                elif [ "$method" = "reloadXresources" ]; then
+                    echo "reloading .Xresources"
+                    reloadXresources &> /dev/null
+                fi
+            else
+                echo "$config" "${config##*/} are the same"
             fi
             
-        done
+        fi
         
-done
-            
+
+        
+    done < <(printf '%s\n' "${configs[@]}")
+
+# if --defined
+elif [ "$1" == "-d" ] || [ "$1" == "--defined" ]; then
+
+    echo "app, config, restart method"
+    while read -r line; do
+        IFS=, read -r app config method <<< "$line"
+
+        
+        echo "$app, $config, $method"
+        
+      
+    done < <(printf '%s\n' "${configs[@]}")
+
+
+
+# if --list
+elif [ "$1" == "-l" ] || [ "$1" == "--list" ]; then
+  
+    echo "list"
+    cd "$store" || exit
+    #ls -clhtr
+    tree -aht || ls -clhtr
+
+# if --help
+elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+
+    echo "bloby"
+    echo "-s                    # store with random name"
+    echo "-a name               # apply name"
+    echo "-l                    # list stored names"
+    echo "-d                    # list defined configs"
+    echo "-h                    # this help"
+    
+else
+
+    echo "use -h for help"
+
 fi
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
