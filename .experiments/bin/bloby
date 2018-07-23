@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# storage
+store="$HOME/.config/bloby"
+
+# Associative array http://wiki.bash-hackers.org/syntax/arrays
+ declare -A configs=(
+ [tint2]=$HOME/.config/tint2/tint2rc
+ [wbar]=$HOME/.wbar
+ [conky]=$HOME/.conkyrc
+ )
+
+# make stuff
+mkdir -p "$store" || exit
+
+# random word dictionary function
+randomword()  {
+    dict="/usr/share/dict/words"
+    shuf -n1 "$dict" | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]'
+}
+
+# restart app (will only work for singular apps)
+restart() {
+if pgrep -x "$1" > /dev/null
+then
+    (echo "$1 running, restarting"
+    killall -w "$1"
+    "${1}" &) &
+else
+    echo "$1 wasn't running"
+fi
+}
+
+ #for app in "${!configs[@]}"; do 
+ 
+    #config="${configs[$app]}"
+    #echo "$app $config"
+ 
+ #done
+
+# arguments
+if [ "$1" == "-s" ] || [ "$1" == "store" ]; then
+
+    folder="$(randomword)"
+    echo "$folder"
+    mkdir -p "$store/$folder" || exit;
+    
+    for app in "${!configs[@]}"; do 
+     
+        config="${configs[$app]}"
+        #echo "$app $config ${config##*/}"
+        
+        # store
+        cp "$config" "$store/$folder/${config##*/}"
+        
+    done
+        
+    # but only keep if different than all the others
+    cd "$store" || exit
+    
+    # loop over existing folders and exit if the same thing is allready there
+    for dir in ./*/; do 
+    
+        echo "dir $dir versus $folder"
+
+        if diff -rq "$folder" "$dir" && ! [[ $folder -ef $dir ]]; then
+            echo "same as $dir"
+            rm -rf "$folder" && echo "$folder deleted"
+            break
+        else
+            echo "$folder is unique (or first one)"
+        fi
+        
+    done
+        
+        
+        
+
+    
+fi
+
+
+
