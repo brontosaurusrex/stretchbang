@@ -202,7 +202,7 @@ elif [ "$1" == "-l" ] || [ "$1" == "--list" ]; then
 elif [ "$1" == "-ls" ] || [ "$1" == "--shortlist" ]; then
   
     cd "$store" || exit
-    ls 
+    ls --color=tty -rt
 
 # if --help
 elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
