@@ -105,17 +105,80 @@ if [ "$1" == "-s" ] || [ "$1" == "--store" ]; then
     ((verbose)) && echo "---"
     for dir in ./*/; do 
     
-        #echo "dir $dir versus $folder"
+        prettydir=$(basename "${dir}")
 
-        if diff -rq "$folder" "$dir" &> /dev/null && ! [[ $folder -ef $dir ]]; then
-            rm -rf "$folder" && echo "same as $dir, not a keeper"
-            break
-        else
-            ((verbose)) && echo "$folder is different than $dir"
+        #if diff -rq "$folder" "$dir" &> /dev/null && ! [[ $folder -ef $dir ]]; then
+            #rm -rf "$folder" && echo "same as $dir, not a keeper"
+            #break
+        #else
+            #((verbose)) && echo "$folder is different than $dir"
+        #fi
+        
+        if  ! [[ $folder -ef $dir ]]; then # if folders are not the same
+            if diff -rq "$folder" "$dir"; then
+                rm -rf "$folder" && echo "same as $prettydir, not a keeper"
+                stored="0"
+                break
+            else
+                ((verbose)) && echo "$folder is different than $dir"
+                stored="1"
+            fi
         fi
+        
     done
+    
+    # final report
+    ((stored)) && echo "stored as $folder"
+    stored="0"
 
+# if --compare
+elif [ "$1" == "-c" ] || [ "$1" == "--compare" ]; then
 
+    folder="compare$RANDOM" 
+
+    echo "$folder"
+    if ! [[ -d $store/$folder ]]; then # if there is no such folder, make one
+        mkdir -p "$store/$folder" || exit;
+    fi
+    
+    # loop over array
+    while read -r line; do
+        IFS=, read -r app config method <<< "$line"
+
+        # verbose
+        #((verbose)) && echo "$app $config $method"
+        
+        # store
+        cp "$config" "$store/$folder/${config##*/}"
+        
+    done < <(printf '%s\n' "${configs[@]}")
+    # end loop over array
+        
+    # loop over existing folders and compare
+    cd "$store" || exit
+    #((verbose)) && echo "---"
+    for dir in ./*/; do 
+    
+        prettydir=$(basename "${dir}")
+    
+        if  ! [[ $folder -ef $dir ]]; then
+            if diff -rq "$folder" "$dir"; then
+                echo "same as $prettydir"
+                match="1"
+                matcheddir="$prettydir"
+            else
+                ((verbose)) && echo "$folder is different than $dir"
+            fi
+        fi
+    
+    done
+    
+    # final report
+    ((match)) && echo "We have an exact match: $matcheddir"
+    match="0"
+
+    # remove the 'compare' folder
+    rm -rf "$folder"
 
 # if --apply
 elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
@@ -211,6 +274,7 @@ elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     echo "-s                    # store with random name"
     echo "-s name               # store with name"
     echo "-a name               # apply name"
+    echo "-c                    # compare active with stored"
     echo "-l                    # list stored names"
     echo "-ls                   # shortlist stored names"
     echo "-d                    # list defined configs"
