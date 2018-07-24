@@ -1,0 +1,53 @@
+## compton
+## hp i5 solved the tearing:
+# compton --backend glx --paint-on-overlay &
+## or one running in virtualbox (with some shadows):
+# compton -cCG --paint-on-overlay &
+## with some deep shadows and transparency:
+# compton -cCG --paint-on-overlay -o 0.9 -r 30 -l -9 -t -9 -i 0.8 -e 0.75 -m 0.9 &
+## with some deep shadows only
+# compton -cCG --paint-on-overlay -o 0.9 -r 30 -l -9 -t -9 -i 0.8 &
+## The one that works nicely on intel machines (no transparency) and mpv will play video without stuttering (and lesser shadows)
+# compton -cCG --backend glx --paint-on-overlay -o 0.5 -r 30 -l -9 -t -9 &
+# compton -cCG -o 0.5 -r 30 -l -9 -t -9 &
+# legacy nvidia, Debian Stretch
+# compton -cCG --backend glx &
+
+compton & # check .config/compton.conf
+
+## arandr script
+~/.screenlayout/screen.sh &
+
+## nitrogen and wbar
+# check if nitrogen is even there before any logic
+if hash nitrogen 2>/dev/null; then
+    # wbar should wait for nitrogen
+    (nitrogen --restore && wbar) &
+else
+    wbar &
+fi
+
+## tint2
+tint2 &
+
+## Set keyboard settings - 250 ms delay and 25 cps (characters per second) repeat rate.
+## Adjust the values according to your preferances.
+xset r rate 250 25 &
+
+## Turn on/off system beep
+xset b off &
+
+## policy kit
+/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+
+## optional (http://raspberrypi.stackexchange.com/questions/752/how-do-i-prevent-the-screen-from-going-blank)
+xset s off &        # don't activate screensaver
+xset -dpms  &       # disable DPMS (Energy Star) features.
+xset s noblank &    # don't blank the video device
+
+# automount 
+# https://wiki.archlinux.org/index.php/thunar#Automounting_of_large_external_drives
+udiskie -2 &
+
+# mountpi
+sshfs pi@192.168.1.6:/media/usb/filmi ~/pi

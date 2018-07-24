@@ -1,0 +1,55 @@
+-- vim: ts=4 sw=4 noet ai cindent syntax=lua
+--[[
+Conky, a system monitor, based on torsmo
+]]
+
+
+
+conky.config = {
+    alignment = 'bottom_right',
+    background = true,
+    border_width = 0,
+    cpu_avg_samples = 2,
+	default_color = 'black',
+    draw_borders = false,
+    draw_graph_borders = false,
+    draw_outline = false,
+    draw_shades = false,
+    use_xft = true,
+    font = 'Cuprum:size=9',
+    gap_x = 8,
+    gap_y = 6,
+    minimum_height = 5,
+	minimum_width = 25,
+    net_avg_samples = 2,
+    no_buffers = false,
+    out_to_console = false,
+    out_to_stderr = false,
+    extra_newline = false,
+    own_window = true,
+    own_window_class = 'Conky',
+    own_window_type = 'desktop',
+    own_window_argb_visual = true,
+    own_window_hints = undecorated,below,sticky,skip_taskbar,skip_pager,
+    own_window_transparent = true,
+    stippled_borders = 0,
+    update_interval = 5.0,
+    uppercase = false,
+    use_spacer = 'none',
+    show_graph_scale = false,
+    show_graph_range = false,
+    default_bar_width = 80,
+    default_bar_height = 8,
+}
+
+
+
+conky.text = [[
+${color #131313}
+${if_match ${downspeedf enp10s0} >= 1}$alignr \/ ${downspeed enp10s0} ${endif} \
+${if_match ${upspeedf enp10s0} >=1 }/\ ${upspeed enp10s0}${endif}
+${if_match ${downspeedf enp10s0} >= 1}${downspeedgraph enp10s0 -t}${endif}
+CPU ${cpubar} MEM ${membar} HOME ${fs_bar /home} \
+${if_match ${fs_used_perc /home/b/data} != 0} DATA ${fs_bar /home/b/data}${endif}
+#${font FantasqueSansMono-Regular:style=Regular:size=12}${execi 60 dfascii}
+]]
