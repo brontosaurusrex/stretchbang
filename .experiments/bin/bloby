@@ -239,8 +239,7 @@ elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
 # if --defined
 elif [ "$1" == "-d" ] || [ "$1" == "--defined" ]; then
 
-    defined () {
-        echo "app, config, restart method"
+    {   echo "app, config, restart method"
         echo "---, ------, --------------"
         while read -r line; do
             IFS=, read -r app config method <<< "$line"
@@ -250,9 +249,7 @@ elif [ "$1" == "-d" ] || [ "$1" == "--defined" ]; then
             
           
         done < <(printf '%s\n' "${configs[@]}")
-    }
-
-defined | column -s, -t
+    } | column -s, -t
 
 
 # if --list
@@ -285,19 +282,3 @@ else
     echo "use -h for help"
 
 fi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
