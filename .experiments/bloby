@@ -1,0 +1,293 @@
+#!/bin/bash
+
+# bloby
+
+# Store your themes, configs, etc
+# https://forums.bunsenlabs.org/viewtopic.php?id=5075
+
+# required: tree, diff, bsdmainutils (column), probably more
+
+# config
+store="$HOME/.config/bloby"
+verbose="0"
+
+# If this is true only file differences to some alredy stored name/dir will be kept.
+# Otherwise script -c only compares stuff on dir level, so this can get confusing
+relativeto="0"; relativetoDir="backup"
+
+# Array with 'app,path-to-config,method-of-restarting'
+configs=(
+tint2,$HOME/.config/tint2/tint2rc,restart
+wbar,$HOME/.wbar,restart
+conky,$HOME/.conkyrc,restart
+xresources,$HOME/.Xresources,reloadXresources
+openbox,$HOME/.config/openbox/autostart,none
+openbox,$HOME/.config/openbox/menu.xml,openboxReconfigure
+openbox,$HOME/.config/openbox/rc.xml,openboxReconfigure
+gtk2,$HOME/.gtkrc-2.0,gtk2Reconfigure
+gtk3,$HOME/.config/gtk-3.0/settings.ini,unknown
+gtk3,$HOME/.config/gtk-3.0/gtk.css,unknown
+)
+
+# make stuff
+mkdir -p "$store" || exit 1
+
+# random word dictionary function
+randomword()  {
+    dict="/usr/share/dict/words"
+    word=$(shuf -n1 "$dict" | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]')
+    # if dict gets us null length then replace with something else
+    [ -z "$word" ] && word="$RANDOM"
+    echo "$word"
+}
+
+# restart app (will only work for singular apps)
+restart() {
+if pgrep -x "$1" > /dev/null
+then
+    (echo "$1 running, restarting"
+    killall -w "$1"
+    "${1}" &) &
+else
+    echo "$1 wasn't running"
+fi
+}
+
+# custom methods of restarting
+reloadXresources () {
+    xrdb ~/.Xresources
+}
+openboxReconfigure () {
+    openbox --reconfigure
+}
+gtk2Reconfigure () {
+python - <<END
+import gtk
+
+events=gtk.gdk.Event(gtk.gdk.CLIENT_EVENT)
+data=gtk.gdk.atom_intern("_GTK_READ_RCFILES", False)
+events.data_format=8
+events.send_event=True
+events.message_type=data
+events.send_clientmessage_toall()
+
+END
+}
+
+# arguments
+# if --store
+if [ "$1" == "-s" ] || [ "$1" == "--store" ]; then
+
+    shift # next one might be the name
+    if [[ -z "$1" ]]; then
+        folder="$(randomword)"
+    else
+        folder="$1"
+    fi
+
+    #echo "$folder"
+    if ! [[ -d $store/$folder ]]; then
+        mkdir -p "$store/$folder" || exit 1;
+    else
+        echo "$folder taken, exiting"
+        exit 1
+    fi
+    
+    # loop over array
+    while read -r line; do
+    
+        IFS=, read -r app config method <<< "$line"
+
+        # verbose
+        ((verbose)) && echo "$app $config $method"
+        
+        # store
+        cp "$config" "$store/$folder/${config##*/}"
+        
+        # if relativeto switch is on, then delete what's equal (compare file by file)
+        if ((relativeto)); then
+            echo "relative to $relativetoDir"
+            [[ -d $store/$relativetoDir ]] || exit 1
+            if diff -rq "$store/$folder/${config##*/}" "$store/$relativetoDir/${config##*/}"; then
+                rm "$store/$folder/${config##*/}" && echo "rm $store/$folder/${config##*/}"
+            fi
+        fi
+        
+    done < <(printf '%s\n' "${configs[@]}")
+    # end loop over array
+        
+    # loop over existing folders and remove/exit if the same thing is already there
+    cd "$store" || exit 1
+    ((verbose)) && echo "---"
+    for dir in ./*/; do 
+    
+        prettydir=$(basename "${dir}")
+
+    if  ! [[ $folder -ef $dir ]]; then # if folders are not the same
+            if diff -rq "$folder" "$dir" >/dev/null 2>&1; then
+                rm -rf "$folder" && echo "same as $prettydir, not a keeper"
+                stored="0"
+                break
+            else
+                ((verbose)) && echo "$folder is different than $dir"
+                stored="1"
+            fi
+        fi
+        
+    done
+    
+    # final report
+    ((stored)) && echo "stored as $folder"
+    stored="0"
+
+# if --compare
+elif [ "$1" == "-c" ] || [ "$1" == "--compare" ]; then
+
+    folder="compare$RANDOM" 
+
+    echo "$folder"
+    if ! [[ -d $store/$folder ]]; then # if there is no such folder, make one
+        mkdir -p "$store/$folder" || exit 1;
+    fi
+    
+    # loop over array
+    while read -r line; do
+        IFS=, read -r app config method <<< "$line"
+
+        # verbose
+        #((verbose)) && echo "$app $config $method"
+        
+        # store
+        cp "$config" "$store/$folder/${config##*/}"
+        
+    done < <(printf '%s\n' "${configs[@]}")
+    # end loop over array
+        
+    # loop over existing folders and compare
+    cd "$store" || exit 1
+    #((verbose)) && echo "---"
+    for dir in ./*/; do 
+    
+        prettydir=$(basename "${dir}")
+    
+        if  ! [[ $folder -ef $dir ]]; then
+            if diff -rq "$folder" "$dir"; then
+                echo "same as $prettydir"
+                match="1"
+                matcheddir="$prettydir"
+            else
+                ((verbose)) && echo "$folder is different than $dir"
+            fi
+        fi
+    
+    done
+    
+    # final report
+    ((match)) && echo "We have an exact match: $matcheddir"
+    match="0"
+
+    # remove the 'compare' folder
+    rm -rf "$folder"
+
+# if --apply
+elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
+  
+    shift # next one shall be the name of the stored and not empty
+    if [[ -z "$1" ]]; then
+        echo "Which one?, use -l or -ls to list them all" 
+        exit 1
+    else
+        applyfolder="$1"
+    fi
+
+    cd "$store/$applyfolder" || exit 1
+    #ls -lha
+    echo "applying $applyfolder"
+
+    # loop over array
+    while read -r line; do
+        IFS=, read -r app config method <<< "$line"
+
+        # verbose
+        #echo "${config##*/} ${config%/*} | $app $method"
+        
+        if [[ -f "${config##*/}" ]] ; then
+        
+            #((verbose)) && echo "$config" "${config##*/}"
+        
+            # only copy/restart if they differ
+            if ! diff "$config" "${config##*/}" ; then
+                cp -vb "${config##*/}" "${config%/*}"
+                if [ "$method" = "restart" ]; then
+                    echo "restarting $app"
+                    restart "$app" &> /dev/null
+                # It appears it is better to be specific
+                elif [ "$method" = "reloadXresources" ]; then
+                    echo "reloading .Xresources"
+                    reloadXresources &> /dev/null
+            
+                elif [ "$method" = "openboxReconfigure" ]; then
+                    echo "reloading openbox"
+                    openboxReconfigure &> /dev/null
+                    
+                elif [ "$method" = "gtk2Reconfigure" ]; then
+                    echo "reloading gtk2"
+                    gtk2Reconfigure &> /dev/null
+            
+                fi
+            else
+                echo "$config" "${config##*/} are the same"
+            fi
+            
+        fi
+        
+
+        
+    done < <(printf '%s\n' "${configs[@]}")
+
+# if --defined
+elif [ "$1" == "-d" ] || [ "$1" == "--defined" ]; then
+
+    {   echo "app, config, restart method"
+        echo "---, ------, --------------"
+        while read -r line; do
+            IFS=, read -r app config method <<< "$line"
+
+            
+            echo "$app, $config, $method" 
+            
+          
+        done < <(printf '%s\n' "${configs[@]}")
+    } | column -s, -t
+
+
+# if --list
+elif [ "$1" == "-l" ] || [ "$1" == "--list" ]; then
+  
+    cd "$store" || exit 1
+    tree -aht || ls -clhtr
+    
+# if --shortlist
+elif [ "$1" == "-ls" ] || [ "$1" == "--shortlist" ]; then
+  
+    cd "$store" || exit 1
+    ls --color=tty -rt
+
+# if --help
+elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+
+    echo "bloby"
+    echo "-s                    # store with random name"
+    echo "-s name               # store with name"
+    echo "-a name               # apply name"
+    echo "-c                    # compare active with stored"
+    echo "-l                    # list stored names"
+    echo "-ls                   # shortlist stored names"
+    echo "-d                    # list defined configs"
+    echo "-h                    # this help"
+    
+else
+
+    echo "use -h for help"
+
+fi
