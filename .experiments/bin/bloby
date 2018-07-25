@@ -85,9 +85,9 @@ if [ "$1" == "-s" ] || [ "$1" == "--store" ]; then
         folder="$1"
     fi
 
-    echo "$folder"
+    #echo "$folder"
     if ! [[ -d $store/$folder ]]; then
-        mkdir -p "$store/$folder" || exit;
+        mkdir -p "$store/$folder" || exit 1;
     else
         echo "$folder taken, exiting"
         exit 1
@@ -124,7 +124,7 @@ if [ "$1" == "-s" ] || [ "$1" == "--store" ]; then
         prettydir=$(basename "${dir}")
 
     if  ! [[ $folder -ef $dir ]]; then # if folders are not the same
-            if diff -rq "$folder" "$dir"; then
+            if diff -rq "$folder" "$dir" >/dev/null 2>&1; then
                 rm -rf "$folder" && echo "same as $prettydir, not a keeper"
                 stored="0"
                 break
@@ -147,7 +147,7 @@ elif [ "$1" == "-c" ] || [ "$1" == "--compare" ]; then
 
     echo "$folder"
     if ! [[ -d $store/$folder ]]; then # if there is no such folder, make one
-        mkdir -p "$store/$folder" || exit;
+        mkdir -p "$store/$folder" || exit 1;
     fi
     
     # loop over array
@@ -194,7 +194,7 @@ elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
   
     shift # next one shall be the name of the stored and not empty
     if [[ -z "$1" ]]; then
-        echo "which one?, use -l to list them all" 
+        echo "Which one?, use -l or -ls to list them all" 
         exit 1
     else
         applyfolder="$1"
