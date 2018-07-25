@@ -2,11 +2,18 @@
 
 # bloby
 
+# Store your themes, configs, etc
+# https://forums.bunsenlabs.org/viewtopic.php?id=5075
+
 # required: tree, diff, bsdmainutils (column), probably more
 
-# storage
+# config
 store="$HOME/.config/bloby"
-verbose="1"
+verbose="0"
+
+# If this is true only file differences to some alredy stored name/dir will be kept.
+# Otherwise script -c only compares stuff on dir level, so this can get confusing
+relativeto="0"; relativetoDir="backup"
 
 # Array with 'app,path-to-config,method-of-restarting'
 configs=(
@@ -86,9 +93,9 @@ if [ "$1" == "-s" ] || [ "$1" == "--store" ]; then
         exit 1
     fi
     
-    
     # loop over array
     while read -r line; do
+    
         IFS=, read -r app config method <<< "$line"
 
         # verbose
@@ -97,24 +104,26 @@ if [ "$1" == "-s" ] || [ "$1" == "--store" ]; then
         # store
         cp "$config" "$store/$folder/${config##*/}"
         
+        # if relativeto switch is on, then delete what's equal (compare file by file)
+        if ((relativeto)); then
+            echo "relative to $relativetoDir"
+            [[ -d $store/$relativetoDir ]] || exit 1
+            if diff -rq "$store/$folder/${config##*/}" "$store/$relativetoDir/${config##*/}"; then
+                rm "$store/$folder/${config##*/}" && echo "rm $store/$folder/${config##*/}"
+            fi
+        fi
+        
     done < <(printf '%s\n' "${configs[@]}")
     # end loop over array
         
     # loop over existing folders and remove/exit if the same thing is already there
-    cd "$store" || exit
+    cd "$store" || exit 1
     ((verbose)) && echo "---"
     for dir in ./*/; do 
     
         prettydir=$(basename "${dir}")
 
-        #if diff -rq "$folder" "$dir" &> /dev/null && ! [[ $folder -ef $dir ]]; then
-            #rm -rf "$folder" && echo "same as $dir, not a keeper"
-            #break
-        #else
-            #((verbose)) && echo "$folder is different than $dir"
-        #fi
-        
-        if  ! [[ $folder -ef $dir ]]; then # if folders are not the same
+    if  ! [[ $folder -ef $dir ]]; then # if folders are not the same
             if diff -rq "$folder" "$dir"; then
                 rm -rf "$folder" && echo "same as $prettydir, not a keeper"
                 stored="0"
@@ -155,7 +164,7 @@ elif [ "$1" == "-c" ] || [ "$1" == "--compare" ]; then
     # end loop over array
         
     # loop over existing folders and compare
-    cd "$store" || exit
+    cd "$store" || exit 1
     #((verbose)) && echo "---"
     for dir in ./*/; do 
     
@@ -191,7 +200,7 @@ elif [ "$1" == "-a" ] || [ "$1" == "--apply" ]; then
         applyfolder="$1"
     fi
 
-    cd "$store/$applyfolder" || exit
+    cd "$store/$applyfolder" || exit 1
     #ls -lha
     echo "applying $applyfolder"
 
@@ -255,13 +264,13 @@ elif [ "$1" == "-d" ] || [ "$1" == "--defined" ]; then
 # if --list
 elif [ "$1" == "-l" ] || [ "$1" == "--list" ]; then
   
-    cd "$store" || exit
+    cd "$store" || exit 1
     tree -aht || ls -clhtr
     
 # if --shortlist
 elif [ "$1" == "-ls" ] || [ "$1" == "--shortlist" ]; then
   
-    cd "$store" || exit
+    cd "$store" || exit 1
     ls --color=tty -rt
 
 # if --help
