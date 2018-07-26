@@ -15,7 +15,7 @@ set window-icon ~/.icons/Papirus-GTK/48x48/mimetypes/application-pdf.svg
 
 # dunno
 set smooth-scroll true
-set scroll-step 30
+#set scroll-step 6
 
 # default window size
 set window-height 1093
