@@ -1,23 +1,18 @@
 #!/bin/bash
 
-# toggle compton and conky
+# toggleCompton
 # usually patched to meta+f12
 
-        # compton
-        pgrep -x compton
-            if [ $? -eq 0 ]; then
-                echo "kill compton"
-                killall compton 
-            else
-                echo "start compton"
-                compton &
-            fi
-        # conky
-        pgrep -x conky
-            if [ $? -eq 0 ]; then
-                echo "kill conky"
-                killall conky 
-            else
-                echo "start conky"
-                conky > /dev/null 2>&1
-            fi 
+pgrep -x compton
+
+    if [ $? -eq 0 ]; then
+        
+        echo "kill compton"
+        killall compton && notify-send -u low -t 1000 "compton killed"
+       
+    else
+        
+        echo "start compton"
+        (compton &) && notify-send -u low -t 1000 "compton started"
+       
+    fi
