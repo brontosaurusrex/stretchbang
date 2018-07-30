@@ -2,15 +2,29 @@
 
 # slitherRun
 
+superecho() {
+    echo "$1"
+    notify-send -u low -t 1000 "$1"
+}
+
+# launch
+if command -v google-chrome; then
+    { google-chrome --window-size=850,850 --app="http://slither.io" &
+    superecho "Opening slither in Chrome"; }
+elif command -v chromium; then
+    { chromium  --window-size=850,850 --app="http://slither.io" &
+    superecho "Opening slither in Chromium";}
+else
+    superecho "I need Google-Chrome or Chromium installed"
+    exit 1;
+fi
+
 # mice speedup
 xset m 3/1 # slither
-echo "slither mice active"
-notify-send "slither mice active"
-    
-# launch
-google-chrome --window-size=940,900 --app="http://slither.io"
+superecho "slither mice active"
 
-# back to system defaults
+wait # for browser to exit
+
+# mice to system defaults
 xset m default
-echo "default mice active"
-notify-send "default mice active"
+superecho "default mice active"
