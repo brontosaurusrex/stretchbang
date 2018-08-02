@@ -2,14 +2,19 @@
 
 # clickyClicky
 
-# copy paste window width/height (without wm decorations)
+# copy/paste window width/height (without wm decorations) and align vertical
 # idea from https://forums.bunsenlabs.org/viewtopic.php?id=4121
 
 # clicky source
 echo "clicky source"
-read -r _ w _ h <<<$(xwininfo -shape | grep 'Width\|Height' | tr -d '\n') 
-echo $w $h
+read -r _ _ _ l _ w _ h <<<"$(xwininfo -shape | grep 'Width\|Height\|Absolute upper-left X:' | tr -d '\n')"
+
+# take one px away (why?)
+l=$(( l - 1 ))
+
+echo "$l $w $h"
 
 # clicky destination
 echo "clicky destination"
-wmctrl -r :SELECT: -e 0,-1,-1,$w,$h
+#wmctrl -r :SELECT: -e 0,-1,-1,"$w","$h"
+wmctrl -r :SELECT: -e 0,$l,-1,"$w","$h"
