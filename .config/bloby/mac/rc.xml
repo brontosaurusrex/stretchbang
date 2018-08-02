@@ -642,11 +642,10 @@
         <x>center</x>
       </action>
     </keybind>
-    <!-- center x and y -->
-    <keybind key="W-A-c">
+    <!-- just center y (alt + win + c) -->
+    <keybind key="W-A-c"> 
       <action name="UnmaximizeFull"/>
       <action name="MoveResizeTo">
-        <x>center</x>
         <y>center</y>
       </action>
     </keybind>
