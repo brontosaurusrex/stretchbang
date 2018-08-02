@@ -148,7 +148,7 @@ task_align = center
 
 #-------------------------------------
 # Panel
-panel_items = TSECEE
+panel_items = TSECE
 panel_size = 96% 46
 panel_margin = 0 0
 panel_padding = 3 2 3
@@ -219,11 +219,12 @@ clock_background_id = 0
 clock_tooltip = 
 clock_tooltip_timezone = 
 clock_lclick_command = gsimplecal
-# https://brontosaurusrex.github.io/2017/12/08/dim-display/
 clock_rclick_command = toggleBrightness
-clock_mclick_command = 
-clock_uwheel_command = 
-clock_dwheel_command = 
+clock_mclick_command = clickyClicky
+clock_uwheel_command = $HOME/source/skippy-xd/skippy-xd
+clock_dwheel_command = $HOME/source/skippy-xd/skippy-xd
+
+# https://brontosaurusrex.github.io/2017/12/08/dim-display/
 
 ##-------------------------------------
 ## Battery
@@ -320,21 +321,21 @@ execp_lclick_command = amixer set Master 5%-
 execp_uwheel_command = amixer set Master 1%-
 execp_dwheel_command = amixer set Master 1%+
 #-------------------------------------
-execp = new
-execp_centered = 1
-execp_has_icon = 0
-execp_command = deskSpy
-execp_continuous = 1
-execp_font = cuprum 12
-execp_font_color = #111111 70
-execp_padding = 0 0 0
-execp_tooltip = multipurpose
-# This will depend on your rc.xml:
-execp_lclick_command = $HOME/source/skippy-xd/skippy-xd
-execp_rclick_command = toggleBrightness
-execp_uwheel_command = xdotool key ctrl+alt+Left
-execp_dwheel_command = xdotool key ctrl+alt+Right
-execp_mclick_command = clickyClicky
+#execp = new
+#execp_centered = 1
+#execp_has_icon = 0
+#execp_command = deskSpy
+#execp_continuous = 1
+#execp_font = cuprum 12
+#execp_font_color = #111111 70
+#execp_padding = 0 0 0
+#execp_tooltip = multipurpose
+## This will depend on your rc.xml:
+#execp_lclick_command = $HOME/source/skippy-xd/skippy-xd
+#execp_rclick_command = toggleBrightness
+#execp_uwheel_command = xdotool key ctrl+alt+Left
+#execp_dwheel_command = xdotool key ctrl+alt+Right
+#execp_mclick_command = clickyClicky
 #-------------------------------------
 execp = new
 execp_centered = 1
