@@ -20,6 +20,7 @@ configs=(
 tint2,$HOME/.config/tint2/tint2rc,restart
 wbar,$HOME/.wbar,restart
 conky,$HOME/.conkyrc,restart
+compton,$HOME/.config/compton.conf,restart
 xresources,$HOME/.Xresources,reloadXresources
 openbox,$HOME/.config/openbox/autostart,none
 openbox,$HOME/.config/openbox/menu.xml,openboxReconfigure
@@ -30,7 +31,7 @@ gtk3,$HOME/.config/gtk-3.0/gtk.css,unknown
 )
 
 # make stuff
-mkdir -p "$store" || exit
+mkdir -p "$store" || exit 1
 
 # random word dictionary function
 randomword()  {
