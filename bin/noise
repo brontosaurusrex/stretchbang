@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# give me some noise
+
+# checks
+command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
+command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; exit 1; }
+
+# store & vars
+
+file="/tmp/noise.png"
+#vignette="true"
+mx=1920; my=1200
+
+# fill colors
+
+tilix="#263238" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3"
+tilix2="#23333B" ; adapta="#222D32"
+
+color="$tilix2"
+
+set -x
+
+# action
+
+# method one
+#head -c "$((3*mx*my))" /dev/urandom | convert -depth 8 -size "${mx}x${my}" RGB:- -colorspace gray -fill "$color" +level 21%,24% -tint 100 -sharpen 0x1 "$file"
+
+# method two
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 5 +noise poisson -colorspace gray -fill "$color" +level 18%,26% -tint 100 -sharpen 0x1 "$file" 
+
+if [ "$vignette" = true ] ; then
+    convert "$file" \( +clone -fill white -colorize 100 -background "gray(95%)" -vignette 0x300 \) -compose multiply -composite "$file"
+fi
+
+nitrogen --set-tiled "$file"
