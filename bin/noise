@@ -9,7 +9,6 @@ command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; e
 # store & vars
 
 file="/tmp/noise.png"
-#vignette="true"
 mx=1920; my=1200 ; mxsmall=$(( mx / 2 )) ; mysmall=$(( my / 2 ))
 
 # fill colors
