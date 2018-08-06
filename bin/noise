@@ -25,7 +25,7 @@ set -x
 #head -c "$((3*mx*my))" /dev/urandom | convert -depth 8 -size "${mx}x${my}" RGB:- -colorspace gray -fill "$color" +level 21%,24% -tint 100 -sharpen 0x1 "$file"
 
 # method two
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level 18%,28% -tint 100 -sharpen 0x1 "$file"
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level 18%,24% -tint 100 -sharpen 0x1 "$file"
 
 # https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
 
