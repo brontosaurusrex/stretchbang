@@ -75,13 +75,7 @@ convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" +noise random -modu
 
 #https://www.imagemagick.org/Usage/text/
 annotate () {
- 
-    #mogrify "$file" -pointsize 20 -gravity center -font cuprum \
-            #- draw "gravity center \
-                    #fill black text 0,12 'stretch' \
-                    #fill white test 1,11 'stretch' "
-            
-convert \( -size "${mx}x${my}" xc:"black" -pointsize 15 -interline-spacing 20 -kerning 18 -gravity center -font Antonio-Light -fill "#111111" -annotate 0 "$1" -blur 0x.5 \) "$file" \
+convert \( -size "${mx}x${my}" xc:"black" -pointsize 35 -interline-spacing 20 -kerning 18 -gravity center -font Antonio-Light -fill "#333333" -annotate +0-35 "$1" -blur 0x.5 \) "$file" \
 -compose add \
 -composite "$file"
 }
