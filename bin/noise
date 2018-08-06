@@ -15,18 +15,20 @@ mx=1920; my=1200 ; mxsmall=$(( mx / 2 )) ; mysmall=$(( my / 2 ))
 
 tilix="#263945" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3" ; adapta="#222D32" ; deep2="#192F49"
 
-color="$adapta"
+# tint
+
+tint="100"
 
 set -x
 
-# action
+# functions
 
 one () {
 head -c "$((3*mx*my))" /dev/urandom | convert -depth 8 -size "${mx}x${my}" RGB:- -colorspace gray -fill "$color" +level 21%,24% -tint 100 -sharpen 0x1 "$file"
 }
 
 two () {
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level 18%,24% -tint 100 -sharpen 0x1 "$file"
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level 18%,24% -tint "$tint" -sharpen 0x1 "$file"
 }
 
 # -sharpen 0x1
@@ -86,7 +88,9 @@ else
 fi
 }
 
-#dual ; setwall ; two ; setwall
+# do it
+
+color="$tilix"
 
 two
 setwall
