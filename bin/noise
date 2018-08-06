@@ -15,7 +15,7 @@ mx=1920; my=1200 ; mxsmall=$(( mx / 2 )) ; mysmall=$(( my / 2 ))
 
 tilix="#263945" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3" ; adapta="#222D32" ; deep2="#192F49"
 
-color="$deep"
+color="$adapta"
 
 set -x
 
