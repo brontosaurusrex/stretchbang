@@ -15,11 +15,11 @@ mx=1920; my=1200 ; mxsmall=$(( mx / 2 )) ; mysmall=$(( my / 2 ))
 
 tilix="#263945" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3" ; adapta="#222D32" ; deep2="#192F49"
 
+color="$tilix"
+
 # tint
 
 tint="100"
-
-set -x
 
 # functions
 
@@ -69,9 +69,23 @@ convert \( -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +no
 }
 
 three () {
- convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" +noise random -modulate 50,0 -colorspace gray -fill "$color" +level 18%,24% -tint 100 "$file"   
- # +level 18%,24% 
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" +noise random -modulate 50,0 -colorspace gray -fill "$color" +level 18%,24% -tint 100 "$file"   
+# +level 18%,24% 
 }
+
+#https://www.imagemagick.org/Usage/text/
+annotate () {
+ 
+    #mogrify "$file" -pointsize 20 -gravity center -font cuprum \
+            #- draw "gravity center \
+                    #fill black text 0,12 'stretch' \
+                    #fill white test 1,11 'stretch' "
+            
+convert \( -size "${mx}x${my}" xc:"black" -pointsize 15 -interline-spacing 20 -kerning 18 -gravity center -font Antonio-Light -fill "#111111" -annotate 0 "$1" -blur 0x.5 \) "$file" \
+-compose add \
+-composite "$file"
+}
+# add
 
 setwall () {
     nitrogen --set-tiled "$file"
@@ -92,8 +106,15 @@ fi
 
 color="$tilix"
 
+set -x
+
 two
+
 setwall
+
+# You will need a defined font installed for this to work
+#annotate "$(lsb_release -cs | tr '[:lower:]' '[:upper:]' )" 
+#setwall
 
 set +x
 
@@ -101,3 +122,6 @@ restart wbar
 
 # notes
 # https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
+
+# add some text
+ #mogrify -pointsize 20 -gravity center -font cuprum -annotate 0 "$(uname -a)" /tmp/noise.png
