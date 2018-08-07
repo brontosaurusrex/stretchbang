@@ -75,7 +75,7 @@ convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" +noise random -modu
 
 #https://www.imagemagick.org/Usage/text/
 annotate () {
-convert \( -size "${mx}x${my}" xc:"black" -pointsize 35 -interline-spacing 20 -kerning 18 -gravity center -font Antonio-Light -fill "#333333" -annotate +0-35 "$1" -blur 0x.5 \) "$file" \
+convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -kerning 18 -gravity center -font Antonio-Light -fill "#202020" -annotate +0-35 "$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray  \) "$file" \
 -compose add \
 -composite "$file"
 }
@@ -108,6 +108,7 @@ setwall
 
 # You will need a defined font installed for this to work
 #annotate "$(lsb_release -cs | tr '[:lower:]' '[:upper:]' )" 
+#annotate "So it it looks a lil green."
 #setwall
 
 set +x
