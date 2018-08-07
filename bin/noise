@@ -87,14 +87,49 @@ convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -ke
 # -fill "#202020"
 
 annotateBox () {
-convert -size "640x400" -background none xc:"black" -interline-spacing 0 -kerning 8 -font Antonio-Light -fill "#232323" caption:"$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
+convert -size "500x500" -background none xc:"black" -interline-spacing 0 -kerning 0 -font Antonio-Light -fill "#232323" caption:"$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
 # -gravity center
 # -pointsize 40
+# -kerning 8
+# -interline-spacing 0
+convert "$text" "$file" -compose add -composite "$file"
+}
+
+# Fixed width, sliver kind of fx
+annotateBoxFixed () {
+mxthird=$(( mx / 6 )) 
+convert -size "${mx}x${mx}" -background none xc:"black" -interline-spacing 10 -kerning 5 -font Antonio-Light -fill "#373737" caption:"$1" -blur 0x.1 -resize "${mxthird}x" -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
+# -fill "#232323"
+
+convert "$text" "$file" -compose add -composite "$file"
+convert "$text" -blur 0x1 -extent "${mx}x${my}"-0-1 "$file" -compose minus -composite "$file"
+convert "$text" "$file" -compose add -composite "$file"
+convert "$text" -blur 0x1 -extent "${mx}x${my}"-0+1 "$file" -compose minus -composite "$file"
+convert "$text" -blur 0x2 "$file" -compose add -composite "$file"
+}
+
+# Fixed width, plastic kind of fx
+annotateBoxFixed2 () {
+mxthird=$(( mx / 7 )) 
+ 
+convert -size "${mx}x${mx}" -background none xc:"black" -interline-spacing 10 -kerning 5 -font Antonio-Light -fill "#474747" caption:"$1" -blur 0x.1 -resize "${mxthird}x" -seed "${RANDOM}" -attenuate 12 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
+# -fill "#232323"
+
+convert "$text" -blur 0x1 -extent "${mx}x${my}"-0-1 "$file" -compose minus -composite "$file"
+convert "$text" -blur 0x2 -extent "${mx}x${my}"-0+2 "$file" -compose add -composite "$file"
 convert "$text" "$file" -compose add -composite "$file"
 }
 
 setwall () {
     nitrogen --set-tiled "$file"
+}
+
+setwall1 () {
+    nitrogen --head=0 --set-tiled "$file"
+}
+
+setwall2 () {
+    nitrogen --head=1 --set-tiled "$file"
 }
 
 restart() {
@@ -130,20 +165,45 @@ color="$deep"
 
 set -x
 
-two
-
-#setwall
+#setwall1
 
 # You will need a defined font installed for this to work
 #annotate "$(lsb_release -cs | tr '[:lower:]' '[:upper:]' )" 
 #annotate "bulk"
 #annotate "So it it looks a lil green."
 
-#annotateBox "$(fortune -s cbbl)"
+#annotateBox "$(fortune -s cbbl | tr -d '\t' | tr -d '\n' | tr -s " ")"
 
+two
 setwall
+exit 
+
+# -------------------------------
+
+
+two
+
+# https://brontosaurusrex.github.io/2018/08/07/seen/
+until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
+annotateBoxFixed2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
+
+setwall1
+
+#annotateBox "$(fortune fortunes | tr -d '\t' | tr -d '\n' | tr -s " ")"
+
+# annotate "The time is right\nto make new friends"
+# fold -w 20 -s <(echo "The time is right to make new friends")
+
+two
+
+# https://brontosaurusrex.github.io/2018/08/07/seen/
+until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
+annotateBoxFixed2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
+
+setwall2
 
 set +x
+
 
 #restart wbar
 
