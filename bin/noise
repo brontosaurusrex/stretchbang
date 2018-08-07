@@ -87,8 +87,9 @@ convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -ke
 # -fill "#202020"
 
 annotateBox () {
-convert -size "600x300" -background none xc:"black" -interline-spacing 0 -kerning 8 -font Antonio-Light -fill "#232323" caption:"$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -extent "${mx}x${my}"+0+35 -composite "$text"
+convert -size "640x400" -background none xc:"black" -interline-spacing 0 -kerning 8 -font Antonio-Light -fill "#232323" caption:"$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
 # -gravity center
+# -pointsize 40
 convert "$text" "$file" -compose add -composite "$file"
 }
 
@@ -121,10 +122,11 @@ done
     
 echo "$string"    
 }
+# -s is for short ones
 
 # do it
 
-color="$tilix"
+color="$deep"
 
 set -x
 
@@ -137,7 +139,7 @@ two
 #annotate "bulk"
 #annotate "So it it looks a lil green."
 
-#annotateBox "$(fortunefunc)"
+#annotateBox "$(fortune -s cbbl)"
 
 setwall
 
