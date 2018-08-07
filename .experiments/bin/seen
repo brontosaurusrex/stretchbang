@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# This is a prototype script
+
+# Do not display fortunes that were seen lately
+
+cd "$HOME/tmp" || exit
+
+#set -x
+
+var="$(fortune -s)"
+
+echo "$var" >   now.txt || exit
+
+# crop history
+tail -n 100 hist.txt > tmp.txt || exit
+rm hist.txt && mv tmp.txt hist.txt
+
+# Note: The system would have to be aware that there is more than -n entries in the database
+
+# compare
+grep -q -f now.txt hist.txt
+if [[ $? != 0 ]]; then
+
+    echo "$var"
+    echo "$var" >>  hist.txt || exit
+    sleep 1
+
+else
+
+    tput setaf 1; >&2 echo "$var"
+    tput sgr0
+
+fi
+
+echo
+
