@@ -8,6 +8,8 @@
 		</item>
 		<separator/>
         <menu execute="cat ~/bin/misc.xml" id="pipeMisc_cached" label="pipe"/>
+        <separator/>
+        <menu id="recent" label="recent" execute="pipeRecent" />
 		<separator/>
 		<menu execute="radioClicky openbox" id="radio" label="radio"/>
 		<separator/>
@@ -36,33 +38,7 @@
 				<execute>mpv --force-window --idle --autofit-larger=50% --geometry 49%+0+0</execute>
 			</action>
 		</item>
-		<item label="xclock">
-			<action name="Execute">
-				<execute>xclock -geometry 960x960</execute>
-			</action>
-		</item>
-		<separator/>
-		<menu id="root-menu-0572" label="position">
-			<item label="left">
-				<action name="Execute">
-					<execute>xdotool key alt+z</execute>
-				</action>
-			</item>
-			<item label="right">
-				<action name="Execute">
-					<execute>xdotool key alt+x</execute>
-				</action>
-			</item>
-			<item label="center">
-				<action name="Execute">
-					<execute>xdotool key alt+c</execute>
-				</action>
-			</item>
-			<item label="show desktop">
-				<action name="ToggleShowDesktop"/>
-			</item>
-		</menu>
-		<!-- This requires the presence of the 'menu' package to work -->
+
 		<separator/>
 		<menu id="root-menu-774543" label="find">
 			<item label="apps">
