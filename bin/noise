@@ -95,7 +95,57 @@ convert -size "500x500" -background none xc:"black" -interline-spacing 0 -kernin
 convert "$text" "$file" -compose add -composite "$file"
 }
 
-# Fixed width, sliver kind of fx
+# nice, dark and was fast
+annotateBox2 () {
+mxthird=$(( mx / 6 ))
+convert -size "${mxthird}x${mxthird}" -background none xc:"black" \
+-interline-spacing 0 -kerning 3 -font Antonio-Light -strokewidth 2 -stroke "#212121" -fill "#232323" \
+caption:"$1" -blur 0x.2 -seed "${RANDOM}" \
+-attenuate 12 +noise poisson -colorspace gray -gravity center -trim +level 0%,50% -extent "${mx}x${my}"+0+10 -composite "$text"
+# -gravity center
+# -pointsize 40
+# -kerning 8
+# -interline-spacing 0
+# -attenuate 8 +noise poisson 
+# -colorspace gray
+# -strokewidth 2 -stroke "#212121" -fill "#232323"
+convert "$text" "$file" -compose Minus -composite "$file"
+}
+
+# nice, dark and not so fast, might clip
+annotateBox3 () {
+mxthird=$(( mx / 4 ))
+convert -size "${mx}x${mx}" -background none xc:"black" \
+-interline-spacing 0 -kerning 0 -font Antonio-Light -pointsize 160 -strokewidth 12 -stroke "#1f1f1f" -fill "#202020" \
+caption:"$1" -blur 0x1 -seed "${RANDOM}" \
+-gravity center -trim +level 0%,80% -resize "${mxthird}x${mxthird}" -extent "${mx}x${my}"+0+10 -composite "$text"
+# -gravity center
+# -pointsize 40
+# -kerning 8
+# -interline-spacing 0
+# -attenuate 8 +noise poisson 
+# -colorspace gray
+convert "$text" -attenuate 12 +noise poisson -colorspace gray "$file" -compose Minus -composite "$file"
+}
+
+# slow and brownish
+annotateBox4 () {
+mxthird=$(( mx / 6 ))
+convert -size "${mxthird}x${mxthird}" -background none xc:"black" \
+-interline-spacing 0 -kerning 0 -font Antonio-Light -strokewidth 2 -stroke "#212121" -fill "#232323" \
+caption:"$1" -blur 0x.2 -seed "${RANDOM}" \
+-attenuate 12 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
+# -gravity center
+# -pointsize 40
+# -kerning 8
+# -interline-spacing 0
+# -attenuate 8 +noise poisson 
+# -colorspace gray
+convert "$text" "$file" -compose Minus -composite "$file"
+convert "$text" -extent "${mx}x${my}"-0-1 "$file" -compose Difference -composite "$file"
+}
+
+# Fixed width, sliver kind of fx (slow)
 annotateBoxFixed () {
 mxthird=$(( mx / 6 )) 
 convert -size "${mx}x${mx}" -background none xc:"black" -interline-spacing 10 -kerning 5 -font Antonio-Light -fill "#373737" caption:"$1" -blur 0x.1 -resize "${mxthird}x" -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
@@ -108,7 +158,7 @@ convert "$text" -blur 0x1 -extent "${mx}x${my}"-0+1 "$file" -compose minus -comp
 convert "$text" -blur 0x2 "$file" -compose add -composite "$file"
 }
 
-# Fixed width, plastic kind of fx
+# Fixed width, plastic kind of fx (slow)
 annotateBoxFixed2 () {
 mxthird=$(( mx / 7 )) 
  
@@ -174,36 +224,35 @@ set -x
 
 #annotateBox "$(fortune -s cbbl | tr -d '\t' | tr -d '\n' | tr -s " ")"
 
-two
-setwall
-exit 
+#two
+#etwall
+#exit 
 
 # -------------------------------
 
+# 1st monitor
 
 two
 
-# https://brontosaurusrex.github.io/2018/08/07/seen/
-until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
-annotateBoxFixed2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
+#my=1200
+## https://brontosaurusrex.github.io/2018/08/07/seen/
+#until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
+#annotateBox2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
 
 setwall1
 
-#annotateBox "$(fortune fortunes | tr -d '\t' | tr -d '\n' | tr -s " ")"
+# 2nd monitor
 
-# annotate "The time is right\nto make new friends"
-# fold -w 20 -s <(echo "The time is right to make new friends")
+#two
 
-two
+#my=1080
+## https://brontosaurusrex.github.io/2018/08/07/seen/
+#until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
+#annotateBox2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
 
-# https://brontosaurusrex.github.io/2018/08/07/seen/
-until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
-annotateBoxFixed2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
-
-setwall2
+#setwall2
 
 set +x
-
 
 #restart wbar
 
@@ -211,4 +260,31 @@ set +x
 # https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
 
 # add some text
- #mogrify -pointsize 20 -gravity center -font cuprum -annotate 0 "$(uname -a)" /tmp/noise.png
+# mogrify -pointsize 20 -gravity center -font cuprum -annotate 0 "$(uname -a)" /tmp/noise.png
+ 
+# compose methods
+
+     #Over
+     #In
+     #Out
+     #Atop
+     #Xor
+     #Plus
+     #Minus
+     #Add
+     #Subtract
+     #Difference
+     #Multiply
+     #Bumpmap
+     #Copy
+     #CopyRed
+     #CopyGreen
+     #CopyBlue
+     #CopyOpacity
+     
+     #Lighten_Intensity
+     #Darken_Intensity
+     #Lighten
+     #Darken
+     #Difference
+     #Exclusion
