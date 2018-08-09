@@ -86,6 +86,7 @@ convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -ke
 # -pointsize 40
 # -fill "#202020"
 
+# the original
 annotateBox () {
 convert -size "500x500" -background none xc:"black" -interline-spacing 0 -kerning 0 -font Antonio-Light -fill "#232323" caption:"$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
 # -gravity center
@@ -224,37 +225,48 @@ set -x
 
 #annotateBox "$(fortune -s cbbl | tr -d '\t' | tr -d '\n' | tr -s " ")"
 
-#two
-#etwall
-#exit 
+
+# -------------------------------
+# both monitors
+
+if [[ "$1" != "-t" ]]; then
+    two
+    setwall
+    exit 0
+    # we exit here
+else
+    two
+    setwall
+    # and continue
+fi
+
 
 # -------------------------------
 
 # 1st monitor
 
-two
+#two
 
 #my=1200
 ## https://brontosaurusrex.github.io/2018/08/07/seen/
 #until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
 #annotateBox2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
 
-setwall1
+#setwall1
+
 
 # 2nd monitor
 
-#two
+my=1080
+# https://brontosaurusrex.github.io/2018/08/07/seen/
+until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
+annotateBox2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
 
-#my=1080
-## https://brontosaurusrex.github.io/2018/08/07/seen/
-#until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
-#annotateBox2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
-
-#setwall2
+setwall2
 
 set +x
 
-#restart wbar
+restart wbar
 
 # notes
 # https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
