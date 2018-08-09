@@ -2,6 +2,15 @@
 
 # give me some noise
 
+# required: imagemagick, nitrogen, proper font for -t
+# wouldbenice: seen (script)
+
+# usage, order of parameters is important:
+# noise
+# noise royal
+# noise -t
+# noise royal -t
+
 # checks
 command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
 command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; exit 1; }
@@ -17,7 +26,37 @@ mx=1920; my=1200 ; mxsmall=$(( mx / 2 )) ; mysmall=$(( my / 2 ))
 
 tilix="#263945" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3" ; adapta="#222D32" ; deep2="#192F49"
 
-color="$tilix"
+case "$1" in
+     tilix)          
+          color="$tilix"
+          shift
+          ;;
+     crunch)
+          color="$crunch"
+          shift
+          ;;
+     deep)
+          color="$deep"
+          shift
+          ;; 
+     royal)
+          color="$royal"
+          shift
+          ;;
+     adapta)
+          color="$adapta"
+          shift
+          ;;
+     deep2)
+          color="$deep2"
+          shift                    
+          ;; 
+     *)
+          color="$tilix"
+          ;;
+esac
+
+echo "$color coloring"
 
 # tint
 
@@ -212,8 +251,6 @@ echo "$string"
 
 # do it
 
-color="$deep"
-
 set -x
 
 #setwall1
@@ -225,13 +262,13 @@ set -x
 
 #annotateBox "$(fortune -s cbbl | tr -d '\t' | tr -d '\n' | tr -s " ")"
 
-
 # -------------------------------
 # both monitors
 
 if [[ "$1" != "-t" ]]; then
     two
     setwall
+    restart wbar
     exit 0
     # we exit here
 else
@@ -240,26 +277,12 @@ else
     # and continue
 fi
 
-
 # -------------------------------
-
-# 1st monitor
-
-#two
-
-#my=1200
-## https://brontosaurusrex.github.io/2018/08/07/seen/
-#until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
-#annotateBox2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
-
-#setwall1
-
-
 # 2nd monitor
 
 my=1080
 # https://brontosaurusrex.github.io/2018/08/07/seen/
-until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
+until var="$(seen "$(fortune -s cbbl)" 2>/dev/null)"; do : ; done 
 annotateBox2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
 
 setwall2
