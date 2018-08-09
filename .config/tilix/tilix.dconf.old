@@ -1,13 +1,53 @@
-[/]
-prompt-on-close-process=false
-enable-wide-handle=false
-sidebar-on-right=false
-terminal-title-style='none'
-theme-variant='dark'
-window-style='borderless'
+[profiles/37100943-c778-493e-9fec-6c0adc17a279]
+cursor-shape='block'
+cursor-colors-set=false
+bold-color-set=false
+terminal-bell='sound'
+scroll-on-keystroke=true
+cjk-utf8-ambiguous-width='narrow'
+default-size-rows=24
+encoding='UTF-8'
+triggers=@as []
+automatic-switch=@as []
+custom-command=''
+visible-name='transparent half'
+use-theme-colors=false
+terminal-title='${id}: ${title}'
+login-shell=true
+exit-action='close'
+use-system-font=false
+backspace-binding='ascii-delete'
+rewrap-on-resize=true
+foreground-color='#A7A7A7'
+badge-text=''
+background-transparency-percent=39
+cursor-blink-mode='off'
+dim-transparency-percent=43
+default-size-columns=80
+background-color='#1E1E1E'
+palette=['#1E1E1E', '#CF6A4C', '#8F9D6A', '#F9EE98', '#7587A6', '#9B859D', '#AFC4DB', '#A7A7A7', '#5F5A60', '#CF6A4C', '#8F9D6A', '#F9EE98', '#7587A6', '#9B859D', '#AFC4DB', '#FFFFFF']
+cursor-foreground-color='#ffffff'
+allow-bold=false
+notify-silence-threshold=0
+highlight-foreground-color='#ffffff'
+badge-color='#ffffff'
+font='M+ 1m 12'
+delete-binding='delete-sequence'
+badge-position='northeast'
+custom-hyperlinks=@as []
+scrollback-unlimited=false
+cursor-background-color='#000000'
+highlight-background-color='#000000'
+scroll-on-output=false
+use-custom-command=false
+badge-color-set=false
+highlight-colors-set=false
+scrollback-lines=8192
+bold-color='#ffffff'
+show-scrollbar=true
 
 [profiles]
-list=['2b7c4080-0ddd-46c5-8f23-563fd3ba789d', '5efa84ff-4275-41ef-bf5a-68506df0ad45']
+list=['2b7c4080-0ddd-46c5-8f23-563fd3ba789d', '5efa84ff-4275-41ef-bf5a-68506df0ad45', '37100943-c778-493e-9fec-6c0adc17a279']
 
 [profiles/5efa84ff-4275-41ef-bf5a-68506df0ad45]
 cursor-shape='block'
@@ -42,7 +82,7 @@ allow-bold=false
 notify-silence-threshold=0
 highlight-foreground-color='#ffffff'
 badge-color='#ffffff'
-font='Source Code Pro Light 11'
+font='M+ 1m 12'
 delete-binding='delete-sequence'
 badge-position='northeast'
 custom-hyperlinks=@as []
@@ -58,18 +98,29 @@ bold-color='#ffffff'
 show-scrollbar=true
 
 [profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d]
-foreground-color='#A1B0B8'
+foreground-color='#EFEFEF'
 rewrap-on-resize=true
 visible-name='Default'
 login-shell=true
-palette=['#252525', '#FF5252', '#C3D82C', '#FFC135', '#42A5F5', '#D81B60', '#00ACC1', '#F5F5F5', '#708284', '#FF5252', '#C3D82C', '#FFC135', '#42A5F5', '#D81B60', '#00ACC1', '#F5F5F5']
-badge-color-set=false
-use-system-font=false
+palette=['#000000', '#CC0000', '#4D9A05', '#C3A000', '#3464A3', '#754F7B', '#05979A', '#D3D6CF', '#545652', '#EF2828', '#89E234', '#FBE84F', '#729ECF', '#AC7EA8', '#34E2E2', '#EDEDEB']
+badge-color-set=true
+cursor-shape='block'
 cursor-colors-set=false
 highlight-colors-set=false
-use-theme-colors=false
+use-system-font=false
 bold-color-set=false
-font='Source Code Pro Light 11'
-allow-bold=false
+font='M+ 1m Ultra-Light 12'
+allow-bold=true
+terminal-bell='sound'
+use-theme-colors=false
 cursor-blink-mode='off'
-background-color='#263238'
+background-color='#303030'
+
+[/]
+sidebar-on-right=false
+terminal-title-style='none'
+prompt-on-close-process=false
+theme-variant='dark'
+enable-wide-handle=false
+warn-vte-config-issue=false
+window-style='borderless'

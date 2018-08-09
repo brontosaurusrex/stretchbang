@@ -1,3 +1,21 @@
+[/]
+new-window-inherit-state=true
+prompt-on-close=true
+recent-session-files=['/home/b/Default.json']
+copy-on-select=true
+sidebar-on-right=true
+terminal-title-style='none'
+background-image-mode='center'
+prompt-on-close-process=false
+theme-variant='dark'
+session-name='One'
+control-scroll-zoom=true
+window-state=128
+enable-wide-handle=true
+window-save-state=true
+warn-vte-config-issue=false
+window-style='disable-csd'
+
 [profiles/37100943-c778-493e-9fec-6c0adc17a279]
 cursor-shape='block'
 cursor-colors-set=false
@@ -73,7 +91,7 @@ foreground-color='#A7A7A7'
 badge-text=''
 background-transparency-percent=100
 cursor-blink-mode='off'
-dim-transparency-percent=100
+dim-transparency-percent=8
 default-size-columns=80
 background-color='#1E1E1E'
 palette=['#1E1E1E', '#CF6A4C', '#8F9D6A', '#F9EE98', '#7587A6', '#9B859D', '#AFC4DB', '#A7A7A7', '#5F5A60', '#CF6A4C', '#8F9D6A', '#F9EE98', '#7587A6', '#9B859D', '#AFC4DB', '#FFFFFF']
@@ -98,29 +116,22 @@ bold-color='#ffffff'
 show-scrollbar=true
 
 [profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d]
-foreground-color='#EFEFEF'
+foreground-color='#647A82'
 rewrap-on-resize=true
 visible-name='Default'
 login-shell=true
 palette=['#000000', '#CC0000', '#4D9A05', '#C3A000', '#3464A3', '#754F7B', '#05979A', '#D3D6CF', '#545652', '#EF2828', '#89E234', '#FBE84F', '#729ECF', '#AC7EA8', '#34E2E2', '#EDEDEB']
-badge-color-set=true
-cursor-shape='block'
+badge-color-set=false
+cursor-shape='underline'
 cursor-colors-set=false
 highlight-colors-set=false
 use-system-font=false
 bold-color-set=false
-font='M+ 1m Ultra-Light 12'
-allow-bold=true
-terminal-bell='sound'
-use-theme-colors=false
+font='FantasqueSansMono Nerd Font Mono 12'
+allow-bold=false
+terminal-bell='icon'
+use-theme-colors=true
 cursor-blink-mode='off'
-background-color='#303030'
-
-[/]
-sidebar-on-right=false
-terminal-title-style='none'
-prompt-on-close-process=false
-theme-variant='dark'
-enable-wide-handle=false
-warn-vte-config-issue=false
-window-style='borderless'
+background-color='#FCF5E2'
+background-transparency-percent=0
+dim-transparency-percent=0

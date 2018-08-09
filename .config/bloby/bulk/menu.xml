@@ -7,38 +7,42 @@
 			</action>
 		</item>
 		<separator/>
-        <menu execute="cat ~/bin/misc.xml" id="pipeMisc_cached" label="pipe"/>
-        <separator/>
-        <menu id="recent" label="recent" execute="pipeRecent" />
+		<menu execute="cat ~/bin/misc.xml" id="pipeMisc_cached" label="pipe"/>
+		<separator/>
+		<menu execute="pipeRecent" id="recent" label="recent"/>
 		<separator/>
 		<menu execute="radioClicky openbox" id="radio" label="radio"/>
 		<separator/>
-		<item icon=".config/stretchbang/images/wbar/white/term2.png" label="urxvt">
+		<item label="tilix">
+			<action name="Execute">
+				<execute>tilix</execute>
+			</action>
+		</item>
+		<item label="urxvt">
 			<action name="Execute">
 				<execute>urxvt</execute>
 			</action>
 		</item>
-		<item icon=".config/stretchbang/images/wbar/white/geany.png" label="geany">
+		<item label="geany">
 			<action name="Execute">
 				<execute>geany</execute>
 			</action>
 		</item>
-		<item icon=".config/stretchbang/images/wbar/white/thunar.png" label="thunar">
+		<item label="thunar">
 			<action name="Execute">
 				<execute>thunar</execute>
 			</action>
 		</item>
-		<item icon=".config/stretchbang/images/wbar/white/firefox.png" label="firefox">
+		<item label="firefox">
 			<action name="Execute">
 				<execute>browser</execute>
 			</action>
 		</item>
-		<item icon=".config/stretchbang/images/wbar/white/player.png" label="mpv">
+		<item label="mpv">
 			<action name="Execute">
 				<execute>mpv --force-window --idle --autofit-larger=50% --geometry 49%+0+0</execute>
 			</action>
 		</item>
-
 		<separator/>
 		<menu id="root-menu-774543" label="find">
 			<item label="apps">
