@@ -282,18 +282,18 @@ my=1080
 # https://brontosaurusrex.github.io/2018/08/07/seen/
 #until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
 
-var="$(randomnews)" || var="$(uname -a)"
+var="$(randomnews)" || var="$(randomWordFromDict)" || var="$(uname -a)"
 
 #echo "$var" >> tmp.txt
 
-#annotateBox2 "$var"
-annotateBox2 "$(echo "$var" | tr -d '\t' | tr -d '\n' | tr -s " " | grep -ve '--')"
+annotateBox2 "$var"
+#annotateBox2 "$(echo "$var" | tr -d '\t' | tr -d '\n' | tr -s " " | grep -ve '--')"
 
 setwall2
 
 #set +x
 
-#restart wbar
+restart wbar
 
 # notes
 # https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
