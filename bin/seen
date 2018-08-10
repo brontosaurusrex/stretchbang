@@ -55,22 +55,22 @@ touch "$database" || exit # database
 # Since strings can be realy long, lets just use md5sum
 varsum="$(echo -n "$varorig" | md5sum | awk '{print $1}')"
 
-# crop history (weak)
-tail -n "$limit" "$database" > "$tmp" || exit
-rm "$database" && mv "$tmp" "$database"
-
 # Notes: 
 # - system would have to be aware that there is more than -n entries in the database
 # - this 'database' certainly will not survive any kind of multi-call stuff
 
 # compare
 grep -q -f <(echo "$varsum") "$database"
-if [[ $? != 0 ]]; then
+if [[ $? != 0 ]]; then # wasn't seen in database
 
     echo "$varorig"
     echo "$varsum" >> "$database" || exit
+    
+    # crop database (weak)
+    tail -n "$limit" "$database" > "$tmp" || exit
+    rm "$database" && mv "$tmp" "$database"
 
-else
+else # seen in database
 
     #>&2 echo -n "Nope. Limit: $limit Database: " && >&2 wc -l "$database"
     exit 1
