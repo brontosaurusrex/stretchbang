@@ -47,7 +47,6 @@ if ! [[ $limit =~ ^[0-9]+$ ]]; then
     exit 1
 fi
 
-
 mkdir -p "$store" || exit
 touch "$database" || exit # database
 
@@ -73,7 +72,7 @@ if [[ $? != 0 ]]; then
 
 else
 
-    >&2 echo -n " Nope. Limit: $limit Database: " && >&2 wc -l "$database"
+    #>&2 echo -n "Nope. Limit: $limit Database: " && >&2 wc -l "$database"
     exit 1
 
 fi
