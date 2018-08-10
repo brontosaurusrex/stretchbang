@@ -56,8 +56,6 @@ case "$1" in
           ;;
 esac
 
-echo "$color coloring"
-
 # tint
 
 tint="100"
@@ -137,11 +135,11 @@ convert "$text" "$file" -compose add -composite "$file"
 
 # nice, dark and was fast
 annotateBox2 () {
-mxthird=$(( mx / 6 ))
+mxthird=$(( mx / 3 ))
 convert -size "${mxthird}x${mxthird}" -background none xc:"black" \
 -interline-spacing 0 -kerning 3 -font Antonio-Light -strokewidth 2 -stroke "#212121" -fill "#232323" \
 caption:"$1" -blur 0x.2 -seed "${RANDOM}" \
--attenuate 12 +noise poisson -colorspace gray -gravity center -trim +level 0%,50% -extent "${mx}x${my}"+0+10 -composite "$text"
+-attenuate 12 +noise poisson -colorspace gray -gravity center -trim +level 0%,80% -extent "${mx}x${my}"+0+10 -composite "$text"
 # -gravity center
 # -pointsize 40
 # -kerning 8
@@ -251,7 +249,7 @@ echo "$string"
 
 # do it
 
-set -x
+#set -x
 
 #setwall1
 
@@ -273,7 +271,7 @@ if [[ "$1" != "-t" ]]; then
     # we exit here
 else
     two
-    setwall
+    setwall1
     # and continue
 fi
 
@@ -282,14 +280,20 @@ fi
 
 my=1080
 # https://brontosaurusrex.github.io/2018/08/07/seen/
-until var="$(seen "$(fortune -s cbbl)" 2>/dev/null)"; do : ; done 
-annotateBox2 "$(echo "$var" | tr -d '\t' | tr -s " " | grep -ve '--')"
+#until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
+
+var="$(randomnews)" || var="$(uname -a)"
+
+#echo "$var" >> tmp.txt
+
+#annotateBox2 "$var"
+annotateBox2 "$(echo "$var" | tr -d '\t' | tr -d '\n' | tr -s " " | grep -ve '--')"
 
 setwall2
 
-set +x
+#set +x
 
-restart wbar
+#restart wbar
 
 # notes
 # https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
