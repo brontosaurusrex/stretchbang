@@ -8,8 +8,8 @@
 
 # seen "string"
 # seen "$(fortune -s cbbl)"
-# until ./seen "$(fortune -s cbbl)" ; do : ; done
-# until var="$(./seen "$(fortune -s cbbl)" 2>/dev/null)"; do : ; done && echo "$var"
+# until seen "$(fortune -s cbbl)" ; do : ; done
+# until var="$(seen "$(fortune -s cbbl)" 2>/dev/null)"; do : ; done && echo "$var"
 
 # With one argument
 # seen "string" # Will use some default database and limit
