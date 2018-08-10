@@ -47,6 +47,9 @@ if ! [[ $limit =~ ^[0-9]+$ ]]; then
     exit 1
 fi
 
+# is string set
+[[ -z "$varorig" ]] && (>&2 echo "empty string" && exit 1)
+
 mkdir -p "$store" || exit
 touch "$database" || exit # database
 
