@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# seen - This is a prototype script
+
+# Do not display fortunes that were seen lately
+
+# Usage examples:
+
+# seen "string"
+# seen "$(fortune -s cbbl)"
+# until ./seen "$(fortune -s cbbl)" ; do : ; done
+# until var="$(./seen "$(fortune -s cbbl)" 2>/dev/null)"; do : ; done && echo "$var"
+
+# With one argument
+# seen "string" # Will use some default database and limit
+
+# with three arguments
+# seen limit database "string"
+#      int^  alpha^   text^
+
+# var
+store="$HOME/tmp/seen"
+tmp="$store/tmp.txt"
+
+if (( $# == 3 )) ; then # $1 limit, $2 database, $3 string
+    limit="$1"
+    # is database really letters
+    if ! [[ $2 =~ ^[A-Za-z_]+$ ]]; then
+        >&2 echo "database must be letters only"
+        exit 1
+    else
+    database="$store/$2"
+    fi
+    varorig="$3" # This is input 
+elif (( $# == 1 )) ; then # $1 string
+    limit="20"
+    database="$store/hist"
+    varorig="$1" # This is input 
+else
+    >&2 echo "Number of arguments must be either: one : string, or three: limit, database, string"
+    exit 1
+fi
+
+# is limit really a number
+if ! [[ $limit =~ ^[0-9]+$ ]]; then
+    >&2 echo "limit must be number"
+    exit 1
+fi
+
+
+mkdir -p "$store" || exit
+touch "$database" || exit # database
+
+#var="$(echo "${varorig@Q}" | tr -dc '[:alnum:]\n\r')"
+
+# Since strings can be realy long, lets just use md5sum
+varsum="$(echo -n "$varorig" | md5sum | awk '{print $1}')"
+
+# crop history (weak)
+tail -n "$limit" "$database" > "$tmp" || exit
+rm "$database" && mv "$tmp" "$database"
+
+# Notes: 
+# - system would have to be aware that there is more than -n entries in the database
+# - this 'database' certainly will not survive any kind of multi-call stuff
+
+# compare
+grep -q -f <(echo "$varsum") "$database"
+if [[ $? != 0 ]]; then
+
+    echo "$varorig"
+    echo "$varsum" >> "$database" || exit
+
+else
+
+    >&2 echo -n " Nope. Limit: $limit Database: " && >&2 wc -l "$database"
+    exit 1
+
+fi
