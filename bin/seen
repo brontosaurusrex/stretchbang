@@ -18,6 +18,19 @@
 # seen limit database "string"
 #      int^  alpha^   text^
 
+bench="0"
+missederr="0"
+
+# benchmark start
+((bench)) && START=$(date +%s.%N)
+
+# benchmark end
+endbench() {
+    END=$(date +%s.%N)
+    DIFF=$(echo "$END - $START" | bc)
+    >&2 echo "done in $DIFF seconds"
+}
+
 # var
 store="$HOME/tmp/seen"
 tmp="$store/tmp.txt"
@@ -57,6 +70,7 @@ touch "$database" || exit # database
 
 # Since strings can be realy long, lets just use md5sum
 varsum="$(echo -n "$varorig" | md5sum | awk '{print $1}')"
+#varsum="$(echo -n "$varorig" | md5sum | cut -d' ' -f1)"
 
 # Notes: 
 # - system would have to be aware that there is more than -n entries in the database
@@ -72,10 +86,15 @@ if [[ $? != 0 ]]; then # wasn't seen in database
     # crop database (weak)
     tail -n "$limit" "$database" > "$tmp" || exit
     rm "$database" && mv "$tmp" "$database"
+    
+    # crop database (sponge from moreutils)
+    #tail -n "$limit" "$database" | sponge "$database" || exit
 
 else # seen in database
 
-    #>&2 echo -n "Nope. Limit: $limit Database: " && >&2 wc -l "$database"
+    ((missederr)) && >&2 echo -n "Nope. Limit: $limit Database: " && >&2 wc -l "$database"
     exit 1
 
 fi
+
+((bench)) && endbench
