@@ -18,22 +18,10 @@
 # seen limit database "string"
 #      int^  alpha^   text^
 
-bench="0"
-missederr="0"
-
-# benchmark start
-((bench)) && START=$(date +%s.%N)
-
-# benchmark end
-endbench() {
-    END=$(date +%s.%N)
-    DIFF=$(echo "$END - $START" | bc)
-    >&2 echo "done in $DIFF seconds"
-}
-
 # var
 store="$HOME/tmp/seen"
 tmp="$store/tmp.txt"
+missederr="0"
 
 if (( $# == 3 )) ; then # $1 limit, $2 database, $3 string
     limit="$1"
@@ -76,6 +64,12 @@ varsum="$(echo -n "$varorig" | md5sum | awk '{print $1}')"
 # - system would have to be aware that there is more than -n entries in the database
 # - this 'database' certainly will not survive any kind of multi-call stuff
 
+cropdatabase() {
+    # crop database (weak)
+    tail -n "$limit" "$database" > "$tmp" || exit
+    rm "$database" && mv "$tmp" "$database"
+}
+
 # compare
 grep -q -f <(echo "$varsum") "$database"
 if [[ $? != 0 ]]; then # wasn't seen in database
@@ -83,9 +77,7 @@ if [[ $? != 0 ]]; then # wasn't seen in database
     echo "$varorig"
     echo "$varsum" >> "$database" || exit
     
-    # crop database (weak)
-    tail -n "$limit" "$database" > "$tmp" || exit
-    rm "$database" && mv "$tmp" "$database"
+    cropdatabase
     
     # crop database (sponge from moreutils)
     #tail -n "$limit" "$database" | sponge "$database" || exit
@@ -93,8 +85,9 @@ if [[ $? != 0 ]]; then # wasn't seen in database
 else # seen in database
 
     ((missederr)) && >&2 echo -n "Nope. Limit: $limit Database: " && >&2 wc -l "$database"
+    
+    cropdatabase
+    
     exit 1
 
 fi
-
-((bench)) && endbench
