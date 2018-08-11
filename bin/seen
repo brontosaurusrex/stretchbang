@@ -68,6 +68,9 @@ cropdatabase() {
     # crop database (weak)
     tail -n "$limit" "$database" > "$tmp" || exit
     rm "$database" && mv "$tmp" "$database"
+    
+    # crop database (sponge from moreutils)
+    #tail -n "$limit" "$database" | sponge "$database" || exit
 }
 
 # compare
@@ -79,9 +82,6 @@ if [[ $? != 0 ]]; then # wasn't seen in database
     
     cropdatabase
     
-    # crop database (sponge from moreutils)
-    #tail -n "$limit" "$database" | sponge "$database" || exit
-
 else # seen in database
 
     ((missederr)) && >&2 echo -n "Nope. Limit: $limit Database: " && >&2 wc -l "$database"
