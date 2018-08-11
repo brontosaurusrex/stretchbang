@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# bar
+
+var="$((RANDOM % 100 + 1))"
+
+bar "$var"

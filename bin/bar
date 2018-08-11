@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# bar
+
+# usage:
+# bar "44" # percents
+
+bar="||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||FULL"
+barlength=${#bar}
+
+barf () {
+
+    perc="$1"
+    
+    n=$((perc*barlength / 100))
+
+    printf "%-${barlength}s" "${bar:0:n}"
+    printf "%s\t %s\n"  "$2" "$3"
+
+}
+
+barf "$1" "$1"
