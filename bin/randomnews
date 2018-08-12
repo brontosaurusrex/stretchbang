@@ -1,35 +1,33 @@
 #!/bin/bash
 
-# random rss news
+# random rss news (work in progress)
 
-# warning: lock conditions (edit: seems to be fixed)
+# required: rsstail
 
-# trim spaces
-trim() {
-    local var="$*"
-    # remove leading whitespace characters
-    var="${var#"${var%%[![:space:]]*}"}"
-    # remove trailing whitespace characters
-    var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
-}
+# get
+slashdot="$(rsstail -H -N -d -n 50 -u http://rss.slashdot.org/slashdot/slashdotMain?format=xml & { rss="$!" && sleep 1 && kill "$rss" ; wait ; })"
+# filter
+slashdot="$(echo "$slashdot" | grep -v "Read more of this story at Slashdot." | grep -v "Search Slashdot stories" | grep -v "News for nerds, stuff that matters" | grep -v '\:$')"
+# Add prefix to each line
+slashdot="$(echo "$slashdot" |  sed '/^\s*$/d' | sed -e 's/^[ \t]*//' | sed -e 's/^/slashdot: /')"
 
-#rss1="$(rsstail -H -N -d -n 50 -u http://rss.slashdot.org/slashdot/slashdotMain?format=xml & { rss="$!" && sleep 1 && kill "$rss" ; wait ; })"
-
-#var="$(rsstail -H -N -d -n 50 -u https://www.phoronix.com/rss.php & { rss="$!" && sleep 1 && kill "$rss" ; })"
-
+# get
+# phoronix="$(rsstail -H -N -d -n 50 -u https://www.phoronix.com/rss.php & { rss="$!" && sleep 1 && kill "$rss" ; wait ; })"
 phoronix="$( wget "https://www.phoronix.com/rss.php" -O - 2>/dev/null | grep -E "<description>" | sed 's/<.*>\(.*\)<\/.*>/\1/' )"
+# Add prefix to each line
+phoronix="$(echo "$phoronix" | grep -v '\:$' | sed '/^\s*$/d' | sed -e 's/^[ \t]*//' | sed -e 's/^/phoronix: /')"
 
-slashdot="$( wget "http://rss.slashdot.org/slashdot/slashdotMain?format=xml" -O - 2>/dev/null | grep -E "<description>" | sed -e 's/<[^>]*>//g' | grep -v "Read more of this story at Slashdot." | grep -v "Search Slashdot stories" | grep -v "News for nerds, stuff that matters" )"
+#slashdot="$( wget "http://rss.slashdot.org/slashdot/slashdotMain?format=xml" -O - 2>/dev/null | grep -E "<description>" | sed -e 's/<[^>]*>//g' | grep -v "Read more of this story at Slashdot." | grep -v "Search Slashdot stories" | grep -v "News for nerds, stuff that matters" )"
 
 var="${slashdot}${phoronix}"
 
-#var="$(echo "$var" | sed '/^\s*$/d' | shuf | head -n 1)"
+# how lange das boot
+# echo "$var" >&2
+echo "$var" | wc -l >&2
 
-#echo "$var" > tmp.txt
-
+# seen
 c="0"
-until var="$(seen 10 news "$(echo "$var" | sed '/^\s*$/d' | shuf | head -n 1)")"; do
+until var="$(seen 15 news "$(echo "$var" | sed '/^\s*$/d' | shuf | head -n 1)")"; do
 
     # lock prevention
     (( c++ ))
@@ -39,19 +37,15 @@ until var="$(seen 10 news "$(echo "$var" | sed '/^\s*$/d' | shuf | head -n 1)")"
     fi
     
 done 
-# 2>/dev/null
 
-var=$(trim "$var")
-
-#echo ${#var}
-
+# error if shorter than 5 chars
 if [[ ${#var} -lt 5 ]] ; then
     >&2 echo "No news for you."
     exit 1
 fi
 
 # limit to bytes
-var2="$(echo "$var" | head -c 250)"
+var2="$(echo "$var" | head -c 300)"
 
 if [[ "$var" == "$var2" ]]; then
 
