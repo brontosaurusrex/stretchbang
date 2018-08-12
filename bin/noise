@@ -60,10 +60,6 @@ case "$1" in
           ;;
 esac
 
-# tint
-
-tint="100"
-
 # functions
 
 one () {
@@ -71,7 +67,7 @@ head -c "$((3*mx*my))" /dev/urandom | convert -depth 8 -size "${mx}x${my}" RGB:-
 }
 
 two () {
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level 18%,24% -tint "$tint" -sharpen 0x1 "$file"
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level 18%,24% -tint "100" -sharpen 0x1 "$file"
 }
 # +level 18%,24%
 # -sharpen 0x1
@@ -127,6 +123,12 @@ convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -ke
 # -pointsize 40
 # -fill "#202020"
 
+annotatemono () {
+convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -kerning 18 -gravity center -font Fantasque-Sans-Mono-Regular -fill "#232323" -annotate +0-35 "$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray  \) "$file" \
+-compose add \
+-composite "$file"
+}
+
 # the original
 annotateBox () {
 convert -size "500x500" -background none xc:"black" -interline-spacing 0 -kerning 0 -font Antonio-Light -fill "#232323" caption:"$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
@@ -153,6 +155,24 @@ caption:"$1" -blur 0x.2 -seed "${RANDOM}" \
 # -strokewidth 2 -stroke "#212121" -fill "#232323"
 convert "$text" "$file" -compose Minus -composite "$file"
 }
+
+# nice, dark and mono
+annotateBox2mono () {
+mxthird=$(( mx / 3 ))
+convert -size "${mxthird}x${mxthird}" -background none xc:"black" \
+-interline-spacing 0 -kerning 0 -font Fantasque-Sans-Mono-Regular -pointsize 30 -fill "#232323" \
+caption:"$1" -blur 0x.2 -seed "${RANDOM}" \
+-attenuate 12 +noise poisson -colorspace gray -gravity center -trim +level 0%,80% -extent "${mx}x${my}"+0+10 -composite "$text"
+# -gravity center
+# -pointsize 40
+# -kerning 8
+# -interline-spacing 0
+# -attenuate 8 +noise poisson 
+# -colorspace gray
+# -strokewidth 2 -stroke "#212121" -fill "#232323"
+convert "$text" "$file" -compose Minus -composite "$file"
+}
+# identify -list font 
 
 # nice, dark and not so fast, might clip
 annotateBox3 () {
@@ -277,27 +297,33 @@ else
     two
     setwall1
     # and continue
+
+
+    # -------------------------------
+    # 2nd monitor
+
+    my=1080
+    # https://brontosaurusrex.github.io/2018/08/07/seen/
+    #until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
+    
+    # Assuming next one after -t is some string
+    if ! [[ -z "$2" ]]; then
+        var="$2"
+        annotateBox2 "$var"
+    else
+        var="$(randomnews)" || var="$(randomWordsFromDict)" || var="$(uname -a)"
+        annotateBox2 "$var"
+    fi
+
+    #annotateBox2 "$(echo "$var" | tr -d '\t' | tr -d '\n' | tr -s " " | grep -ve '--')"
+
+    setwall2
+
+    #set +x
+
+    restart wbar
+
 fi
-
-# -------------------------------
-# 2nd monitor
-
-my=1080
-# https://brontosaurusrex.github.io/2018/08/07/seen/
-#until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
-
-var="$(randomnews)" || var="$(randomWordsFromDict)" || var="$(uname -a)"
-
-#echo "$var" >> tmp.txt
-
-annotateBox2 "$var"
-#annotateBox2 "$(echo "$var" | tr -d '\t' | tr -d '\n' | tr -s " " | grep -ve '--')"
-
-setwall2
-
-#set +x
-
-restart wbar
 
 # notes
 # https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
