@@ -10,6 +10,7 @@
 # noise royal
 # noise -t
 # noise royal -t
+# noise night -t "string"
 
 # checks
 command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
@@ -124,10 +125,11 @@ convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -ke
 # -fill "#202020"
 
 annotatemono () {
-convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -kerning 18 -gravity center -font Fantasque-Sans-Mono-Regular -fill "#232323" -annotate +0-35 "$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray  \) "$file" \
+convert \( -size "${mx}x${my}" xc:"black" -pointsize 18 -gravity west -interline-spacing 5 -kerning 0 -font Fantasque-Sans-Mono-Regular -fill "#555555" -annotate +40+0 "$1" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray  \) "$file" \
 -compose add \
 -composite "$file"
 }
+# noise -t "$(hotkeys)"
 
 # the original
 annotateBox () {
@@ -160,9 +162,9 @@ convert "$text" "$file" -compose Minus -composite "$file"
 annotateBox2mono () {
 mxthird=$(( mx / 3 ))
 convert -size "${mxthird}x${mxthird}" -background none xc:"black" \
--interline-spacing 0 -kerning 0 -font Fantasque-Sans-Mono-Regular -pointsize 30 -fill "#232323" \
+-interline-spacing 0 -kerning 0 -font Fantasque-Sans-Mono-Regular -pointsize 20 -fill "#232323" \
 caption:"$1" -blur 0x.2 -seed "${RANDOM}" \
--attenuate 12 +noise poisson -colorspace gray -gravity center -trim +level 0%,80% -extent "${mx}x${my}"+0+10 -composite "$text"
+-attenuate 12 +noise poisson -colorspace gray -trim +level 0%,80% -extent "${mx}x${my}"+0+10 -composite "$text"
 # -gravity center
 # -pointsize 40
 # -kerning 8
@@ -309,7 +311,7 @@ else
     # Assuming next one after -t is some string
     if ! [[ -z "$2" ]]; then
         var="$2"
-        annotateBox2 "$var"
+        annotatemono "$var"
     else
         var="$(randomnews)" || var="$(randomWordsFromDict)" || var="$(uname -a)"
         annotateBox2 "$var"
