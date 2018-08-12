@@ -125,7 +125,7 @@ convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -ke
 # -fill "#202020"
 
 annotatemono () {
-convert \( -size "${mx}x${my}" xc:"black" -pointsize 18 -gravity west -interline-spacing 5 -kerning 0 -font Fantasque-Sans-Mono-Regular -fill "#555555" -annotate +40+0 "$1" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray  \) "$file" \
+convert \( -size "${mx}x${my}" xc:"black" -pointsize 18 -gravity west -interline-spacing 8 -kerning 0 -font Fantasque-Sans-Mono-Regular -fill "#555555" -annotate +40+0 "$1" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray  \) "$file" \
 -compose add \
 -composite "$file"
 }
