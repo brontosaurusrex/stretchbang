@@ -282,7 +282,7 @@ my=1080
 # https://brontosaurusrex.github.io/2018/08/07/seen/
 #until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
 
-var="$(randomnews)" || var="$(randomWordFromDict)" || var="$(uname -a)"
+var="$(randomnews)" || var="$(randomWordsFromDict)" || var="$(uname -a)"
 
 #echo "$var" >> tmp.txt
 
@@ -293,7 +293,7 @@ setwall2
 
 #set +x
 
-restart wbar
+#restart wbar
 
 # notes
 # https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
