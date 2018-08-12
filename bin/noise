@@ -24,7 +24,7 @@ mx=1920; my=1200 ; mxsmall=$(( mx / 2 )) ; mysmall=$(( my / 2 ))
 
 # fill colors
 
-tilix="#263945" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3" ; adapta="#222D32" ; deep2="#192F49"
+tilix="#263945" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3" ; adapta="#222D32" ; deep2="#192F49" ; night="#1C2E7D"
 
 case "$1" in
      tilix)          
@@ -49,6 +49,10 @@ case "$1" in
           ;;
      deep2)
           color="$deep2"
+          shift                    
+          ;; 
+     night)
+          color="$night"
           shift                    
           ;; 
      *)
@@ -293,7 +297,7 @@ setwall2
 
 #set +x
 
-#restart wbar
+restart wbar
 
 # notes
 # https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
