@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# cat stretchbang hotkeys
+
+cat <<EOF
+W I N D O W S                               L A U N C H E R S
+
+ALT +                                       SUPER +
+
+    y,x     left/right half                     space   openbox menu
+    c       center window x                     w       browser (script)
+    v       full width, quite some height       f       thunar
+    m       move to next monitor                t       urxvt
+    f2      openbox client menu                 e       geany
+                                                v       alsamixer
+SUPER +                                         m       toggle mute
+                                                x       xkill
+    f11     fullscreen                          Tab     openbox combined menu
+    f12     toggle compton
+    s       toggle show desktop             ALT +
+
+SUPER + ALT +                                   space   gmrun
+
+    c       center window y
+
+SHIFT + ALT +
+
+    left    send to desktop left
+    right   send to desktop right
+EOF
+
+# http://asciiflow.com/
