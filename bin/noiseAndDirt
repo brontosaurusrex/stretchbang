@@ -50,7 +50,7 @@ alias examples:
     alias bluedarkdirt='noiseAndDirt -- +++++++++++++++++'
     alias pinkdirt='noiseAndDirt deep _ + ++++++++++++++++++++++++++++ _ +++'
     alias nightdirt='noiseAndDirt - +++ +++++++ +++ ---'
-    alias violetdirt='noiseAndDirt deep _ + ++++++++++++ _ +++'
+    alias violetdirt='noiseAndDirt deep ++++ ++++ ++++++++++++ _ ++'
 EOF
 
 exit 
