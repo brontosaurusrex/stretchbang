@@ -33,7 +33,7 @@ examples:
     noise deep                      # with color preset 'deep'
     noise deep +                    # with color preset 'deep' and 10% brighter
     noise - +++                     # default, but 10% darker and 30% more saturated
-    noise deep _ +++++ _ + ---      # preset 'deep' and 50% more saturated,
+    noise deep _ +++++ _ + ---      # preset 'deep' and more saturated,
                                     # slightly more dynamics and darker level start.
     noise deep -- ++ -------------- # A lil green
     noise -- +++++++++++++++++      # darker but more colorful
