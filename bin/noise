@@ -11,6 +11,8 @@
 # noise -t
 # noise royal -t
 # noise night -t "string"
+# noise _ ++ _              # increase saturation for 20%
+# noise deep + +            # increase brightness and saturation for 10%
 
 # checks
 command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
@@ -61,6 +63,46 @@ case "$1" in
           ;;
 esac
 
+# modulate bright,color,hue
+def="100" ; bri="100" ; col="100" ; hue="100"
+
+# bright
+mul="0"
+if [[ "$1" == +* ]]; then # lighter
+    mul=$(( 10 * ${#1} )) ; bri=$(( def + mul ))    
+    shift    
+elif [[ "$1" == -* ]]; then # darker
+    mul=$(( 10 * ${#1} )) ; bri=$(( def - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
+
+# saturation
+mul="0"
+if [[ "$1" == +* ]]; then # more saturated
+    mul=$(( 10 * ${#1} )) ; col=$(( def + mul ))    
+    shift    
+elif [[ "$1" == -* ]]; then # less saturated
+    mul=$(( 10 * ${#1} )) ; col=$(( def - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
+
+# hue
+mul="0"
+if [[ "$1" == +* ]]; then # more saturated
+    mul=$(( 2 * ${#1} )) ; hue=$(( def + mul ))    
+    shift    
+elif [[ "$1" == -* ]]; then # less saturated
+    mul=$(( 2 * ${#1} )) ; hue=$(( def - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
+
+
 # functions
 
 one () {
@@ -68,10 +110,11 @@ head -c "$((3*mx*my))" /dev/urandom | convert -depth 8 -size "${mx}x${my}" RGB:-
 }
 
 two () {
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level 18%,24% -tint "100" -sharpen 0x1 "$file"
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level 18%,24% -tint "100" -sharpen 0x1 -modulate "$bri,$col,$hue" "$file"
 }
 # +level 18%,24%
 # -sharpen 0x1
+# -modulate bright,color,hue
 
 disks () {
 convert -size "${mx}x${my}" xc:"gray(20%)" -seed "${RANDOM}" -attenuate 4 +noise poisson -colorspace gray -fill "$color" -define morphology:compose=Multiply -morphology Dilate Disk:6 -blur 0x3 +level 17%,45% -tint 100 "$file"
