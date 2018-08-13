@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# give me some noise
+# noise (lite)
 
-# required: imagemagick, nitrogen, proper font for -t
+# give me some noise for wallpaper
+
+# required: imagemagick, nitrogen
 # wouldbenice: seen (script)
 
 # usage, order of parameters is important:
@@ -19,14 +21,40 @@ command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exitin
 command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; exit 1; }
 
 # store & vars
-
-text="/tmp/text.png"    # tmp text file when needed
 file="/tmp/noise.png"   # final wallpaper
 
-mx=1920; my=1200 ; mxsmall=$(( mx / 2 )) ; mysmall=$(( my / 2 ))
+# resolution
+mx=1920; my=1200
+
+# help
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+
+cat <<EOF
+Order of parameters does matter:
+
+    noise color-preset brightnes saturation hue level-dynamics level-start
+    # color-preset may be omited
+
+examples:
+
+    noise                           # default
+    noise deep                      # with colot preset 'deep'
+    noise deep +                    # with color preset 'deep' and 10% brighter
+    noise - +++                     # default, but 10% darker and 30% more saturated
+    noise deep _ +++++ _ + ---      # preset 'deep' and 50% more saturated,
+                                    # slightly more dynamics and darker level start.
+    noise deep -- ++ -------------- # A lil green
+    
+alias example:    
+    
+    alias green='noise deep -- ++ --------------'
+EOF
+
+exit 
+
+fi
 
 # fill colors
-
 tilix="#263945" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3" ; adapta="#222D32" ; deep2="#192F49" ; night="#1C2E7D"
 
 case "$1" in
@@ -102,192 +130,39 @@ elif [[ "$1" == "_" ]]; then # the same
     shift
 fi
 
+# level dynamics/range
+low="18" ; high="24"
+mul="0"
+if [[ "$1" == +* ]]; then # higher dynamics
+    mul=${#1} ; low=$(( low - mul )) ; high=$(( high + mul )) 
+    shift    
+elif [[ "$1" == -* ]]; then # less dynamics
+    mul=${#1} ; low=$(( low + mul )) ; high=$(( high - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
 
-# functions
+# level start
+mul="0"
+if [[ "$1" == +* ]]; then # higher (low and high)
+    mul=${#1} ; low=$(( low + mul )) ; high=$(( high + mul )) 
+    shift    
+elif [[ "$1" == -* ]]; then # lower (low and high)
+    mul=${#1} ; low=$(( low - mul )) ; high=$(( high - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
 
-one () {
-head -c "$((3*mx*my))" /dev/urandom | convert -depth 8 -size "${mx}x${my}" RGB:- -colorspace gray -fill "$color" +level 21%,24% -tint 100 -sharpen 0x1 "$file"
-}
-
+# noise
 two () {
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level 18%,24% -tint "100" -sharpen 0x1 -modulate "$bri,$col,$hue" "$file"
+    set -x
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level ${low}%,${high}% -tint "100" -sharpen 0x1 -modulate "$bri,$col,$hue" "$file"
 }
 # +level 18%,24%
 # -sharpen 0x1
 # -modulate bright,color,hue
-
-disks () {
-convert -size "${mx}x${my}" xc:"gray(20%)" -seed "${RANDOM}" -attenuate 4 +noise poisson -colorspace gray -fill "$color" -define morphology:compose=Multiply -morphology Dilate Disk:6 -blur 0x3 +level 17%,45% -tint 100 "$file"
-}
-
-dots () {
-convert -size "${mxsmall}x${mysmall}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 26 +noise random -colorspace gray -fill "$color" -negate -adaptive-resize "${mx}x${my}" +level 18%,32% -tint 100 "$file"
-}
-
-dotsdisks () {
-convert -size "${mxsmall}x${mysmall}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 26 +noise random -colorspace gray -fill "$color" -negate -adaptive-resize "${mx}x${my}" -define morphology:compose=Multiply -morphology Dilate Disk:6 -blur 0x3 +level 18%,32% -tint 100 "$file"  
-}
-
-multi () {
-convert \( -size "${mxsmall}x${mysmall}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 32 +noise random -colorspace gray -fill "$color" -negate -adaptive-resize "${mx}x${my}" -define morphology:compose=Multiply -morphology Dilate Disk:6 -blur 0x1 -adaptive-resize "${mxsmall}x${mysmall}" -adaptive-resize "${mx}x${my}" \) \
--compose lineardodge \
-\( -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray \) \
--composite +level 18%,22% -tint 100 "$file"
-}
-
-multi2 () {
-convert \( -size "${mxsmall}x${mysmall}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 32 +noise random -colorspace gray -fill "$color" -negate -adaptive-resize "${mx}x${my}" -define morphology:compose=Multiply -morphology Dilate Disk:2 -blur 0x1 -adaptive-resize "${mxsmall}x${mysmall}" -adaptive-resize "${mx}x${my}" \) \
--compose Plus \
-\( -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray \) \
--composite +level 18%,28% -tint 100 "$file"
-}
-
-# https://www.imagemagick.org/Usage/compose/#math
-
-dual () {
-convert \( -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise gaussian  \) \
--compose Pegtop_Light \
-\( -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 3 +noise poisson \) \
--composite -negate -fill "$color" +level 18%,24% -tint 100 "$file"
-}
-
-three () {
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" +noise random -modulate 50,0 -colorspace gray -fill "$color" +level 18%,24% -tint 100 "$file"   
-# +level 18%,24% 
-}
-
-# https://www.imagemagick.org/Usage/text/
-annotate () {
-convert \( -size "${mx}x${my}" xc:"black" -pointsize 40 -interline-spacing 0 -kerning 18 -gravity center -font Antonio-Light -fill "#232323" -annotate +0-35 "$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray  \) "$file" \
--compose add \
--composite "$file"
-}
-# add
-# -attenuate 2
-# -pointsize 40
-# -fill "#202020"
-
-annotatemono () {
-convert \( -size "${mx}x${my}" xc:"black" -pointsize 18 -gravity west -interline-spacing 8 -kerning 0 -font Fantasque-Sans-Mono-Regular -fill "#555555" -annotate +40+0 "$1" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray  \) "$file" \
--compose add \
--composite "$file"
-}
-# noise -t "$(hotkeys)"
-
-# the original
-annotateBox () {
-convert -size "500x500" -background none xc:"black" -interline-spacing 0 -kerning 0 -font Antonio-Light -fill "#232323" caption:"$1" -blur 0x.1 -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
-# -gravity center
-# -pointsize 40
-# -kerning 8
-# -interline-spacing 0
-convert "$text" "$file" -compose add -composite "$file"
-}
-
-# nice, dark and was fast
-annotateBox2 () {
-mxthird=$(( mx / 3 ))
-convert -size "${mxthird}x${mxthird}" -background none xc:"black" \
--interline-spacing 0 -kerning 3 -font Antonio-Light -strokewidth 2 -stroke "#212121" -fill "#232323" \
-caption:"$1" -blur 0x.2 -seed "${RANDOM}" \
--attenuate 12 +noise poisson -colorspace gray -gravity center -trim +level 0%,80% -extent "${mx}x${my}"+0+10 -composite "$text"
-# -gravity center
-# -pointsize 40
-# -kerning 8
-# -interline-spacing 0
-# -attenuate 8 +noise poisson 
-# -colorspace gray
-# -strokewidth 2 -stroke "#212121" -fill "#232323"
-convert "$text" "$file" -compose Minus -composite "$file"
-}
-
-# nice, dark and mono
-annotateBox2mono () {
-mxthird=$(( mx / 3 ))
-convert -size "${mxthird}x${mxthird}" -background none xc:"black" \
--interline-spacing 0 -kerning 0 -font Fantasque-Sans-Mono-Regular -pointsize 20 -fill "#232323" \
-caption:"$1" -blur 0x.2 -seed "${RANDOM}" \
--attenuate 12 +noise poisson -colorspace gray -trim +level 0%,80% -extent "${mx}x${my}"+0+10 -composite "$text"
-# -gravity center
-# -pointsize 40
-# -kerning 8
-# -interline-spacing 0
-# -attenuate 8 +noise poisson 
-# -colorspace gray
-# -strokewidth 2 -stroke "#212121" -fill "#232323"
-convert "$text" "$file" -compose Minus -composite "$file"
-}
-# identify -list font 
-
-# nice, dark and not so fast, might clip
-annotateBox3 () {
-mxthird=$(( mx / 4 ))
-convert -size "${mx}x${mx}" -background none xc:"black" \
--interline-spacing 0 -kerning 0 -font Antonio-Light -pointsize 160 -strokewidth 12 -stroke "#1f1f1f" -fill "#202020" \
-caption:"$1" -blur 0x1 -seed "${RANDOM}" \
--gravity center -trim +level 0%,80% -resize "${mxthird}x${mxthird}" -extent "${mx}x${my}"+0+10 -composite "$text"
-# -gravity center
-# -pointsize 40
-# -kerning 8
-# -interline-spacing 0
-# -attenuate 8 +noise poisson 
-# -colorspace gray
-convert "$text" -attenuate 12 +noise poisson -colorspace gray "$file" -compose Minus -composite "$file"
-}
-
-# slow and brownish
-annotateBox4 () {
-mxthird=$(( mx / 6 ))
-convert -size "${mxthird}x${mxthird}" -background none xc:"black" \
--interline-spacing 0 -kerning 0 -font Antonio-Light -strokewidth 2 -stroke "#212121" -fill "#232323" \
-caption:"$1" -blur 0x.2 -seed "${RANDOM}" \
--attenuate 12 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
-# -gravity center
-# -pointsize 40
-# -kerning 8
-# -interline-spacing 0
-# -attenuate 8 +noise poisson 
-# -colorspace gray
-convert "$text" "$file" -compose Minus -composite "$file"
-convert "$text" -extent "${mx}x${my}"-0-1 "$file" -compose Difference -composite "$file"
-}
-
-# Fixed width, sliver kind of fx (slow)
-annotateBoxFixed () {
-mxthird=$(( mx / 6 )) 
-convert -size "${mx}x${mx}" -background none xc:"black" -interline-spacing 10 -kerning 5 -font Antonio-Light -fill "#373737" caption:"$1" -blur 0x.1 -resize "${mxthird}x" -seed "${RANDOM}" -attenuate 8 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
-# -fill "#232323"
-
-convert "$text" "$file" -compose add -composite "$file"
-convert "$text" -blur 0x1 -extent "${mx}x${my}"-0-1 "$file" -compose minus -composite "$file"
-convert "$text" "$file" -compose add -composite "$file"
-convert "$text" -blur 0x1 -extent "${mx}x${my}"-0+1 "$file" -compose minus -composite "$file"
-convert "$text" -blur 0x2 "$file" -compose add -composite "$file"
-}
-
-# Fixed width, plastic kind of fx (slow)
-annotateBoxFixed2 () {
-mxthird=$(( mx / 7 )) 
- 
-convert -size "${mx}x${mx}" -background none xc:"black" -interline-spacing 10 -kerning 5 -font Antonio-Light -fill "#474747" caption:"$1" -blur 0x.1 -resize "${mxthird}x" -seed "${RANDOM}" -attenuate 12 +noise poisson -colorspace gray -gravity center -trim -extent "${mx}x${my}"+0+10 -composite "$text"
-# -fill "#232323"
-
-convert "$text" -blur 0x1 -extent "${mx}x${my}"-0-1 "$file" -compose minus -composite "$file"
-convert "$text" -blur 0x2 -extent "${mx}x${my}"-0+2 "$file" -compose add -composite "$file"
-convert "$text" "$file" -compose add -composite "$file"
-}
-
-setwall () {
-    nitrogen --set-tiled "$file"
-}
-
-setwall1 () {
-    nitrogen --head=0 --set-tiled "$file"
-}
-
-setwall2 () {
-    nitrogen --head=1 --set-tiled "$file"
-}
 
 restart() {
 if pgrep -x "$1" > /dev/null
@@ -300,105 +175,12 @@ else
 fi
 }
 
-clean() {
-    rm "/tmp/text.png"
-    rm "/tmp/noise.png"
+setwall () {
+    nitrogen --set-tiled "$file"
 }
 
-fortunefunc () {
-# limit string lenght
-string="$(fortune | tr -d '\t')"
-until ! [ ${#string} -ge 100 ]; do
-    string="$(fortune | tr -d '\t')"
-done
-    
-echo "$string"    
-}
-# -s is for short ones
+# action
+two
+setwall
+restart webar > /dev/null 2>&1
 
-# do it
-
-#set -x
-
-#setwall1
-
-# You will need a defined font installed for this to work
-#annotate "$(lsb_release -cs | tr '[:lower:]' '[:upper:]' )" 
-#annotate "bulk"
-#annotate "So it it looks a lil green."
-
-#annotateBox "$(fortune -s cbbl | tr -d '\t' | tr -d '\n' | tr -s " ")"
-
-# -------------------------------
-# both monitors
-
-if [[ "$1" != "-t" ]]; then
-    two
-    setwall
-    restart wbar
-    exit 0
-    # we exit here
-else
-    two
-    setwall1
-    # and continue
-
-
-    # -------------------------------
-    # 2nd monitor
-
-    my=1080
-    # https://brontosaurusrex.github.io/2018/08/07/seen/
-    #until var="$(seen "$(fortune -s)" 2>/dev/null)"; do : ; done 
-    
-    # Assuming next one after -t is some string
-    if ! [[ -z "$2" ]]; then
-        var="$2"
-        annotatemono "$var"
-    else
-        var="$(randomnews)" || var="$(randomWordsFromDict)" || var="$(uname -a)"
-        annotateBox2 "$var"
-    fi
-
-    #annotateBox2 "$(echo "$var" | tr -d '\t' | tr -d '\n' | tr -s " " | grep -ve '--')"
-
-    setwall2
-
-    #set +x
-
-    restart wbar
-
-fi
-
-# notes
-# https://www.imagemagick.org/script/command-line-options.php?ImageMagick=ogkomddlqbb40ivi7b0ocrddr4#noise
-
-# add some text
-# mogrify -pointsize 20 -gravity center -font cuprum -annotate 0 "$(uname -a)" /tmp/noise.png
- 
-# compose methods
-
-     #Over
-     #In
-     #Out
-     #Atop
-     #Xor
-     #Plus
-     #Minus
-     #Add
-     #Subtract
-     #Difference
-     #Multiply
-     #Bumpmap
-     #Copy
-     #CopyRed
-     #CopyGreen
-     #CopyBlue
-     #CopyOpacity
-     
-     #Lighten_Intensity
-     #Darken_Intensity
-     #Lighten
-     #Darken
-     #Difference
-     #Exclusion
