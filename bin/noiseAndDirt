@@ -1,0 +1,219 @@
+#!/bin/bash
+
+# noiseAndDirt (lite)
+
+# give me some noiseAndDirt for wallpaper
+
+# required: imagemagick, nitrogen
+
+# usage: noiseAndDirt --help
+
+# checks
+command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
+command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; exit 1; }
+
+# store & vars
+
+noise="/tmp/noise.png"   # noise
+dirt="/tmp/dirt.png"     # dirt
+dirt2="/tmp/dirt2.png"   # dirt2
+tmp="/tmp/tmp.png"       # tmp
+final="/tmp/final.png"   # final
+
+# resolution
+mx=1920; my=1200
+
+# help
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+
+cat <<EOF
+Order of parameters does matter:
+
+    noiseAndDirt color-preset brightnes saturation hue level-dynamics level-start
+    # color-preset may be omited
+
+examples:
+
+    noiseAndDirt                           # default
+    noiseAndDirt deep                      # with color preset 'deep'
+    noiseAndDirt deep +                    # with color preset 'deep' and 10% brighter
+    noiseAndDirt - +++                     # default, but 10% darker and 30% more saturated
+    noiseAndDirt deep _ +++++ _ + ---      # preset 'deep' and more saturated,
+                                           # slightly more dynamics and darker level start.
+    noiseAndDirt deep -- ++ -------------- # A lil green
+    noiseAndDirt -- +++++++++++++++++      # darker but more colorful
+    
+alias examples:    
+    
+    alias greendirt='noiseAndDirt deep -- ++ --------------'
+    alias bluedirt='noiseAndDirt deep - ++++++++++ _ + --'
+    alias bluedarkdirt='noiseAndDirt -- +++++++++++++++++'
+    alias pinkdirt='noiseAndDirt deep _ + ++++++++++++++++++++++++++++ _ +++'
+    alias nightdirt='noiseAndDirt - +++ +++++++ +++ ---'
+    alias violetdirt='noiseAndDirt deep _ + ++++++++++++ _ +++'
+EOF
+
+exit 
+
+fi
+
+# fill colors
+tilix="#263945" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3" ; adapta="#222D32" ; deep2="#192F49" ; night="#1C2E7D"
+
+case "$1" in
+     tilix)          
+          color="$tilix"
+          shift
+          ;;
+     crunch)
+          color="$crunch"
+          shift
+          ;;
+     deep)
+          color="$deep"
+          shift
+          ;; 
+     royal)
+          color="$royal"
+          shift
+          ;;
+     adapta)
+          color="$adapta"
+          shift
+          ;;
+     deep2)
+          color="$deep2"
+          shift                    
+          ;; 
+     night)
+          color="$night"
+          shift                    
+          ;; 
+     *)
+          color="$tilix"
+          ;;
+esac
+
+# modulate bright,color,hue
+def="100" ; bri="100" ; col="100" ; hue="100"
+
+# bright
+mul="0"
+if [[ "$1" == +* ]]; then # lighter
+    mul=$(( 10 * ${#1} )) ; bri=$(( def + mul ))    
+    shift    
+elif [[ "$1" == -* ]]; then # darker
+    mul=$(( 10 * ${#1} )) ; bri=$(( def - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
+
+# saturation
+mul="0"
+if [[ "$1" == +* ]]; then # more saturated
+    mul=$(( 10 * ${#1} )) ; col=$(( def + mul ))    
+    shift    
+elif [[ "$1" == -* ]]; then # less saturated
+    mul=$(( 10 * ${#1} )) ; col=$(( def - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
+
+# hue
+mul="0"
+if [[ "$1" == +* ]]; then # more saturated
+    mul=$(( 2 * ${#1} )) ; hue=$(( def + mul ))    
+    shift    
+elif [[ "$1" == -* ]]; then # less saturated
+    mul=$(( 2 * ${#1} )) ; hue=$(( def - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
+
+# level dynamics/range
+low="5" ; high="59"
+
+mul="0"
+if [[ "$1" == +* ]]; then # higher dynamics
+    mul=${#1} ; low=$(( low - mul )) ; high=$(( high + mul )) 
+    shift    
+elif [[ "$1" == -* ]]; then # less dynamics
+    mul=${#1} ; low=$(( low + mul )) ; high=$(( high - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
+
+# level start
+mul="0"
+if [[ "$1" == +* ]]; then # higher (low and high)
+    mul=${#1} ; low=$(( low + mul )) ; high=$(( high + mul )) 
+    shift    
+elif [[ "$1" == -* ]]; then # lower (low and high)
+    mul=${#1} ; low=$(( low - mul )) ; high=$(( high - mul ))
+    shift
+elif [[ "$1" == "_" ]]; then # the same
+    shift
+fi
+
+# noise
+noise () {
+set -x
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson +level 0%,80% "$noise"
+set +x
+}
+# +level 18%,24%
+# -sharpen 0x1
+# -modulate bright,color,hue
+
+# dirt
+dirt () {
+set -x
+convert "$noise" -canny 0x1+0%+50% -blur 0x.3 -negate +level 0%,80% "$dirt"
+set +x
+}
+
+# dirt2
+dirt2 () {
+set -x
+convert "$noise" -canny 0x3+0%+20% -blur 0x.5 -negate +level 0%,30% "$dirt2"
+set +x
+}
+
+# compose
+compose () {
+set -x
+convert "$dirt" +level 3%,45% "$noise" +level 3%,35% -compose plus -composite +repage "$tmp"
+
+convert "$tmp" "$dirt2" -compose plus -composite +repage -colorspace gray -fill "$color" +repage +level ${low}%,${high}% -tint "100" -modulate "$bri,$col,$hue" "$final"
+set +x
+}
+
+restart() {
+if pgrep -x "$1" > /dev/null
+then
+    (echo "$1 running, restarting"
+    killall -w "$1"
+    "${1}" &) &
+else
+    echo "$1 wasn't running"
+fi
+}
+
+setwall () {
+    nitrogen --set-tiled "$final"
+}
+
+# action
+noise
+    echo
+dirt
+    echo
+dirt2
+    echo
+compose
+setwall
+restart wbar > /dev/null 2>&1
