@@ -44,11 +44,13 @@ examples:
     noise deep _ +++++ _ + ---      # preset 'deep' and 50% more saturated,
                                     # slightly more dynamics and darker level start.
     noise deep -- ++ -------------- # A lil green
+    noise -- +++++++++++++++++      # darker but more colorful
     
 alias examples:    
     
     alias green='noise deep -- ++ --------------'
     alias blue='noise deep - ++++++++++ _ + --'
+    alias bluedark='noise -- +++++++++++++++++'
     alias pink='noise deep _ + ++++++++++++++++++++++++++++ _ +++'
     alias night='noise - +++ +++++++ +++ ---'
 EOF
