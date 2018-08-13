@@ -7,14 +7,7 @@
 # required: imagemagick, nitrogen
 # wouldbenice: seen (script)
 
-# usage, order of parameters is important:
-# noise
-# noise royal
-# noise -t
-# noise royal -t
-# noise night -t "string"
-# noise _ ++ _              # increase saturation for 20%
-# noise deep + +            # increase brightness and saturation for 10%
+# usage: noise --help
 
 # checks
 command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
@@ -161,7 +154,7 @@ elif [[ "$1" == "_" ]]; then # the same
 fi
 
 # noise
-two () {
+noise () {
 set -x
 convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level ${low}%,${high}% -tint "100" -sharpen 0x1 -modulate "$bri,$col,$hue" "$file"
 set +x
@@ -186,7 +179,6 @@ setwall () {
 }
 
 # action
-two
+noise
 setwall
 restart wbar > /dev/null 2>&1
-
