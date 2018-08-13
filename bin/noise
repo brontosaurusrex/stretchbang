@@ -38,7 +38,7 @@ Order of parameters does matter:
 examples:
 
     noise                           # default
-    noise deep                      # with colot preset 'deep'
+    noise deep                      # with color preset 'deep'
     noise deep +                    # with color preset 'deep' and 10% brighter
     noise - +++                     # default, but 10% darker and 30% more saturated
     noise deep _ +++++ _ + ---      # preset 'deep' and 50% more saturated,
@@ -157,8 +157,9 @@ fi
 
 # noise
 two () {
-    set -x
+set -x
 convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level ${low}%,${high}% -tint "100" -sharpen 0x1 -modulate "$bri,$col,$hue" "$file"
+set +x
 }
 # +level 18%,24%
 # -sharpen 0x1
@@ -182,5 +183,5 @@ setwall () {
 # action
 two
 setwall
-restart webar > /dev/null 2>&1
+restart wbar > /dev/null 2>&1
 
