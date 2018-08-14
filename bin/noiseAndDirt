@@ -4,7 +4,7 @@
 
 # give me some noiseAndDirt for wallpaper
 
-# required: imagemagick, nitrogen
+# required: imagemagick, nitrogen, xrandr
 
 # usage: noiseAndDirt --help
 
@@ -14,14 +14,30 @@ START=$(date +%s.%N)
 # checks
 command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
 command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; exit 1; }
+command -v xrandr >/dev/null 2>&1 || { echo "I need xrandr, exiting." >&2; exit 1; }
 
 # store & vars
+tmp="/tmp/noiseAndDirt-$RANDOM-$$"
+trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT # comment out this line to keep images
+mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
 
-noise="/tmp/noise.png"   # noise
-dirt="/tmp/dirt.png"     # dirt
-dirt2="/tmp/dirt2.png"   # dirt2
-tmp="/tmp/tmp.png"       # tmp
-final="/tmp/final.png"   # final
+noise="$tmp/noise.png"   # noise
+dirt="$tmp/dirt.png"     # dirt
+dirt2="$tmp/dirt2.png"   # dirt2
+dirt3="$tmp/dirt3.png"   # dirt3
+tmpcomp="$tmp/tmp.png"   # tmpcomp
+tmpcomp2="$tmp/tmp2.png" # tmpcomp2
+tmpcomp3="$tmp/tmp3.png" # tmpcomp3
+final="$tmp/final.png"   # final
+
+debug="0"
+
+# print progress
+dot () {
+    printf "."
+}
+
+touch "$noise" "$dirt" "$dirt2" "$tmpcomp" "$final" || exit
 
 # resolution
 mx=1920; my=1200
@@ -54,6 +70,8 @@ alias examples:
     alias pinkdirt='noiseAndDirt deep _ + ++++++++++++++++++++++++++++ _ +++'
     alias nightdirt='noiseAndDirt - +++ +++++++ +++ ---'
     alias violetdirt='noiseAndDirt deep ++++ ++++ ++++++++++++ _ ++'
+    alias nicedirt='noiseAndDirt deep _ +++++ _ ----------- ----'
+    alias nicedirt2='noiseAndDirt deep - ++++ ----------------------------------------------------------------------------------------------- ++'
 EOF
 
 exit 
@@ -164,9 +182,10 @@ fi
 
 # noise
 noise () {
-set -x
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson +level 0%,80% "$noise"
-set +x
+(( debug )) && set -x
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson +level 0%,80% +repage "$noise"
+(( debug )) && set +x
+dot
 }
 # +level 18%,24%
 # -sharpen 0x1
@@ -174,25 +193,35 @@ set +x
 
 # dirt
 dirt () {
-set -x
-convert "$noise" -canny 0x1+0%+50% -blur 0x.3 -negate +level 0%,80% "$dirt"
-set +x
+(( debug )) && set -x
+convert "$noise" -canny 0x.3+0%+50% -blur 0x.3 -negate +level 0%,80% "$dirt"
+dot
 }
 
 # dirt2
 dirt2 () {
-set -x
 convert "$noise" -canny 0x3+0%+20% -blur 0x.5 -negate +level 0%,30% "$dirt2"
-set +x
+dot
+}
+
+# dirt3 (big and blurry)
+dirt3 () {
+convert "$noise" -canny 0x50+0%+50% -blur 0x140 -negate +level 0%,60% "$dirt3"
+(( debug )) && set +x
+dot
 }
 
 # compose
 compose () {
-set -x
-convert "$dirt" +level 3%,45% "$noise" +level 3%,35% -compose plus -composite +repage "$tmp"
-
-convert "$tmp" "$dirt2" -compose plus -composite +repage -colorspace gray -fill "$color" +repage +level ${low}%,${high}% -tint "100" -modulate "$bri,$col,$hue" "$final"
-set +x
+(( debug )) && set -x
+convert "$dirt" +level 3%,45% "$noise" +level 3%,35% -compose plus -composite +repage "$tmpcomp" &
+convert "$dirt3" +level 3%,45% +repage "$tmpcomp2" ; wait
+dot
+convert "$tmpcomp" "$tmpcomp2" -compose plus -composite +repage "$tmpcomp3"
+dot
+convert "$tmpcomp3" "$dirt2" -compose plus -composite +repage -colorspace gray -fill "$color" +repage +level ${low}%,${high}% -tint "100" -modulate "$bri,$col,$hue" "$final"
+(( debug )) && set +x
+dot
 }
 
 restart() {
@@ -210,16 +239,32 @@ setwall () {
     nitrogen --set-tiled "$final"
 }
 
-# action
-noise
-    echo
-dirt & dirt2
-    echo
-compose
-setwall
+# How many monitors connected
+monitors=$(xrandr -d :0 -q | grep ' connected' -c)
+
+# is monitors a number
+if ! [[ $monitors =~ ^[1-9]+$ ]]; then
+    >&2 echo "No monitors detected, assuming one."
+    monitors="1"
+fi
+
+for (( c=1; c<=monitors; c++ ))
+do
+	(( debug )) && echo "monitor $c"
+        printf " %s " "$c"
+    noise
+        (( debug )) && echo
+    dirt & dirt2 & dirt3 ; wait 
+        (( debug )) && echo
+    compose 
+    nitrogen --head=$(( c - 1 )) --set-tiled "$final" > /dev/null 2>&1 || exit
+        (( debug )) && beepspeakers
+done
+
 restart wbar > /dev/null 2>&1
 
 # benchmark end
+printf " "
 END=$(date +%s.%N)
-DIFF=$(echo "$END - $START" | bc)
-echo "done in $DIFF seconds"
+DIFF=$(echo "$END - $START" | bc -l)
+printf "noiseAndDirt done in %.0f seconds\n" "$DIFF"
