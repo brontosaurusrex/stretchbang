@@ -8,6 +8,9 @@
 
 # usage: noiseAndDirt --help
 
+# benchmark start
+START=$(date +%s.%N)
+
 # checks
 command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
 command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; exit 1; }
@@ -210,10 +213,13 @@ setwall () {
 # action
 noise
     echo
-dirt
-    echo
-dirt2
+dirt & dirt2
     echo
 compose
 setwall
 restart wbar > /dev/null 2>&1
+
+# benchmark end
+END=$(date +%s.%N)
+DIFF=$(echo "$END - $START" | bc)
+echo "done in $DIFF seconds"
