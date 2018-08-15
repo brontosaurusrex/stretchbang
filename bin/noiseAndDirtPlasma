@@ -252,8 +252,11 @@ dot
 
 # plasma generate
 plasmagen () {
-convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x300 -auto-level -blur 0x300 +level 3%,95% "$tmp/plasma.png"
+#convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x500 -auto-level -blur 0x300 +level 3%,95% "$tmp/plasma.png"
+blur="$(( RANDOM % 550 ))" && printf "$blur"
+convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x90 +level 3%,95% "$tmp/plasma.png"
 printf "p"
+# -blur 0x300 -auto-level -blur 0x300
 }
 
 # compose
@@ -266,7 +269,7 @@ convert "$tmpcomp" "$tmpcomp2" -compose plus -composite +repage "$tmpcomp3"
 dot
 
 # final compose
-convert "$tmpcomp3" "$dirt2" -compose plus -composite +repage -colorspace gray -fill "$color" +repage -tint "100" "$final"
+convert "$tmpcomp3" "$dirt2" -compose plus -composite +repage "$final"
 dot
 
 # plasma post-compose
@@ -336,6 +339,8 @@ keepfunc () {
     #pngcrush -q -ow "$backup"
     printf "b%s" "$c"
     #echo "stored as $backup"
+    
+    cp "$tmp/plasma.png" "$keep/plasma-${RANDOM}.png"
 }
 
 # How many monitors connected
