@@ -18,7 +18,7 @@ command -v xrandr >/dev/null 2>&1 || { echo "I need xrandr, exiting." >&2; exit 
 
 # store & vars
 tmp="/tmp/noiseAndDirt-$RANDOM-$$"
-trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT # comment out this line to keep images
+trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT # comment out this line to keep all images
 mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
 
 noise="$tmp/noise.png"   # noise
@@ -30,7 +30,16 @@ tmpcomp2="$tmp/tmp2.png" # tmpcomp2
 tmpcomp3="$tmp/tmp3.png" # tmpcomp3
 final="$tmp/final.png"   # final
 
+keep="$HOME/data/noiseAndDirt" # keep last N finals
+keepsome="0"
+
 debug="0"
+
+# if backup/keepsome is enabled, then we want pngcrush
+if (( keepsome )); then
+    command -v pngcrush >/dev/null 2>&1 || { echo "I need pngcrush, exiting." >&2; exit 1; }
+    mkdir -p "$keep" || exit
+fi 
 
 # print progress
 dot () {
@@ -206,7 +215,8 @@ dot
 
 # dirt3 (big and blurry)
 dirt3 () {
-convert "$noise" -canny 0x50+0%+50% -blur 0x140 -negate +level 0%,60% "$dirt3"
+convert "$noise" -canny 0x4+0%+55% -blur 0x140 -negate +level 0%,60% "$dirt3"
+#convert "$noise" -canny 0x50+0%+50% -blur 0x140 -negate +level 0%,60% "$dirt3"
 (( debug )) && set +x
 dot
 }
@@ -239,6 +249,16 @@ setwall () {
     nitrogen --set-tiled "$final"
 }
 
+keepfunc () {
+    backup="$keep/noiseAndDirt-${RANDOM}.png"
+    cp "$final" "$backup"
+    #mogrify -depth 8 "$backup" # convert to 8 bit per channel
+    cd "$keep" || exit
+    pngcrush -q -ow "$backup"
+    printf "b%s" "$c"
+    #echo "stored as $backup"
+}
+
 # How many monitors connected
 monitors=$(xrandr -d :0 -q | grep ' connected' -c)
 
@@ -258,13 +278,21 @@ do
         (( debug )) && echo
     compose 
     nitrogen --head=$(( c - 1 )) --set-tiled "$final" > /dev/null 2>&1 || exit
+    
+        (( keepsome )) && keepfunc &
+    
         (( debug )) && beepspeakers
 done
 
 restart wbar > /dev/null 2>&1
+
+wait
 
 # benchmark end
 printf " "
 END=$(date +%s.%N)
 DIFF=$(echo "$END - $START" | bc -l)
 printf "noiseAndDirt done in %.0f seconds\n" "$DIFF"
+
+# report disk usage if backup/keepsome is enabled
+(( keepsome )) &&  printf " backup disk space used: " && du -hs "$keep"
