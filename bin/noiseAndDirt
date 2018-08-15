@@ -215,11 +215,15 @@ dot
 
 # dirt3 (big and blurry)
 dirt3 () {
-convert "$noise" -canny 0x4+0%+55% -blur 0x140 -negate +level 0%,60% "$dirt3"
+convert "$noise" -canny 0x4+0%+55% -blur 0x160 -negate +level 0%,60% "$dirt3"
+# -blur 0x140
 #convert "$noise" -canny 0x50+0%+50% -blur 0x140 -negate +level 0%,60% "$dirt3"
+#convert "$noise" -canny 0x$((RANDOM % 100 + 1))+0%+$((RANDOM % 100 + 1))% -blur 0x$((RANDOM % 200 + 1)) -negate +level 0%,$((RANDOM % 80 + 1))% "$dirt3"
 (( debug )) && set +x
 dot
 }
+# $((RANDOM % 100 + 1))
+
 
 # compose
 compose () {
@@ -252,7 +256,7 @@ setwall () {
 keepfunc () {
     backup="$keep/noiseAndDirt-${RANDOM}.png"
     cp "$final" "$backup"
-    #mogrify -depth 8 "$backup" # convert to 8 bit per channel
+    mogrify -depth 8 "$backup" # convert to 8 bit per channel
     cd "$keep" || exit
     pngcrush -q -ow "$backup"
     printf "b%s" "$c"
