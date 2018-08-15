@@ -82,14 +82,14 @@ examples:
     
 alias examples:    
     
-    alias greendirt='noiseAndDirt deep -- ++ --------------'
+    alias greendirt='noiseAndDirt deep -- ++ -------------- _ _ ---'
     alias bluedirt='noiseAndDirt deep - ++++++++++ _ + --'
     alias bluedarkdirt='noiseAndDirt -- +++++++++++++++++'
-    alias pinkdirt='noiseAndDirt deep _ + ++++++++++++++++++++++++++++ _ +++'
+    alias pinkdirt='noiseAndDirt deep _ + ++++++++++++++++++++++++++++ _ +++ ----'
     alias nightdirt='noiseAndDirt - +++ +++++++ +++ ---'
     alias violetdirt='noiseAndDirt deep ++++ ++++ ++++++++++++ _ ++'
     alias nicedirt='noiseAndDirt deep _ +++++ _ ----------- ----'
-    alias skydirt='noiseAndDirt deep _ +++++++++++ --- ---'
+    alias skydirt='noiseAndDirt deep _ +++++++++++ --- --- _ ----'
     alias flatdirt='noiseAndDirt deep _ ++++++++ _ ------------------ ----'
 EOF
 
