@@ -21,6 +21,7 @@ tmp="/tmp/noiseAndDirt-$RANDOM-$$"
 trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT # comment out this line to keep all images
 mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
 
+# these are temporary
 noise="$tmp/noise.png"   # noise
 dirt="$tmp/dirt.png"     # dirt
 dirt2="$tmp/dirt2.png"   # dirt2
@@ -30,11 +31,14 @@ tmpcomp2="$tmp/tmp2.png" # tmpcomp2
 tmpcomp3="$tmp/tmp3.png" # tmpcomp3
 final="$tmp/final.png"   # final
 
-keep="$HOME/data/noiseAndDirt" # keep backup dir
-keepsome="0"      # boolean, keep backup of the final image
+# keep backups and where
+keepsome="0" # bool
+keep="$HOME/data/noiseAndDirt"
+    
+# boolean, if true single image is generated
+monitorsforce="0" 
 
-monitorsforce="0" # boolean, if true single tile is assumed
-
+# for me
 debug="0"
 
 # resolution
@@ -85,6 +89,7 @@ alias examples:
     alias nicedirt='noiseAndDirt deep _ +++++ _ ----------- ----'
     alias nicedirt2='noiseAndDirt deep - ++++ ----------------------------------------------------------------------------------------------- ++'
     alias skydirt='noiseAndDirt deep _ +++++++++++ --- ---'
+    alias flatdirt='noiseAndDirt deep _ ++++++++ _ ------------------ ----'
 EOF
 
 exit 
