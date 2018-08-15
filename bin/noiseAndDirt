@@ -84,6 +84,7 @@ alias examples:
     alias violetdirt='noiseAndDirt deep ++++ ++++ ++++++++++++ _ ++'
     alias nicedirt='noiseAndDirt deep _ +++++ _ ----------- ----'
     alias nicedirt2='noiseAndDirt deep - ++++ ----------------------------------------------------------------------------------------------- ++'
+    alias skydirt='noiseAndDirt deep _ +++++++++++ --- ---'
 EOF
 
 exit 
@@ -202,6 +203,10 @@ dot
 # +level 18%,24%
 # -sharpen 0x1
 # -modulate bright,color,hue
+
+# See
+# http://brunogirin.blogspot.com/2009/09/making-noise-with-imagemagick.html
+# -virtual-pixel tile 
 
 # dirt
 dirt () {
