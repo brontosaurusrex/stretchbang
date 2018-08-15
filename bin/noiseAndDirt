@@ -286,6 +286,18 @@ mv "$tmp/final_fx.png" "$final"
 dot
 }
 
+# rotate maybe
+rotateMaybe () {
+(( debug )) && set -x
+if (( RANDOM %2 )) ; then
+    mogrify -rotate 180 "$final"
+    printf "r"
+else
+    printf "n"
+fi
+(( debug )) && set +x
+}
+
 restart() {
 if pgrep -x "$1" > /dev/null
 then
@@ -304,7 +316,7 @@ setwall () {
 keepfunc () {
     backup="$keep/noiseAndDirt-${RANDOM}.png"
     cp "$final" "$backup"
-    mogrify -depth 8 "$backup" # convert to 8 bit per channel
+    #mogrify -depth 8 "$backup" # convert to 8 bit per channel
     cd "$keep" || exit
     pngcrush -q -ow "$backup"
     printf "b%s" "$c"
@@ -333,6 +345,8 @@ do
     dirt & dirt2 & dirt3 ; wait 
         (( debug )) && echo
     compose
+    
+    rotateMaybe
     
     degrade
     
