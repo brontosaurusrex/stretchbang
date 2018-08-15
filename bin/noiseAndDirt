@@ -30,10 +30,16 @@ tmpcomp2="$tmp/tmp2.png" # tmpcomp2
 tmpcomp3="$tmp/tmp3.png" # tmpcomp3
 final="$tmp/final.png"   # final
 
-keep="$HOME/data/noiseAndDirt" # keep last N finals
-keepsome="0"
+keep="$HOME/data/noiseAndDirt" # keep backup dir
+keepsome="0"      # boolean, keep backup of the final image
+
+monitorsforce="0" # boolean, if true single tile is assumed
 
 debug="0"
+
+# resolution
+mx=1920; my=1200
+(( monitorsforce )) && mx=3840 # if single-tile then we need bigger res
 
 # if backup/keepsome is enabled, then we want pngcrush
 if (( keepsome )); then
@@ -47,9 +53,6 @@ dot () {
 }
 
 touch "$noise" "$dirt" "$dirt2" "$tmpcomp" "$final" || exit
-
-# resolution
-mx=1920; my=1200
 
 # help
 if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
@@ -264,7 +267,11 @@ keepfunc () {
 }
 
 # How many monitors connected
-monitors=$(xrandr -d :0 -q | grep ' connected' -c)
+if (( monitorsforce )); then
+    monitors="1"
+else
+    monitors=$(xrandr -d :0 -q | grep ' connected' -c)
+fi
 
 # is monitors a number
 if ! [[ $monitors =~ ^[1-9]+$ ]]; then
@@ -281,8 +288,15 @@ do
     dirt & dirt2 & dirt3 ; wait 
         (( debug )) && echo
     compose 
-    nitrogen --head=$(( c - 1 )) --set-tiled "$final" > /dev/null 2>&1 || exit
     
+    if (( monitorsforce )); then
+        # tile just one
+        nitrogen --set-tiled "$final" > /dev/null 2>&1 || exit
+    else
+        # each monitor has its own bitmap
+        nitrogen --head=$(( c - 1 )) --set-tiled "$final" > /dev/null 2>&1 || exit
+    fi
+
         (( keepsome )) && keepfunc &
     
         (( debug )) && beepspeakers
