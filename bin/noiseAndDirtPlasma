@@ -262,6 +262,11 @@ blur="$((30 + RANDOM % 20))"  && printf "$blur"
 
 convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -scale 10% -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x23 +level 3%,55% -resize 1000% "$tmp/plasma.png"
 
+#mxs=$(( mx / 10 ))
+#mys=$(( my / 10 ))
+
+#convert -size "${mxs}x${mys}" xc: -seed "${RANDOM}" +noise poisson +repage -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x23 +level 3%,55% -resize 1000% "$tmp/plasma.png"
+
 #mogrify -channel Red -evaluate set 0 +channel "$tmp/plasma.png"
 
 printf "p"
