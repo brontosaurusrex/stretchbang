@@ -33,7 +33,7 @@ final="$tmp/final.png"   # final
 
 # keep backups and where
 keepsome="1" # bool
-keep="$HOME/data/noiseAndDirt"
+keep="$HOME/noiseAndDirt"
     
 # boolean, if true single image is generated
 monitorsforce="0" 
@@ -253,9 +253,15 @@ dot
 # plasma generate
 plasmagen () {
 #convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x500 -auto-level -blur 0x300 +level 3%,95% "$tmp/plasma.png"
-blur="$(( RANDOM % 550 ))" && printf "$blur"
+blur="$((100 + RANDOM % 400))"  && printf "$blur"
+#blur="$(( RANDOM % 550 ))" && printf "$blur"
 convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x90 +level 3%,95% "$tmp/plasma.png"
+mogrify -channel Red -evaluate set 0 +channel "$tmp/plasma.png"
+#mogrify -channel Green -evaluate set 0 +channel "$tmp/plasma.png"
 printf "p"
+
+# remove red channel
+# convert plasma-32550.png -channel Red -evaluate set 0 +channel test.png
 # -blur 0x300 -auto-level -blur 0x300
 }
 
