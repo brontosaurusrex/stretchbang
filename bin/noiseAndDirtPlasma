@@ -214,7 +214,7 @@ fi
 # noise
 noise () {
 (( debug )) && set -x
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson +level 0%,80% +repage "$noise"
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 4 +noise poisson +level 0%,80% +repage "$noise"
 (( debug )) && set +x
 dot
 }
