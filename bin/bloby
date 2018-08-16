@@ -170,6 +170,7 @@ elif [ "$1" == "-c" ] || [ "$1" == "--compare" ]; then
     for dir in ./*/; do 
     
         prettydir=$(basename "${dir}")
+        echo "$prettydir"
     
         if  ! [[ $folder -ef $dir ]]; then
             if diff -rq "$folder" "$dir"; then
