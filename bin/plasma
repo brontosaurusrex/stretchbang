@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# noiseAndDirt (lite)
+# plasma (forked from noiseAndDirt )
 
-# give me some noiseAndDirt for wallpaper
+# give me some plasma and noise and dirt for wallpaper
 
 # required: imagemagick, nitrogen, xrandr
 
-# usage: noiseAndDirt --help
+# usage: plasma --help
 
 # benchmark start
 START=$(date +%s.%N)
@@ -33,7 +33,7 @@ final="$tmp/final.png"   # final
 
 # keep backups and where
 keepsome="1" # bool
-keep="$HOME/noiseAndDirt"
+keep="$HOME/data/noiseAndDirt"
     
 # boolean, if true single image is generated
 monitorsforce="0" 
@@ -64,75 +64,20 @@ if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
 cat <<EOF
 Order of parameters does matter:
 
-    noiseAndDirt color-preset brightnes saturation hue level-dynamics level-start degradeFX
-                 0            1         2          3   4              5           6
-    # color-preset may be omited (deep, royal, night, tilix=default)
+    plasma brightnes saturation hue level-dynamics level-start degradeFX
+           1         2          3   4              5           6
+    # degradeFX is disabled by default.
 
 examples:
 
-    noiseAndDirt                           # default
-    noiseAndDirt deep                      # with color preset 'deep'
-    noiseAndDirt deep +                    # with color preset 'deep' and 10% brighter
-    noiseAndDirt - +++                     # default, but 10% darker and 30% more saturated
-    noiseAndDirt deep _ +++++ _ + ---      # preset 'deep' and more saturated,
-                                           # slightly more dynamics and darker level start.
-    noiseAndDirt deep -- ++ -------------- # A lil green
-    noiseAndDirt -- +++++++++++++++++      # darker but more colorful
-    noiseAndDirt _ _ _ _ _ ----            # disable video degrade fx
-    
-alias examples:    
-    
-    alias greendirt='noiseAndDirt deep -- ++ -------------- _ _ ---'
-    alias bluedirt='noiseAndDirt deep - ++++++++++ _ + --'
-    alias bluedarkdirt='noiseAndDirt -- +++++++++++++++++'
-    alias pinkdirt='noiseAndDirt deep _ + ++++++++++++++++++++++++++++ _ +++ ----'
-    alias nightdirt='noiseAndDirt - +++ +++++++ +++ ---'
-    alias violetdirt='noiseAndDirt deep ++++ ++++ ++++++++++++ _ ++'
-    alias nicedirt='noiseAndDirt deep _ +++++ _ ----------- ----'
-    alias skydirt='noiseAndDirt deep _ +++++++++++ --- --- _ ----'
-    alias flatdirt='noiseAndDirt deep _ ++++++++ _ ------------------ ----'
+    plasma                           # default
+    plasma - +++                     # default, but 10% darker and 30% more saturated
+
 EOF
 
 exit 
 
 fi
-
-# fill colors
-tilix="#263945" ; crunch="#222D32" ; deep="#0D314D" ; royal="#2842B3" ; adapta="#222D32" ; deep2="#192F49" ; night="#1C2E7D"
-
-case "$1" in
-     tilix)          
-          color="$tilix"
-          shift
-          ;;
-     crunch)
-          color="$crunch"
-          shift
-          ;;
-     deep)
-          color="$deep"
-          shift
-          ;; 
-     royal)
-          color="$royal"
-          shift
-          ;;
-     adapta)
-          color="$adapta"
-          shift
-          ;;
-     deep2)
-          color="$deep2"
-          shift                    
-          ;; 
-     night)
-          color="$night"
-          shift                    
-          ;; 
-     *)
-          color="$tilix"
-          ;;
-esac
 
 # modulate bright,color,hue
 def="100" ; bri="100" ; col="100" ; hue="100"
@@ -256,7 +201,7 @@ plasmagen () {
 #blur="$(( RANDOM % 550 ))" && printf "$blur"
 # convert -scale 10% -blur 0x2.5 -resize 1000% sample.jpg blurred_fast.jpg
 
-blur="$((30 + RANDOM % 20))"  && printf "$blur"
+blur="$((30 + RANDOM % 20))"  && printf "%s" "$blur"
 
 #convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x190 +level 3%,45% "$tmp/plasma.png"
 
@@ -349,7 +294,7 @@ setwall () {
 }
 
 keepfunc () {
-    backup="$keep/noiseAndDirt-${RANDOM}.png"
+    backup="$keep/noiseAndPlasma-${RANDOM}.png"
     cp "$final" "$backup"
     #mogrify -depth 8 "$backup" # convert to 8 bit per channel
     cd "$keep" || exit
@@ -357,7 +302,7 @@ keepfunc () {
     printf "b%s" "$c"
     #echo "stored as $backup"
     
-    cp "$tmp/plasma.png" "$keep/plasma-${RANDOM}.png"
+    #cp "$tmp/plasma.png" "$keep/plasma-${RANDOM}.png"
 }
 
 # How many monitors connected
