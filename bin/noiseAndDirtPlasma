@@ -229,13 +229,13 @@ dot
 # dirt
 dirt () {
 (( debug )) && set -x
-convert "$noise" -canny 0x.3+0%+50% -blur 0x.3 -negate +level 0%,80% "$dirt"
+convert "$noise" -canny 0x.3+0%+30% -blur 0x.3 -negate +level 0%,80% "$dirt"
 dot
 }
 
 # dirt2
 dirt2 () {
-convert "$noise" -canny 0x3+0%+20% -blur 0x.5 -negate +level 0%,30% "$dirt2"
+convert "$noise" -canny 0x3+0%+10% -blur 0x.5 -negate +level 0%,30% "$dirt2"
 dot
 }
 
@@ -253,11 +253,17 @@ dot
 # plasma generate
 plasmagen () {
 #convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x500 -auto-level -blur 0x300 +level 3%,95% "$tmp/plasma.png"
-blur="$((100 + RANDOM % 400))"  && printf "$blur"
 #blur="$(( RANDOM % 550 ))" && printf "$blur"
-convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x90 +level 3%,95% "$tmp/plasma.png"
-mogrify -channel Red -evaluate set 0 +channel "$tmp/plasma.png"
-#mogrify -channel Green -evaluate set 0 +channel "$tmp/plasma.png"
+# convert -scale 10% -blur 0x2.5 -resize 1000% sample.jpg blurred_fast.jpg
+
+blur="$((30 + RANDOM % 20))"  && printf "$blur"
+
+#convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x190 +level 3%,45% "$tmp/plasma.png"
+
+convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -scale 10% -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x23 +level 3%,55% -resize 1000% "$tmp/plasma.png"
+
+#mogrify -channel Red -evaluate set 0 +channel "$tmp/plasma.png"
+
 printf "p"
 
 # remove red channel
@@ -374,7 +380,7 @@ do
     
     rotateMaybe
         
-    degrade
+    #degrade
     
     if (( monitorsforce )); then
         # tile just one
