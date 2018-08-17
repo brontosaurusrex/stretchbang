@@ -201,12 +201,14 @@ plasmagen () {
 #blur="$(( RANDOM % 550 ))" && printf "$blur"
 # convert -scale 10% -blur 0x2.5 -resize 1000% sample.jpg blurred_fast.jpg
 
-blur="$((30 + RANDOM % 20))"  && printf "%s" "$blur"
+blur="$((10 + RANDOM % 50))"  && printf "%s" "$blur"
 
 #convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x190 +level 3%,45% "$tmp/plasma.png"
 
 convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -scale 10% -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x23 +level 3%,55% -resize 1000% "$tmp/plasma.png"
+#convert -size "${mx}x${my}" xc: -seed "${RANDOM}" -attenuate 2 +noise poisson +repage -scale 20% -virtual-pixel tile -blur 0x${blur} -auto-level -blur 0x23 +level 3%,55% -resize 500% "$tmp/plasma.png"
 
+# -blur 0x23
 #mxs=$(( mx / 10 ))
 #mys=$(( my / 10 ))
 
@@ -298,7 +300,7 @@ keepfunc () {
     cp "$final" "$backup"
     #mogrify -depth 8 "$backup" # convert to 8 bit per channel
     cd "$keep" || exit
-    #pngcrush -q -ow "$backup"
+    pngcrush -q -ow "$backup"
     printf "b%s" "$c"
     #echo "stored as $backup"
     
