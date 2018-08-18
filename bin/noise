@@ -155,7 +155,7 @@ fi
 # noise
 noise () {
 set -x
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level ${low}%,${high}% -tint "100" -sharpen 0x1 -modulate "$bri,$col,$hue" "$file"
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level ${low}%,${high}% -tint "100" -modulate "$bri,$col,$hue" "$file"
 set +x
 }
 # +level 18%,24%
