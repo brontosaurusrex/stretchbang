@@ -1,0 +1,267 @@
+#!/bin/bash
+
+# wallnet
+
+# Internet wallpaper downloader/setter with cache
+# (It does not understand the multihead concept)
+
+# required: wget, md5sum, awk, nitrogen, column, xrandr, internet connection
+
+# config
+cache="$HOME/tmp/wallcache"
+mkdir -p "$cache" || exit
+debug="0"
+permanent="0" # nitrogen will set wallpapers permanently if 1
+
+# checks
+command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; exit 1; }
+command -v xrandr >/dev/null 2>&1 || { echo "I need xrandr, exiting." >&2; exit 1; }
+command -v awk >/dev/null 2>&1 || { echo "I need awk, exiting." >&2; exit 1; }
+command -v wget >/dev/null 2>&1 || { echo "I need wget, exiting." >&2; exit 1; }
+command -v md5sum >/dev/null 2>&1 || { echo "I need md5sum, exiting." >&2; exit 1; }
+command -v column >/dev/null 2>&1 || { echo "I need column, exiting." >&2; exit 1; }
+
+# Array with 'name,url,method'
+configs=(
+noise,https://cdn.scrot.moe/images/2018/08/25/noise.png,centered
+tetris,https://cdn.scrot.moe/images/2018/08/25/0195.png,centered
+plasma,https://cdn.scrot.moe/images/2018/08/16/noiseAndDirt-16853.png,centered
+saturns,https://cdn.scrot.moe/images/2018/05/28/saturns1thumb.png,centered
+comet,https://cdn.scrot.moe/images/2018/06/28/kometTestHUD-fs8.png,centered
+bunsen,https://cdn.scrot.moe/images/2018/06/30/bunsenMicro6d_mono_3x3_b_hudSmall.png,centered
+ball,https://cdn.scrot.moe/images/2018/06/21/microDisp8.png,centered
+city,https://cdn.scrot.moe/images/2018/04/20/city5e.png,centered
+robot,https://cdn.scrot.moe/images/2018/02/22/roboto12ao.png,centered
+particles,https://cdn.scrot.moe/images/2017/12/15/anim2_gimp6.png,centered
+unknown,https://cdn.scrot.moe/images/2017/11/28/unknownsBEast.png,centered
+arrival,https://cdn.scrot.moe/images/2017/02/04/arrival12_dof_mistReal_ps7_ps1_1920x1200.png,centered
+grey_tile,https://raw.githubusercontent.com/brontosaurusrex/retrotiles/master/png/grey_32_01_alpha.png,tiled
+grid,https://brontosaurusrex.github.io/media/gridAdapta.png,tiled
+crunchDefaultTile,https://raw.githubusercontent.com/CBPP/cbpp-wallpapers/master/cbpp-wallpapers/data/usr/share/backgrounds/default-tile.png,tiled
+crunchFabricTile,https://raw.githubusercontent.com/CBPP/cbpp-wallpapers/master/cbpp-wallpapers/data/usr/share/backgrounds/fabric-tile-1.png,tiled
+crunchFabricTile2,https://raw.githubusercontent.com/CBPP/cbpp-wallpapers/master/cbpp-wallpapers/data/usr/share/backgrounds/fabric-tile-2.png,tiled
+saturnsbw,https://cdn.scrot.moe/images/2018/05/31/saturns6.png,centered
+shark,https://brontosaurusrex.github.io/media/scubaSharkAndFish.png,centered
+sailboat,https://cdn.scrot.moe/images/2018/05/08/sailBoatFx11.png,centered
+sunbomb,https://brontosaurusrex.github.io/media/a_sort_of_sun-driven_bombC2crop.svg,centered
+rays,https://cdn.scrot.moe/images/2018/04/08/11comb_1937APR0818.png,centered
+circular,https://cdn.scrot.moe/images/2018/04/07/2gesticulate_1844APR0218.png,centered
+cube,https://cdn.scrot.moe/images/2017/01/09/defaultCube_ps1_1920x1200.png,centered
+)
+
+# Hash
+hash () {
+    echo -n "$1" | md5sum | awk '{print $1}'
+}
+
+# Set wallpaper with nitrogen
+setwall () {
+    
+    # set wallpapers permanently or not
+    
+    (( permanent )) && save="--save"
+    
+    # if monitor number (0 or 1) is not specified
+    if [[ -z "$heads" ]]; then
+        
+        monitors=$(xrandr -d :0 -q | grep ' connected' -c)
+
+        # is monitors a number
+        if ! [[ $monitors =~ ^[1-9]+$ ]]; then
+            >&2 echo "No monitors detected, assuming one."
+            monitors="1"
+        fi
+        
+        cd "$cache" || exit
+        
+        for (( c=1; c<=monitors; c++ ))
+        do
+            nitrogen "${save}" --head="$(( c - 1 ))" --set-"${method}" "$hashurl" --set-color="#263238" >/dev/null 2>&1 || echo "nitrogen failed"
+        done
+        
+    else
+    
+        nitrogen "${save}" --head="$heads" --set-"${method}" "$hashurl" --set-color="#263238" >/dev/null 2>&1 || echo "nitrogen failed"
+        
+    fi
+
+}
+
+# restart stuff
+restart() {
+if pgrep -x "$1" > /dev/null
+then
+    (echo "$1 running, restarting"
+    killall -w "$1"
+    "${1}" &) &
+else
+    echo "$1 wasn't running"
+fi
+}
+
+
+# Heads (may be omited), must be 1st
+
+if [ "$1" == "-m" ] ; then
+
+    shift # next one shall be the number and not empty
+    # is monitors a number
+    if ! [[ $1 =~ ^[0-1]+$ ]]; then
+        >&2 echo "Monitor number must be 0 or 1."
+        exit 1
+    else
+        heads="$1"
+        shift
+    fi
+fi
+
+# Permanent wallpaper or not, must be last
+
+if [ "${!#}" == "-p" ] || [ "$1" == "--perm" ]; then
+    save="--save"
+fi
+
+# Main loop
+
+# List
+if [ "$1" == "-l" ] || [ "$1" == "--list" ]; then
+
+    {   while read -r line; do
+        
+            IFS=, read -r name url method <<< "$line"
+
+            if [[ "$1" == "-l" ]]; then # shorter version
+                echo -n "$name, ${url:0:50},"
+            else
+                echo -n "$name, $url,"
+            fi
+            
+            # Check for cached ones
+            cd "$cache" || exit
+            hashurl="$(hash "$url")" # md5sum of the url
+            if find . "$hashurl" >/dev/null 2>&1; then
+                echo "c, ${hashurl:0:4}, $method"
+            else
+                echo "-, ${hashurl:0:4}, $method"
+            fi
+            
+        done < <(printf '%s\n' "${configs[@]}")
+        
+        echo -n ", , disk used by $cache: " && du -hs "$cache" | awk '{print $1}'
+        
+    } | column -s, -t
+    
+# Wget and set
+elif [ "$1" == "-g" ] || [ "$1" == "--get" ]; then
+
+    shift # next one shall be the name and not empty
+    
+    if [[ -z "$1" ]]; then
+        echo "Which one?, use -l list them all" 
+        exit 1
+    else
+        getname="$1"
+    fi
+
+    # loop over array
+    while read -r line; do
+    
+        IFS=, read -r name url method <<< "$line"
+        
+        (( debug )) && echo "$name $url $method"
+
+        # match
+        if [[ "$name" == *"$getname"* ]]; then
+        
+            hashurl="$(hash "$url")" # md5sum of the url
+                
+            echo "$name, $hashurl"
+            
+            # Check if already here, else download it
+            cd "$cache" || exit
+            
+            if find . "$hashurl" >/dev/null 2>&1; then
+            
+                # already here, just set wall from cache
+                setwall && restart wbar > /dev/null 2>&1
+                exit
+            else
+            
+                # download and set wall
+                wget -nv "$url" -O "$hashurl" && \
+                setwall && restart wbar > /dev/null 2>&1
+                exit
+            
+            fi
+        fi
+        
+    done < <(printf '%s\n' "${configs[@]}")
+    
+    echo "Not found, use -l to list them all."
+    
+    
+elif [ "$1" == "--delete" ] ; then
+
+    # ask user if sure ?
+    
+    read -p "This will delete all cached wallpapers, are you sure? (y/n) " -n 1 -r
+    echo    # (optional) move to a new line
+    if ! [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        exit
+    fi
+    
+    # loop over array
+    while read -r line; do
+    
+        IFS=, read -r name url _ <<< "$line"
+        
+        hashurl="$(hash "$url")" # md5sum of the url
+        
+        (( debug )) && echo "$hashurl ${url:0:60}"
+        
+        cd "$cache" || exit
+        
+        # nuke if found
+        if find . "$hashurl" >/dev/null 2>&1; then
+            rm "$hashurl" && echo "$name $hashurl ${url:0:60} deleted"
+        fi
+
+    done < <(printf '%s\n' "${configs[@]}")
+    
+elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then # help
+
+cat <<EOF
+
+    wallnet (wallpaper downloader/setter with cache)
+
+        -l and --list                                   # list defined (name, url, cached, hash, method)
+        -g or  --get                                    # wget, cache and set wallpaper (only one name)
+        -h or  --help                                   # this help
+               --delete                                 # nuke the entire cache
+              
+        monitor, this must be 1st parameter, may be omited.
+        -m 0 or -m 1
+        
+        permanent nitrogen wallpaper or not, must be last parameter, may be omited
+        -p or --perm
+        
+    Examples:
+    
+        wallnet -g shark                                # set wall on all monitors
+        wallnet -g sha                                  # find first name with *sha*
+        wallnet -m 0 -g noise                           # only first monitor
+        wallnet -m 0 -g nois && wallnet -m 1 -g arr     # noise on 1st, arrival on 2nd
+        wallnet -m 0 -g saturnsbw -p                    # set saturnsbw permanently on 1st monitor       
+        
+    Usage: Edit the script, populate configs array with:
+
+        name,url,method (tiled or centered)
+EOF
+
+else
+
+    echo "-h or --help"
+    
+    
+fi
