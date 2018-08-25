@@ -240,10 +240,10 @@ cat <<EOF
         -h or  --help                                   # this help
                --delete                                 # nuke the entire cache
               
-        monitor, this must be 1st parameter, may be omited.
+        monitor, this must be 1st parameter, may be omitted.
         -m 0 or -m 1
         
-        permanent nitrogen wallpaper or not, must be last parameter, may be omited
+        permanent nitrogen wallpaper or not, must be last parameter, may be omitted
         -p or --perm
         
     Examples:
