@@ -1,0 +1,96 @@
+i: /usr/share/pixmaps/wbar/dock.png
+c: wbar --bpress --above-desk --nofont --pos bot-left --isize 46 --idist 0 --zoomf 1.100000 --balfa 0 --falfa 70
+t: /.fonts/Cuprum-Regular/10
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/spacer.png
+c: null
+t: spacer
+
+i: /home/b/.config/stretchbang/images/wbar/black/debian.png
+c: (launchee urxvt || urxvt)
+t: rxvt-unicode
+
+i: /home/b/.config/stretchbang/images/wbar/black/geany2.png
+c: (LANG=en_US.UTF8 launchee geany || geany)
+t: editor
+
+i: /home/b/.config/stretchbang/images/wbar/black/thunar.png
+c: (launchee thunar || thunar)
+t: thunar
+
+i: /home/b/.config/stretchbang/images/wbar/black/firefox.png
+c: browser -new-tab about:newtab
+t: firefox
+
+i: /home/b/.config/stretchbang/images/wbar/black/chrome.png
+c: (launchee google-chrome || google-chrome)
+t: chrome
+
+i: /home/b/.config/stretchbang/images/wbar/black/calc.png
+c: bcterm
+t: calc
+
