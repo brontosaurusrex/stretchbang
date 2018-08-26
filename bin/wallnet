@@ -29,6 +29,7 @@ plasma,https://cdn.scrot.moe/images/2018/08/16/noiseAndDirt-16853.png,centered
 saturns,https://cdn.scrot.moe/images/2018/05/28/saturns1thumb.png,centered
 comet,https://cdn.scrot.moe/images/2018/06/28/kometTestHUD-fs8.png,centered
 bunsen,https://cdn.scrot.moe/images/2018/06/30/bunsenMicro6d_mono_3x3_b_hudSmall.png,centered
+bunsenGreen,https://cdn.scrot.moe/images/2018/04/15/bunsenBattle2fakeGLowABitGreen.png,centered
 ball,https://cdn.scrot.moe/images/2018/06/21/microDisp8.png,centered
 city,https://cdn.scrot.moe/images/2018/04/20/city5e.png,centered
 robot,https://cdn.scrot.moe/images/2018/02/22/roboto12ao.png,centered
@@ -47,6 +48,12 @@ sunbomb,https://brontosaurusrex.github.io/media/a_sort_of_sun-driven_bombC2crop.
 rays,https://cdn.scrot.moe/images/2018/04/08/11comb_1937APR0818.png,centered
 circular,https://cdn.scrot.moe/images/2018/04/07/2gesticulate_1844APR0218.png,centered
 cube,https://cdn.scrot.moe/images/2017/01/09/defaultCube_ps1_1920x1200.png,centered
+debian,http://shrani.si/f/2q/10a/11vEdHZ2/swirldali3post28bpc.png,centered
+planetarium,https://cdn.scrot.moe/images/2017/01/25/planetarium8_ps1_1920x1200.png,zoom-fill
+stretch,https://cdn.scrot.moe/images/2017/07/07/stretchOnly4post3.png,centered
+paperPlane,https://cdn.scrot.moe/images/2017/01/14/plane12_cam3b_ps1_1920x1200.png,centered
+vintageRocket,https://cdn.scrot.moe/images/2017/12/26/vintageRocket11c_sheep_gimp9.png,centered
+pacific,https://cdn.scrot.moe/images/2016/07/15/worldElevation5pacifikOrtoCam8bpc.png,zoom-fill
 )
 
 # Hash
@@ -55,6 +62,8 @@ hash () {
 }
 
 # Set wallpaper with nitrogen
+# One of missing option is to handle both heads as one/tiled
+# There should be dynamic limiter (optional), bri, sat, ect (see noise script)
 setwall () {
     
     # set wallpapers permanently or not
