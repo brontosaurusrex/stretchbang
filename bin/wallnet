@@ -29,7 +29,9 @@ plasma,https://cdn.scrot.moe/images/2018/08/16/noiseAndDirt-16853.png,centered
 saturns,https://cdn.scrot.moe/images/2018/05/28/saturns1thumb.png,centered
 comet,https://cdn.scrot.moe/images/2018/06/28/kometTestHUD-fs8.png,centered
 bunsen,https://cdn.scrot.moe/images/2018/06/30/bunsenMicro6d_mono_3x3_b_hudSmall.png,centered
-bunsenGreen,https://cdn.scrot.moe/images/2018/04/15/bunsenBattle2fakeGLowABitGreen.png,centered
+bunsenGreen,https://cdn.scrot.moe/images/2018/04/15/bunsenBattle2fakeGLowGreenBlue.png,centered
+bunsen2d,https://brontosaurusrex.github.io/media/bunsenE3.svg,centered
+bunsenMicro4k,https://cdn.scrot.moe/images/2018/07/06/bunsenMicro8_2x.png,zoom
 ball,https://cdn.scrot.moe/images/2018/06/21/microDisp8.png,centered
 city,https://cdn.scrot.moe/images/2018/04/20/city5e.png,centered
 robot,https://cdn.scrot.moe/images/2018/02/22/roboto12ao.png,centered
@@ -47,13 +49,27 @@ sailboat,https://cdn.scrot.moe/images/2018/05/08/sailBoatFx11.png,centered
 sunbomb,https://brontosaurusrex.github.io/media/a_sort_of_sun-driven_bombC2crop.svg,centered
 rays,https://cdn.scrot.moe/images/2018/04/08/11comb_1937APR0818.png,centered
 circular,https://cdn.scrot.moe/images/2018/04/07/2gesticulate_1844APR0218.png,centered
-cube,https://cdn.scrot.moe/images/2017/01/09/defaultCube_ps1_1920x1200.png,centered
+cube,https://cdn.scrot.moe/images/2017/01/10/defaultCube3_ps2.png,zoom-fill
 debian,http://shrani.si/f/2q/10a/11vEdHZ2/swirldali3post28bpc.png,centered
+debianLuxrender,http://shrani.si/f/44/HW/4c0Czz2S/swirllux.png,centered
 planetarium,https://cdn.scrot.moe/images/2017/01/25/planetarium8_ps1_1920x1200.png,zoom-fill
 stretch,https://cdn.scrot.moe/images/2017/07/07/stretchOnly4post3.png,centered
-paperPlane,https://cdn.scrot.moe/images/2017/01/14/plane12_cam3b_ps1_1920x1200.png,centered
+paperPlane,https://cdn.scrot.moe/images/2017/01/13/plane12_8bit_NR_1920x1200.png,centered
 vintageRocket,https://cdn.scrot.moe/images/2017/12/26/vintageRocket11c_sheep_gimp9.png,centered
-pacific,https://cdn.scrot.moe/images/2016/07/15/worldElevation5pacifikOrtoCam8bpc.png,zoom-fill
+pacific,https://cdn.scrot.moe/images/2016/07/15/worldElevation5pacifikOrtoCam8bpc.png,zoom
+bluepaperboat,https://cdn.scrot.moe/images/2017/09/21/boat5filmulatorb.png,centered
+redpaperboat,https://cdn.scrot.moe/images/2017/10/15/IMG_2600_dt_mask.png,centered
+rocketVintageAlpha,https://cdn.scrot.moe/images/2017/12/26/vintageRocket11d_gimp2flip_alpha.png,centered
+rocketVintageBlue,https://cdn.scrot.moe/images/2017/12/31/vintageRocket11d_gimp4.png,zoom-fill
+grass3440,https://cdn.scrot.moe/images/2016/04/29/3440x1440_xp_v7.png,zoom-fill
+chess3440,https://cdn.scrot.moe/images/2016/05/15/chess1966_ps1.png,zoom-fill
+chessSilber3440,https://cdn.scrot.moe/images/2016/05/15/chess1966_5b_ps2.png,zoom-fill
+bronto,https://cdn.scrot.moe/images/2017/02/01/bronto17b_oci_3440x1440_ps2.png,zoom-fill
+dragonSubstance,https://cdn.scrot.moe/images/2016/09/11/asian_dragon_substanceMachine3_ps1.png,zoom
+dragonComp,https://cdn.scrot.moe/images/2016/09/20/asian_dragon_brontosaurusrex_multiCrack_blenderDeveloped10.png,zoom-fill
+europa,https://cdn.scrot.moe/images/2017/03/24/europa_1920x1200.png,centered
+iapetus,https://cdn.scrot.moe/images/2017/03/24/iapetus_1920x1200.png,centered
+enceladus,https://cdn.scrot.moe/images/2017/03/24/enceladus_1920x1200.png,centered
 )
 
 # Hash
