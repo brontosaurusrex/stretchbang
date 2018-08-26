@@ -3,7 +3,7 @@
 <action>
 	<icon></icon>
 	<name>Open Terminal Here</name>
-	<unique-id>1439803383128041-2</unique-id>
+	<unique-id>1496502665475107-3</unique-id>
 	<command>exo-open --working-directory %f --launch TerminalEmulator</command>
 	<description>Example for a custom action</description>
 	<patterns>*</patterns>
@@ -13,8 +13,8 @@
 <action>
 	<icon></icon>
 	<name>set wallpaper centered</name>
-	<unique-id>1439803502985890-3</unique-id>
-	<command>nitrogen --save --set-centered %f</command>
+	<unique-id>1535242458151245-1</unique-id>
+	<command>nitrogen --save --set-centered %f --set-color=&quot;#263238&quot;</command>
 	<description>set wallpaper centered</description>
 	<patterns>*</patterns>
 	<image-files/>
@@ -22,8 +22,8 @@
 <action>
 	<icon></icon>
 	<name>set wallpaper zoomed-fill</name>
-	<unique-id>1439803621723655-7</unique-id>
-	<command>nitrogen --save --set-zoom-fill %f</command>
+	<unique-id>1535242469479813-2</unique-id>
+	<command>nitrogen --save --set-zoom-fill %f --set-color=&quot;#263238&quot;</command>
 	<description>set wallpaper zoomed-fill</description>
 	<patterns>*</patterns>
 	<image-files/>
@@ -31,9 +31,27 @@
 <action>
 	<icon></icon>
 	<name>set wallpaper tiled</name>
-	<unique-id>1439803647244152-8</unique-id>
-	<command>nitrogen --save --set-tiled %f</command>
+	<unique-id>1535242476143936-3</unique-id>
+	<command>nitrogen --save --set-tiled %f --set-color=&quot;#263238&quot;</command>
 	<description>set wallpaper tiled</description>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>set wall centered head 0</name>
+	<unique-id>1535243330612622-8</unique-id>
+	<command>nitrogen --save --set-centered %f --set-color=&quot;#263238&quot; --head=0</command>
+	<description></description>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>set wall centered head 1</name>
+	<unique-id>1535242816211206-7</unique-id>
+	<command>nitrogen --save --set-centered %f --set-color=&quot;#263238&quot; --head=1</command>
+	<description></description>
 	<patterns>*</patterns>
 	<image-files/>
 </action>
@@ -49,10 +67,70 @@
 <action>
 	<icon></icon>
 	<name>search</name>
-	<unique-id>1493891977947627-1</unique-id>
-	<command>catfish --path=%f</command>
+	<unique-id>1510691886370195-6</unique-id>
+	<command>gnome-search-tool --path=%f</command>
 	<description>search for files</description>
 	<patterns>*</patterns>
 	<directories/>
+</action>
+<action>
+	<icon></icon>
+	<name>png crush</name>
+	<unique-id>1498953192846939-3</unique-id>
+	<command>pngcrush -ow %F</command>
+	<description>png crush</description>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>copy name(s)</name>
+	<unique-id>1504388544932509-4</unique-id>
+	<command>echo &quot;%N&quot; | xclip xclip -selection clipboard</command>
+	<description>copy name(s)</description>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>copy path(s)</name>
+	<unique-id>1508086432831772-2</unique-id>
+	<command>echo &quot;%F&quot; | xclip xclip -selection clipboard</command>
+	<description>copy path(s)</description>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>pngcrush</name>
+	<unique-id>1505931378110735-2</unique-id>
+	<command>pngcrush -ow %F</command>
+	<description>pngcrush</description>
+	<patterns>*.png</patterns>
+	<other-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>geany</name>
+	<unique-id>1506109797296227-1</unique-id>
+	<command>geany %F</command>
+	<description></description>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
 </action>
 </actions>
