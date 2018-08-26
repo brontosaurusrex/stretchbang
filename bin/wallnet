@@ -5,13 +5,14 @@
 # Internet wallpaper downloader/setter with cache
 # (It does not understand the multihead concept)
 
-# required: wget, md5sum, awk, nitrogen, column, xrandr, internet connection
+# required: wget, md5sum, awk, nitrogen, column, xrandr, imagemagick, internet connection
 
 # config
 cache="$HOME/tmp/wallcache"
 mkdir -p "$cache" || exit
 debug="0"
-permanent="0" # nitrogen will set wallpapers permanently if 1
+permanent="0"  # nitrogen will set wallpapers permanently if 1 (better use -p switch on cli)
+limiter="0"    # will limit image dynamic range if enabled, needs imagemagick convert
 
 # checks
 command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; exit 1; }
@@ -20,6 +21,7 @@ command -v awk >/dev/null 2>&1 || { echo "I need awk, exiting." >&2; exit 1; }
 command -v wget >/dev/null 2>&1 || { echo "I need wget, exiting." >&2; exit 1; }
 command -v md5sum >/dev/null 2>&1 || { echo "I need md5sum, exiting." >&2; exit 1; }
 command -v column >/dev/null 2>&1 || { echo "I need column, exiting." >&2; exit 1; }
+command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
 
 # Array with 'name,url,method'
 configs=(
@@ -86,6 +88,16 @@ hash () {
 # There should be dynamic limiter (optional), bri, sat, ect (see noise script)
 setwall () {
     
+    hashurlfinal="$hashurl"
+    
+    if (( limiter )); then
+    
+        # limiter
+        convert "$hashurl" -auto-level +level 12%,40% "${hashurl}_fx"
+        hashurlfinal="${hashurl}_fx"
+        
+    fi
+    
     # set wallpapers permanently or not
     
     (( permanent )) && save="--save"
@@ -105,12 +117,12 @@ setwall () {
         
         for (( c=1; c<=monitors; c++ ))
         do
-            nitrogen "${save}" --head="$(( c - 1 ))" --set-"${method}" "$hashurl" --set-color="#263238" >/dev/null 2>&1 || echo "nitrogen failed"
+            nitrogen "${save}" --head="$(( c - 1 ))" --set-"${method}" "$hashurlfinal" --set-color="#263238" >/dev/null 2>&1 || echo "nitrogen failed"
         done
         
     else
     
-        nitrogen "${save}" --head="$heads" --set-"${method}" "$hashurl" --set-color="#263238" >/dev/null 2>&1 || echo "nitrogen failed"
+        nitrogen "${save}" --head="$heads" --set-"${method}" "$hashurlfinal" --set-color="#263238" >/dev/null 2>&1 || echo "nitrogen failed"
         
     fi
 
@@ -252,10 +264,9 @@ elif [ "$1" == "--delete" ] ; then
         cd "$cache" || exit
         
         # nuke if found
-        if find . "$hashurl" >/dev/null 2>&1; then
-            rm "$hashurl" && echo "$name $hashurl ${url:0:60} deleted"
-        fi
-
+        
+        rm "$hashurl"* >/dev/null 2>&1 && echo "$name $hashurl* deleted"
+        
     done < <(printf '%s\n' "${configs[@]}")
     
 elif [ "$1" == "--cache-all" ] ; then # download all to cache
@@ -313,7 +324,7 @@ cat <<EOF
         
     Usage: Edit the script, populate configs array with:
 
-        name,url,method (tiled or centered)
+        name,url,method (tiled or centered or... nitrogen --help)
         
         # Escape & in urls, like \&
 EOF
