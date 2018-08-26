@@ -32,6 +32,7 @@ bunsen,https://cdn.scrot.moe/images/2018/06/30/bunsenMicro6d_mono_3x3_b_hudSmall
 bunsenGreen,https://cdn.scrot.moe/images/2018/04/15/bunsenBattle2fakeGLowGreenBlue.png,centered
 bunsen2d,https://brontosaurusrex.github.io/media/bunsenE3.svg,centered
 bunsenMicroStarwars4k,https://cdn.scrot.moe/images/2018/07/06/bunsenMicro8_2x.png,zoom
+bunsenMicroStarwars1920,https://images.weserv.nl/?url=//cdn.scrot.moe/images/2018/07/06/bunsenMicro8_2x.png\&w=1920,centered
 ball,https://cdn.scrot.moe/images/2018/06/21/microDisp8.png,centered
 city,https://cdn.scrot.moe/images/2018/04/20/city5e.png,centered
 robot,https://cdn.scrot.moe/images/2018/02/22/roboto12ao.png,centered
@@ -282,6 +283,8 @@ cat <<EOF
     Usage: Edit the script, populate configs array with:
 
         name,url,method (tiled or centered)
+        
+        # Escape & in urls, like \&
 EOF
 
 else
