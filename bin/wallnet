@@ -25,6 +25,9 @@ command -v column >/dev/null 2>&1 || { echo "I need column, exiting." >&2; exit 
 configs=(
 noise,https://cdn.scrot.moe/images/2018/08/25/noise.png,centered
 tetris,https://cdn.scrot.moe/images/2018/08/25/0195.png,centered
+tetris2,https://cdn.scrot.moe/images/2018/08/25/0205.png,centered
+tetrisALot,https://cdn.scrot.moe/images/2018/08/26/tetris17real_cam3_0100.png,centered
+tetrisALot2,https://cdn.scrot.moe/images/2018/08/26/tetris17real_cam3_0171_nr.png,centered
 plasma,https://cdn.scrot.moe/images/2018/08/16/noiseAndDirt-16853.png,centered
 saturns,https://cdn.scrot.moe/images/2018/05/28/saturns1thumb.png,centered
 comet,https://cdn.scrot.moe/images/2018/06/28/kometTestHUD-fs8.png,centered
@@ -255,6 +258,33 @@ elif [ "$1" == "--delete" ] ; then
 
     done < <(printf '%s\n' "${configs[@]}")
     
+elif [ "$1" == "--cache-all" ] ; then # download all to cache
+
+    # ask user if sure ?
+    read -p "This will download (overwrite) all defined wallpapers to $cache, are you sure? (y/n) " -n 1 -r
+    echo    # (optional) move to a new line
+    if ! [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        exit
+    fi
+    
+    # loop over array
+    while read -r line; do
+    
+        IFS=, read -r name url _ <<< "$line"
+        
+        hashurl="$(hash "$url")" # md5sum of the url
+        
+        (( debug )) && echo "$hashurl ${url:0:60}"
+        
+        cd "$cache" || exit
+        
+        # download
+        echo -n "$name "
+        wget "$url" -O "$hashurl"
+
+    done < <(printf '%s\n' "${configs[@]}")
+    
 elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then # help
 
 cat <<EOF
@@ -264,6 +294,7 @@ cat <<EOF
         -l and --list                                   # list defined (name, url, cached, hash, method)
         -g or  --get                                    # wget, cache and set wallpaper (only one name)
         -h or  --help                                   # this help
+               --cache-all                              # download all to cache
                --delete                                 # nuke the entire cache
               
         monitor, this must be 1st parameter, may be omitted.
