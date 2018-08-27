@@ -26,10 +26,10 @@ command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exitin
 # Array with 'name,url,method'
 configs=(
 noise,https://cdn.scrot.moe/images/2018/08/25/noise.png,centered
-tetris,https://cdn.scrot.moe/images/2018/08/25/0195.png,centered
-tetris2,https://cdn.scrot.moe/images/2018/08/25/0205.png,centered
-tetrisALot,https://cdn.scrot.moe/images/2018/08/26/tetris17real_cam3_0100.png,centered
-tetrisALot2,https://cdn.scrot.moe/images/2018/08/26/tetris17real_cam3_0171_nr.png,centered
+tetrisLeft,https://cdn.scrot.moe/images/2018/08/27/tetris18_0173.png,centered
+tetrisRight,https://cdn.scrot.moe/images/2018/08/27/tetris18_0099.png,centered
+tetrisFull,https://cdn.scrot.moe/images/2018/08/27/tetris18_1112.png,centered
+tetrisAngle,https://cdn.scrot.moe/images/2018/08/27/tetris18_0133.png,centered
 plasma,https://cdn.scrot.moe/images/2018/08/16/noiseAndDirt-16853.png,centered
 saturns,https://cdn.scrot.moe/images/2018/05/28/saturns1thumb.png,centered
 comet,https://cdn.scrot.moe/images/2018/06/28/kometTestHUD-fs8.png,centered
@@ -93,7 +93,7 @@ setwall () {
     if (( limiter )); then
     
         # limiter
-        convert "$hashurl" -auto-level +level 12%,40% "${hashurl}_fx"
+        convert "$hashurl" -auto-level +level 12%,70% "${hashurl}_fx"
         hashurlfinal="${hashurl}_fx"
         
     fi
