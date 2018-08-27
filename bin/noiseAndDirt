@@ -32,7 +32,8 @@ tmpcomp3="$tmp/tmp3.png" # tmpcomp3
 final="$tmp/final.png"   # final
 
 # keep backups and where
-keepsome="0" # bool
+keepsome="1"    # bool
+degradebool="0" # another bool
 keep="$HOME/data/noiseAndDirt"
     
 # boolean, if true single image is generated
@@ -214,7 +215,7 @@ fi
 # noise
 noise () {
 (( debug )) && set -x
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson +level 0%,80% +repage "$noise"
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 3 +noise poisson +level 0%,80% +repage "$noise"
 (( debug )) && set +x
 dot
 }
@@ -229,13 +230,13 @@ dot
 # dirt
 dirt () {
 (( debug )) && set -x
-convert "$noise" -canny 0x.3+0%+50% -blur 0x.3 -negate +level 0%,80% "$dirt"
+convert "$noise" -canny 0x.3+0%+30% -blur 0x.3 -negate +level 0%,95% "$dirt"
 dot
 }
 
 # dirt2
 dirt2 () {
-convert "$noise" -canny 0x3+0%+20% -blur 0x.5 -negate +level 0%,30% "$dirt2"
+convert "$noise" -canny 0x3+0%+10% -blur 0x.5 -negate +level 0%,10% "$dirt2"
 dot
 }
 
@@ -248,7 +249,7 @@ convert "$noise" -canny 0x4+0%+55% -blur 0x160 -negate +level 0%,60% "$dirt3"
 (( debug )) && set +x
 dot
 }
-# $((RANDOM % 100 + 1))
+
 
 # compose
 compose () {
@@ -348,7 +349,7 @@ do
     
     rotateMaybe
     
-    degrade
+    (( degradebool )) && degrade
     
     if (( monitorsforce )); then
         # tile just one
