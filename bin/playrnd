@@ -5,13 +5,13 @@
 # required: seen (script), printWaveform (script) (or change it to mpv)
 
 # usage: 
-#           playrnd .            
-#           playrnd "album1" "album2"
+# playrnd .            
+# playrnd "album1/" "album2/"
 
 # test how much musik is there:
 # cd /your/music/root
 # find . -type f | grep -E '.mp3$|.mp4$|.m4a$|.flac$|.ogg$|.mpc$|.wav$|.aif$|.opus$' | wc -
-# and set "$lm accordingly", or don't and things will play until there is nothing left and stop with 'lock prevention' message.
+# and set "$lm accordingly", or don't and things will play until there is nothing left and stop with 'lock prevented' message.
 
 # checks
 command -v mpv >/dev/null 2>&1 || { echo >&2 "I require mpv but it's not installed, exiting."; exit 1; }
@@ -19,7 +19,7 @@ command -v seen >/dev/null 2>&1 || { echo >&2 "I require 'seen' script but it's 
 command -v printWaveform >/dev/null 2>&1 || { echo >&2 "I require 'printWaveform' script but it's not on path, exiting."; exit 1; }
 
 # seen limit and database
-lm="100"
+lm="200"
 db="muzak"
     
 # main
