@@ -11,7 +11,7 @@
 # test how much musik is there:
 # cd /your/music/root
 # find . -type f | grep -E '.mp3$|.mp4$|.m4a$|.flac$|.ogg$|.mpc$|.wav$|.aif$|.opus$' | wc -
-# and set "$lm accordingly"
+# and set "$lm accordingly", or don't and things will play until there is nothing left and stop with 'lock prevention' message.
 
 # checks
 command -v mpv >/dev/null 2>&1 || { echo >&2 "I require mpv but it's not installed, exiting."; exit 1; }
