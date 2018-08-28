@@ -18,7 +18,7 @@ db="muzak"
 # nuke the seen database
 if [ "$1" == "--nuke" ] ; then
     seen "0" "$db" "" >/dev/null 2>&1
-    echo "seen db forgot"
+    echo "Seen db nuked."
     exit
 elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then # help
 
