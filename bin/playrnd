@@ -2,7 +2,7 @@
 
 # playrnd
 
-# required: seen (script), printWaveform (script) (or change it to mpv)
+# required: seen (script), printWaveform (script, needs lots of stuff) - or change it to mpv.
 
 # usage: playrnd --help
 
