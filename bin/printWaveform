@@ -62,8 +62,9 @@ while [ $# -gt 0 ]; do
         thfinal="$th"
     fi
     
-    # print waveform
-    img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$thfinal" -f utf8 -d none "$tmpimg" #| head -$(( th / 2))
+    # print waveform, enable head for half of the waveform
+    img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$thfinal" -f utf8 -d none "$tmpimg" | head -$(( th / 2))
+
     
     # echo file
     if (( tw > hires )); then
@@ -73,7 +74,7 @@ while [ $# -gt 0 ]; do
     fi
     
     # playback if "$play" is 'true'
-    "$play" && mpv --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
+    "$play" && mpv --no-resume-playback --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
 
     # benchmark end
     #END=$(date +%s.%N)
