@@ -14,7 +14,7 @@ command -v seen >/dev/null 2>&1 || { echo >&2 "I require 'seen' script but it's 
 command -v printWaveform >/dev/null 2>&1 || { echo >&2 "I require 'printWaveform' script but it's not installed, exiting."; exit 1; }
 
 # var
-lm="16"
+lm="26"
 db="muzak"
 
 while true; do
