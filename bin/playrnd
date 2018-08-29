@@ -8,12 +8,14 @@
 
 # checks
 command -v mpv >/dev/null 2>&1 || { echo >&2 "I require mpv but it's not installed, exiting."; exit 1; }
+command -v mediainfo >/dev/null 2>&1 || { echo >&2 "I require mediainfo but it's not installed, exiting."; exit 1; }
 command -v seen >/dev/null 2>&1 || { echo >&2 "I require 'seen' script but it's not on path, exiting."; exit 1; }
 command -v printWaveform >/dev/null 2>&1 || { echo >&2 "I require 'printWaveform' script but it's not on path, exiting."; exit 1; }
 
 # seen limit and database
 lm="200"
 db="muzak"
+min="60000" # don't play if shorter than 60 seconds
 
 # nuke the seen database
 if [ "$1" == "--nuke" ] ; then
@@ -60,8 +62,14 @@ while true; do # forever
 
     # play or don't
     if ! [[ -z "$muzak" ]]; then
-        #echo "$muzak"
-        printWaveform "$muzak"
+    
+        # Don't play if shorter than $min seconds
+        dur="$(mediainfo "--Inform=General;%Duration%" "$muzak")"
+        if (( dur > min )); then
+            #echo "$muzak"
+            printWaveform "$muzak"
+        fi
+        
     else
         echo " ##### no muzak for you ##### "
     fi
