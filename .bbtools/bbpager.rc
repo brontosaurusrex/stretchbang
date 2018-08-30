@@ -21,11 +21,11 @@
 
 !** Set the position of the bbpager window.
 !** Relevant only when bbpager.withdrawn is False.
-bbpager.position:               -10-30
+bbpager.position:               -0-0
 
 !** Set the width and height of bbpager's model of the desktop windows.
-bbpager.desktop.width:          80
-bbpager.desktop.height:         45
+bbpager.desktop.width:          70
+bbpager.desktop.height:         44
 
 !** Set the desktop orientation.
 !** Possible values: horizontal, vertical
@@ -84,16 +84,16 @@ bbpager.windowMoveButton:      3
 !**********************************************************************
 
 !** Set the margin between the edge of the tool and the desktops.
-bbpager.margin:             2
+bbpager.margin:             0
 
 !** Set the margin between the desktops.
-bbpager.desktop.margin:     2
+bbpager.desktop.margin:     0
 
 !** Define the frame style.
 !** bbpager will attempt to copy these options from the blackbox
 !**   toolbar style.
 bbpager.frame.appearance: Flat Solid
-bbpager.frame.color:     #080808
+bbpager.frame.color:     #222D32
 !bbpager.frame.color2:     darkslategrey
 
 !** Define the desktop window style. This style is used to draw
@@ -103,14 +103,15 @@ bbpager.frame.color:     #080808
 !** bbpager will attempt to copy these options from the blackbox
 !**   toolbar.label style.
 bbpager.desktop.appearance: flat solid
-bbpager.desktop.color:     #101010
+bbpager.desktop.color:     #222D32
+
 !bbpager.desktop.color2:     darkslategrey
 
 !** Define the focused desktop window style. This style is used
 !**   to draw the focused desktop when bbpager.desktop.focusStyle
 !**   is texture.
 bbpager.desktop.focus.appearance: flat solid
-bbpager.desktop.focus.color:     #242424
+bbpager.desktop.focus.color:     #222D32
 !bbpager.desktop.focus.color2:     slategrey
 
 !** Define the border for the focused desktop window.
@@ -131,8 +132,8 @@ bbpager.desktop.focus.color:     #242424
 !** bbpager will attempt to copy these options from the blackbox
 !**   window.label.unfocus style.
 bbpager.window.appearance: flat solid border
-bbpager.window.color:     #080808
-bbpager.window.borderColor:     #424242
+bbpager.window.color:     #333D4D
+bbpager.window.borderColor: #333D4D
 !bbpager.window.color2:     rgb:8/6/4
 
 !** Define the focused window style. This style is used to draw
@@ -141,8 +142,8 @@ bbpager.window.borderColor:     #424242
 !** bbpager will attempt to copy these options from the blackbox
 !**   window.label.focus style.
 bbpager.window.focus.appearance: flat solid border
-bbpager.window.focus.color:     #888888
-bbpager.window.focus.borderColor:     #080808
+bbpager.window.focus.color:     #00BCD4
+bbpager.window.focus.borderColor:     #222D32
 !bbpager.window.focus.color2:     rgb:8/6/4
 
 !** Define the border for the focused window.
