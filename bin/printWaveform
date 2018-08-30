@@ -27,6 +27,14 @@ tmpimg="$tmpdir/wave.png"    # tmp image storage
 th=$(( 24 * 1 ))             # height in terminal chars, should be even number
 hires="400"                  # how many term columns (width) are considered as hires
 
+# center text 
+centertext(){
+    columns=$(tput cols) 
+    string="$1" 
+    printf "%*s\n" $(((${#string}+columns)/2)) "$string"
+}
+
+# main
 while [ $# -gt 0 ]; do
 
     # benchmark start
@@ -64,22 +72,24 @@ while [ $# -gt 0 ]; do
     
     # print waveform, enable head for half of the waveform
     img2txt -g 2 -b 2 -y 15 -W "$tw" -H "$thfinal" -f utf8 -d none "$tmpimg" | head -$(( th / 2))
-
     
+    # benchmark end
+    #END=$(date +%s.%N) && DIFF=$(echo "$END - $START" | bc) && echo "done in $DIFF seconds"
+
     # echo file
     if (( tw > hires )); then
         toilet "$1" -w "$tw" # enable for very hi-res display
     else
-        echo "$1"
+        centertext "$1"
+        #echo "$1"
     fi
+
+    # maybe play
+    "$play" && \
+    mpv --no-resume-playback -af=lavfi=[loudnorm=LRA=10:I=-17] \
+    --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error \
+    --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·"
     
-    # playback if "$play" is 'true'
-    "$play" && mpv --no-resume-playback --msg-level=ao/alsa=error:cplayer=error:statusline=status:display-tags=error:ffmpeg/demuxer=error --no-video "$1" --term-osd-bar --term-osd-bar-chars="··█ ·" 
-
-    # benchmark end
-    #END=$(date +%s.%N)
-    #DIFF=$(echo "$END - $START" | bc)
-    #echo "done in $DIFF seconds"
-
+    
 shift
 done
