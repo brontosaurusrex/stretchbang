@@ -2,10 +2,13 @@
  
 data="chuck-norris-jokes.txt"
 
+[[ -f "$data" ]] || { echo "Chuck database not found." && exit 1 ;}
+
 c="0"
 unlock="60" 
  
-until 
+until
+
     seen 250 chuck "$(shuf -n 1 $data)"
 
     do 
