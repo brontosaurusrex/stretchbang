@@ -9,7 +9,7 @@ unlock="60"
  
 until
 
-    seen 250 chuck "$(shuf -n 1 $data)"
+    seen 250 chuck "$(shuf -n 1 $data)" 2>/dev/null
 
     do 
         # lock prevention
@@ -19,3 +19,7 @@ until
             exit
         fi
     done
+    
+# in .zshrc
+# Chuck
+#( cd ~/source/stretchbang/.experiments/jokes && cowsay "$(./chuck)" )
