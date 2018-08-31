@@ -1,0 +1,42 @@
+[compact-view]
+all-columns-have-same-width=false
+
+[plugins]
+disabled-actions=@as []
+
+[window-state]
+side-pane-view='tree'
+sidebar-width=144
+my-computer-expanded=true
+geometry='952x1072+6+46'
+network-expanded=false
+sidebar-bookmark-breakpoint=12
+maximized=false
+start-with-sidebar=false
+
+[preferences]
+thumbnail-limit=uint64 8589934592
+show-advanced-permissions=false
+show-home-icon-toolbar=true
+show-new-folder-icon-toolbar=true
+show-compact-view-icon-toolbar=true
+show-open-in-terminal-toolbar=true
+default-sort-order='mtime'
+default-folder-viewer='list-view'
+size-prefixes='base-10'
+show-hidden-files=false
+date-format='informal'
+show-computer-icon-toolbar=false
+show-reload-icon-toolbar=true
+show-location-entry=false
+
+[icon-view]
+default-use-tighter-layout=false
+labels-beside-icons=false
+
+[desktop]
+show-desktop-icons=false
+
+[list-view]
+default-zoom-level='small'
+search-visible-columns=['name', 'size', 'type', 'where']
