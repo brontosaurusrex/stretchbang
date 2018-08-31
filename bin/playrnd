@@ -8,12 +8,14 @@
 
 # checks
 command -v mpv >/dev/null 2>&1 || { echo >&2 "I require mpv but it's not installed, exiting."; exit 1; }
+command -v mediainfo >/dev/null 2>&1 || { echo >&2 "I require mediainfo but it's not installed, exiting."; exit 1; }
 command -v seen >/dev/null 2>&1 || { echo >&2 "I require 'seen' script but it's not on path, exiting."; exit 1; }
 command -v printWaveform >/dev/null 2>&1 || { echo >&2 "I require 'printWaveform' script but it's not on path, exiting."; exit 1; }
 
 # seen limit and database
 lm="200"
 db="muzak"
+min="60000" # don't play if shorter than 60 seconds
 
 # nuke the seen database
 if [ "$1" == "--nuke" ] ; then
@@ -49,6 +51,7 @@ while true; do # forever
         # Note: find|grep|shuf everything for every song is kinda not optimal,
         # but will cover the case when one adds music while script is in action.
         muzak="$(seen $lm $db "$( find "$@" -type f | grep -E '.mp3$|.mp4$|.m4a$|.flac$|.ogg$|.mpc$|.wav$|.aif$|.opus$' | shuf -n 1 )"  2>/dev/null)"
+    
     do 
         # lock prevention
         (( c++ ))
@@ -60,8 +63,14 @@ while true; do # forever
 
     # play or don't
     if ! [[ -z "$muzak" ]]; then
-        #echo "$muzak"
-        printWaveform "$muzak"
+    
+        # Don't play if shorter than $min seconds
+        dur="$(mediainfo "--Inform=General;%Duration%" "$muzak")"
+        if (( dur > min )); then
+            #echo "$muzak"
+            printWaveform "$muzak"
+        fi
+        
     else
         echo " ##### no muzak for you ##### "
     fi
