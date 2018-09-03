@@ -22,4 +22,4 @@ until
     
 # in .zshrc
 # Chuck
-#( cd ~/source/stretchbang/.experiments/jokes && cowsay "$(./chuck)" )
+#( cd ~/source/stretchbang/.experiments/jokes && cowsay -f ./texas.cow "$(./chuck)" )
