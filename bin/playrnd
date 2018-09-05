@@ -61,10 +61,7 @@ while true; do # forever
     c="0"
     unlock="60" # This could depend on limit/members ratio
     until
-        # Note: find|grep|shuf everything for every song is kinda not optimal,
-        # but will cover the case when one adds music while script is in action.
-        #muzak="$(seen $lm $db "$( find "$@" -type f | grep -E '.mp3$|.mp4$|.m4a$|.flac$|.ogg$|.mpc$|.wav$|.aif$|.opus$' | shuf -n 1 )"  2>/dev/null)"
-        
+ 
         muzak="$(seen $lm $db "$(shuf -n 1 "$tmp/list")" 2>/dev/null)"
     
     do 
