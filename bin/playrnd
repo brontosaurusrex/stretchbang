@@ -16,6 +16,12 @@ command -v printWaveform >/dev/null 2>&1 || { echo >&2 "I require 'printWaveform
 lm="200"
 db="muzak"
 min="60000" # don't play if shorter than 60 seconds
+bench="1"
+
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmp="/tmp/$RANDOM-$$"
+trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
+mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
 
 # nuke the seen database
 if [ "$1" == "--nuke" ] ; then
@@ -38,19 +44,28 @@ exit
 
 fi
 
+# generate list
+find "$@" -type f | grep -E '.mp3$|.mp4$|.m4a$|.flac$|.ogg$|.mpc$|.wav$|.aif$|.opus$' > "$tmp/list"
+
 # stats
-all="$(find "$@" -type f | grep -E '.mp3$|.mp4$|.m4a$|.flac$|.ogg$|.mpc$|.wav$|.aif$|.opus$' -c)"
+all="$(wc -l < $tmp/list)"
 echo "Found $all songs, 'seen' limit set to $lm."
     
 # main
 while true; do # forever
+
+    # benchmark start
+    START=$(date +%s.%N)
+
     # action
     c="0"
     unlock="60" # This could depend on limit/members ratio
     until
         # Note: find|grep|shuf everything for every song is kinda not optimal,
         # but will cover the case when one adds music while script is in action.
-        muzak="$(seen $lm $db "$( find "$@" -type f | grep -E '.mp3$|.mp4$|.m4a$|.flac$|.ogg$|.mpc$|.wav$|.aif$|.opus$' | shuf -n 1 )"  2>/dev/null)"
+        #muzak="$(seen $lm $db "$( find "$@" -type f | grep -E '.mp3$|.mp4$|.m4a$|.flac$|.ogg$|.mpc$|.wav$|.aif$|.opus$' | shuf -n 1 )"  2>/dev/null)"
+        
+        muzak="$(shuf -n 1 "$tmp/list")"
     
     do 
         # lock prevention
@@ -60,6 +75,11 @@ while true; do # forever
             exit
         fi
     done 
+    
+    # benchmark end
+    END=$(date +%s.%N)
+    DIFF=$(echo "$END - $START" | bc)
+    (( bench )) && echo "found in $DIFF seconds" 
 
     # play or don't
     if ! [[ -z "$muzak" ]]; then
