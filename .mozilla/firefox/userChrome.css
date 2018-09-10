@@ -1,6 +1,7 @@
 /* put me in ~/.mozilla/firefox/_yourprofile_/chrome/userChrome.css */
 /* https://brontosaurusrex.github.io/2018/09/08/firefox-quantum/ */
 
+/* Give me some curves */
 .tab-background {
   border-radius: 16px 16px 0px 0px !important;
   border-image: none !important;
@@ -13,3 +14,13 @@
        visibility: hidden;
 }
 
+/* Don't show close button until hovered https://www.reddit.com/r/firefox/comments/731vz1/userchromecss_hack_for_showing_close_button_on/ */
+.tabbrowser-tab:not(:hover) .tab-close-button{ display:none; }
+.tabbrowser-tab:not([pinned]):hover .tab-close-button{ display:block !important; }
+
+/* Remove separator between tabs */
+.tabbrowser-tab::before, 
+.tabbrowser-tab::after{
+  display: none !important;
+
+}
