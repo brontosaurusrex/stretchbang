@@ -1,6 +1,8 @@
 /* put me in ~/.mozilla/firefox/_yourprofile_/chrome/userChrome.css */
 /* https://brontosaurusrex.github.io/2018/09/08/firefox-quantum/ */
 
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
 /* Give me some curves */
 .tab-background {
   border-radius: 16px 16px 0px 0px !important;
@@ -9,6 +11,7 @@
 .tab-line {
   display: none;
 }
+
 /* remove colored line above each tab */
    #TabsToolbar .tabbrowser-tab .tab-line {
        visibility: hidden;
@@ -22,5 +25,4 @@
 .tabbrowser-tab::before, 
 .tabbrowser-tab::after{
   display: none !important;
-
 }
