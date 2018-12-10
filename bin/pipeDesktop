@@ -9,6 +9,14 @@ cd "$where" || exit
 # menu head
 echo "<openbox_pipe_menu>"
 
+# just open ~/Desktop
+cat << ITEM
+    <item label="desktop">
+        <action name="Execute">
+            <execute>thunar '$where'</execute>
+        </action>
+    </item>
+ITEM
 
 # fodlers
 for stuff in *
