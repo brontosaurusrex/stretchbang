@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Desktop in pipe menu
+
+where=$(xdg-user-dir DESKTOP)
+
+cd "$where" || exit
+
+# menu head
+echo "<openbox_pipe_menu>"
+
+
+# fodlers
+for stuff in *
+do
+    if [[ -d $stuff ]]; then
+cat << ITEM
+    <item label="$stuff">
+        <action name="Execute">
+            <execute>thunar '$where/$stuff'</execute>
+        </action>
+    </item>
+ITEM
+    fi
+done
+
+echo "<separator/>"
+
+# files & links
+for stuff in *
+do
+    if [[ -f $stuff ]]; then
+cat << ITEM
+    <item label="$stuff">
+        <action name="Execute">
+            <execute>thunar '$where/$stuff'</execute>
+        </action>
+    </item>
+ITEM
+    fi
+done
+
+# menu foot
+echo "</openbox_pipe_menu>"
