@@ -6,13 +6,21 @@ where=$(xdg-user-dir DESKTOP)
 
 cd "$where" || exit
 
+# fodlers
+for stuff in *
+do
+    if [[ -d $stuff ]]; then
+            echo "$stuff is dir"
+    fi
+done
+
+# files
 for stuff in *
 do
     if [[ -f $stuff ]]; then
         echo "$stuff is file"
-    elif [[ -d $stuff ]]; then
-        echo "$stuff is dir"
     fi
 done
+
 
 # And so on ...
