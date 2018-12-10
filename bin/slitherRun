@@ -9,11 +9,13 @@ superecho() {
 
 # launch
 if command -v google-chrome; then
-    { google-chrome --window-size=850,850 --app="http://slither.io" &
+    { google-chrome --user-data-dir=/tmp --window-size=800,800 --app="http://slither.io" &
     superecho "Opening slither in Chrome"; }
+    
 elif command -v chromium; then
-    { chromium  --window-size=850,850 --app="http://slither.io" &
+    { chromium  --window-size=800,800 --app="http://slither.io" &
     superecho "Opening slither in Chromium";}
+
 else
     superecho "I need Google-Chrome or Chromium installed"
     exit 1;
