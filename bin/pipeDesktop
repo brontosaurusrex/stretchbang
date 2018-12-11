@@ -4,7 +4,20 @@
 
 where=$(xdg-user-dir DESKTOP)
 
-cd "$where" || exit
+#where="/home/ticho/tmp2sdfsdfsdf"
+
+cd "$where" || exit # better error must be here, for pipe xml
+
+# func
+printer() {
+cat << ITEM
+    <item label="$stuff">
+        <action name="Execute">
+            <execute>thunar '$where/$stuff'</execute>
+        </action>
+    </item>
+ITEM
+}
 
 # menu head
 echo "<openbox_pipe_menu>"
@@ -22,13 +35,9 @@ ITEM
 for stuff in *
 do
     if [[ -d $stuff ]]; then
-cat << ITEM
-    <item label="$stuff">
-        <action name="Execute">
-            <execute>thunar '$where/$stuff'</execute>
-        </action>
-    </item>
-ITEM
+
+        printer
+
     fi
 done
 
@@ -38,13 +47,9 @@ echo "<separator/>"
 for stuff in *
 do
     if [[ -f $stuff ]]; then
-cat << ITEM
-    <item label="$stuff">
-        <action name="Execute">
-            <execute>thunar '$where/$stuff'</execute>
-        </action>
-    </item>
-ITEM
+
+        printer
+
     fi
 done
 
