@@ -57,6 +57,26 @@
 </action>
 <action>
 	<icon></icon>
+	<name>set wall zoom-fill head 0</name>
+	<unique-id>1941457160717161-2</unique-id>
+	<command>nitrogen --save --set-zoom-fill %f --set-color=&quot;#263238&quot; --head=0</command>
+	<description></description>
+	<patterns>*</patterns>
+	<image-files/>
+	<text-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>set wall zoom-fill head 1</name>
+	<unique-id>1541457160717161-2</unique-id>
+	<command>nitrogen --save --set-zoom-fill %f --set-color=&quot;#263238&quot; --head=1</command>
+	<description></description>
+	<patterns>*</patterns>
+	<image-files/>
+	<text-files/>
+</action>
+<action>
+	<icon></icon>
 	<name>unp</name>
 	<unique-id>1483546258550963-2</unique-id>
 	<command>urxvt -e bash -c &apos;unp %F &amp;&amp; (echo &quot;ok&quot;; sleep 1) || (echo &quot;nope&quot;; sleep 10)&apos;</command>
@@ -122,15 +142,10 @@
 <action>
 	<icon></icon>
 	<name>geany</name>
-	<unique-id>1506109797296227-1</unique-id>
+	<unique-id>1543700050103490-1</unique-id>
 	<command>geany %F</command>
 	<description></description>
 	<patterns>*</patterns>
-	<directories/>
-	<audio-files/>
-	<image-files/>
-	<other-files/>
 	<text-files/>
-	<video-files/>
 </action>
 </actions>
