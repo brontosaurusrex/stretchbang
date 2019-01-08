@@ -3,7 +3,7 @@
 # up
 # update only if last update was more than n minutes ago
 
-n="1"
+n="5"
 
 if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -cmin -"$n")" ]]; then
 
