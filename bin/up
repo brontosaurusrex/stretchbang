@@ -5,6 +5,10 @@
 
 n="5"
 
+# checks
+command -v apt >/dev/null 2>&1 || { echo "No 'apt' on this system, exiting." >&2; exit 1; }
+
+# action
 if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -cmin -"$n")" ]]; then
 
     sudo apt-get update && sudo apt-get dist-upgrade -y
