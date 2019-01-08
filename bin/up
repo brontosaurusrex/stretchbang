@@ -5,6 +5,8 @@
 
 N="5"
 
+[[ -d /var/lib/apt/lists ]] || exit
+
 if [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -cmin -$N)" ]; then
 
     echo "mkay"
