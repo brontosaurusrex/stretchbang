@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# urxvtEndColorBG
+
+# open urxvt with random background color
+
+r=$(( ( RANDOM % 4 )  + 1 ))
+g=$(( ( RANDOM % 4 )  + 1 ))
+b=$(( ( RANDOM % 4 )  + 1 ))
+
+urxvt -bg rgb:$r/$g/$b &
