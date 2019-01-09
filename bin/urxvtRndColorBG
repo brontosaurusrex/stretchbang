@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# urxvtEndColorBG
+# urxvtRndColorBG
 
 # open urxvt with random background color
 
