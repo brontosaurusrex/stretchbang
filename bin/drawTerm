@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# drawTerm
+
+# needs: slop, urxvt, wmctrl, xdotool
+
+# brex 2018
+
+# license: WTFPL – Do What the **** You Want to Public License
+
+sleep="0.1"
+name="term$RANDOM"
+
+set -x
+
+read -r x y w h < <(slop -c 0.5,0.8,0.5,0.8 -f "%x %y %w %h")
+
+# Try two times, 
+# 1st using 'name' and wmctrl (this is really fast when it works)
+# 2nd using 'pid' and xdotool (this should 'always' work)
+
+urxvt -title "$name" & 
+somepid="$!" 
+sleep "$sleep"
+
+(echo "one" && wmctrl -r "$name" -e 0,"$x","$y","$w","$h") || \
+(echo "two" && xdotool search --sync --pid "$somepid" windowactivate windowsize "$w" "$h" windowmove "$x" "$y")
