@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# duh - check disk space used
+
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmpdir="/tmp/$RANDOM-$$"
+trap '[ -n "$tmpdir" ] && rm -fr "$tmpdir"' EXIT
+mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; exit 1; }
+
+# tests
+command -v du >/dev/null 2>&1 || { echo "I need 'du', exiting." >&2; exit 1; }
+command -v tee >/dev/null 2>&1 || { echo "I need 'tee', exiting." >&2; exit 1; }
+
+# action
+du -hca --max-depth=1 "$@" | tee "$tmpdir/dir.txt"
+echo 
+sort -h "$tmpdir/dir.txt"
