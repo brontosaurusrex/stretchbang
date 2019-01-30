@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# duh - check disk space used
+# duh2 - check disk space used
 
 # tmp dir http://mywiki.wooledge.org/BashFAQ/062
 tmpdir="/tmp/$RANDOM-$$"
