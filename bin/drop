@@ -5,7 +5,7 @@
 # Drop stuff to be played in mpv to playlist
 # This is workaround for chrome not supporting shift+drag behavior
 
-# needs: mpv, youtube-dl, socat
+# needs: yad, mpv, youtube-dl, socat
 
 #set -x
 
