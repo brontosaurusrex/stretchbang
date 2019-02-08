@@ -13,8 +13,8 @@ isRunning () {
 
     # lets query whatever to see if the thing is already running
     if [ ! -f "$pipe" ] && (echo '{ "command": ["get_property", "mpv-version"] }' | socat - "$pipe") &> /dev/null ; then 
-        echo "Mpv instance already running"
-
+        #echo "Mpv instance already running"
+        true
     else
         echo "Mpv not running, starting now"
         
