@@ -7,8 +7,6 @@
 
 # needs: yad, mpv, youtube-dl, socat
 
-#set -x
-
 pipe="/tmp/pipe" && touch "$pipe"
 
 isRunning () {
@@ -20,24 +18,21 @@ isRunning () {
     else
         echo "Mpv not running, starting now"
         
-        mpv --idle --force-window --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" &
+        mpv --idle --force-window --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200]+bestaudio[ext=m4a]' &
+        sleep 1 # naive approach to wait until pipe is ready
     fi
 }
 
 #isRunning
 
-yad --on-top --undecorated --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometry=200x200+50-50 --text-align=center --dnd | while read url
-# --width=200 --height=200
+yad --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometry=200x200+50-50 --text-align=center --dnd | while read -r url
+# --width=200 --height=200 --undecorated 
 
 do
 
     isRunning
-    sleep 1 # naive approach to wait until pipe is ready
     echo "$url just droped"
-    echo "loadfile $url append-play" | socat - "$pipe"
-    youtube-dl -e "$url" # get url title
+    echo "loadfile \"$url\" append-play" | socat - "$pipe"
+    [[ $url == http* ]] && youtube-dl -e "$url" && echo # if url, try to get url title
 
 done
-
-
-
