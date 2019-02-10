@@ -80,17 +80,18 @@ yad --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometr
         else # assume its a file 
         
             # Must be file, not a dir
-            #if [[ -f "$url" ]]; then
-                #true
-                ## This fails due to 'file://' string at the beginning
-            #else
-                #echo "$url is not file"
-                #continue
-            #fi
-        
+            if [[ -f "${url//file:\/\/}" ]]; then
+                true
+          
+            else
+                echo "$url is not file"
+                continue
+            fi
+            
+            # Just the file.ext part
             desc="${url##*/}"
             
-            # For info in HH:MM:SS
+            # For info in HH:MM:SS:FF
             dur="$(mediainfo "--Inform=General;%Duration/String4%" "$url")"
             
             # inform
