@@ -5,8 +5,17 @@
 # Drop stuff to be played in mpv to playlist
 # This is workaround for chrome not supporting shift+drag behavior
 
-# needs: yad, mpv, youtube-dl, socat
+# needs: yad, mpv, youtube-dl, socat, awk, mediainfo
 
+# checks
+command -v yad >/dev/null 2>&1 || { echo "I need yad, exiting." >&2; exit 1; }
+command -v mpv >/dev/null 2>&1 || { echo "I need mpv, exiting." >&2; exit 1; }
+command -v youtube-dl >/dev/null 2>&1 || { echo "I need youtube-dl, exiting." >&2; exit 1; }
+command -v socat >/dev/null 2>&1 || { echo "I need socat, exiting." >&2; exit 1; }
+command -v awk >/dev/null 2>&1 || { echo "I need awk, exiting." >&2; exit 1; }
+command -v mediainfo >/dev/null 2>&1 || { echo "I need mediainfo, exiting." >&2; exit 1; }
+
+# vars
 pipe="/tmp/pipe" && touch "$pipe"
 log="$HOME/.watched.m3u"
 
@@ -32,6 +41,11 @@ isRunning () {
     fi
 }
 
+# awk_round
+awk_round () {
+    awk 'BEGIN{printf "%."'$1'"f\n", "'$2'"}'
+}
+
 # action
 yad --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometry=200x200+50-50 --text-align=center --dnd | while read -r url
 
@@ -47,17 +61,53 @@ yad --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometr
         # url or file
         if [[ $url == http* ]] ; then 
         
-            yt=$(youtube-dl -e "$url") && echo "$yt" && echo # if url, try to get url title
+            # output of command to array
+            # mapfile -t line < <(some command)
+            mapfile -t line < <(youtube-dl -e --get-duration "$url")
+
+            # Array to vars
+            yt="$(echo "${line[0]}" | tr '-' '|')"
+            dur="${line[1]}"
+
+            # inform
+            echo "$yt | $dur"
+            
+            # to seconds for the playlist
+            dursec="$(echo "$dur" | awk -F\: '{ for(k=NF;k>0;k--) sum+=($k*(60^(NF-k))); print sum }')"
+            
             desc="$yt"
         
         else # assume its a file 
         
-            desc="${url##*/}"
+            # Must be file, not a dir
+            #if [[ -f "$url" ]]; then
+                #true
+                ## This fails due to 'file://' string at the beginning
+            #else
+                #echo "$url is not file"
+                #continue
+            #fi
         
+            desc="${url##*/}"
+            
+            # For info in HH:MM:SS
+            dur="$(mediainfo "--Inform=General;%Duration/String4%" "$url")"
+            
+            # inform
+            echo "$desc | $dur"
+            
+            # For playlist
+            # miliseconds
+            dursec="$(mediainfo "--Inform=General;%Duration%" "$url")"
+            # to seconds and awk round
+            dursec="$(echo "scale=2;$dursec/1000" | bc)"
+            dursec="$(awk_round 0 "$dursec")"
+            
+
         fi
 
         # log
-        echo "#EXTINF:,$desc" >> "$log"
+        echo "#EXTINF:$dursec, $desc | $dur" >> "$log"
         printf "%s\n\n" "$url" >> "$log"
         
         # reset vars
