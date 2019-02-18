@@ -7,8 +7,6 @@
 
 # needs: yad, mpv, youtube-dl, socat, awk, mediainfo
 
-# cli switches: -i, -l, -h
-
 # checks
 command -v yad >/dev/null 2>&1 || { echo "I need yad, exiting." >&2; exit 1; }
 command -v mpv >/dev/null 2>&1 || { echo "I need mpv, exiting." >&2; exit 1; }
@@ -38,7 +36,7 @@ isRunning () {
     else
         echo "Mpv not running, starting now"
         
-        mpv --cache-secs=35 --idle --force-window --video-zoom=0.03 --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]' &
+        mpv --cache-secs=35 --idle --force-window --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]' &
         sleep 1 # naive approach to wait until pipe is ready
     fi
 }
@@ -48,45 +46,7 @@ awk_round () {
     awk 'BEGIN{printf "%."'$1'"f\n", "'$2'"}'
 }
 
-# cli option -i or --info
-whatPlaying () {
-    
-    # exit if pipe not working
-    echo '{ "command": ["get_property", "media-title"] }' | socat - "$pipe" >/dev/null 2>&1 || exit 
-
-    # get data
-    title="$(echo '{ "command": ["get_property", "media-title"] }' | socat - "$pipe" | jq -r .data )" 
-    percent="$(echo '{ "command": ["get_property", "percent-pos"] }' | socat - "$pipe" | jq -r .data )"
-    percent="$(awk_round 0 "$percent")"
-    #timepos="$(echo '{ "command": ["get_property", "playback-time"] }' | socat - "$pipe" | jq -r .data )"
-    #timerem="$(echo '{ "command": ["get_property", "playtime-remaining"] }' | socat - "$pipe" | jq -r .data )"
-    playlistpos="$(echo '{ "command": ["get_property", "playlist-pos-1"] }' | socat - "$pipe" | jq -r .data )"
-    playlistcount="$(echo '{ "command": ["get_property", "playlist-count"] }' | socat - "$pipe" | jq -r .data )"
-    
-    echo "$title ($playlistpos/$playlistcount) $percent%"
-
-}
-
-if [ "$1" == "-i" ] || [ "$1" == "--info" ]; then
-
-    whatPlaying && exit
-    
-elif [ "$1" == "-l" ] || [ "$1" == "--log" ]; then
-
-    tail -n 12 "$log"
-    whatPlaying && exit
-    
-elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
-    echo "drop                  # start droplet gui"
-    echo "drop -i or --info     # show what's playing"
-    echo "drop -l or --log      # tail log and show what's playing"
-    echo "drop -h or --help     # this help" 
-    
-    exit
-
-fi
-
-# gui action
+# action
 yad --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometry=200x200+50-50 --text-align=center --dnd | while read -r url
 
     do
@@ -153,8 +113,5 @@ yad --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometr
         
         # reset vars
         yt="" ; desc="" ; url=""
-        
-       
-        
         
     done
