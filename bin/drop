@@ -72,8 +72,11 @@ whatPlaying () {
     playlistpos="$(echo '{ "command": ["get_property", "playlist-pos-1"] }' | socat - "$pipe" | jq -r .data )"
     playlistcount="$(echo '{ "command": ["get_property", "playlist-count"] }' | socat - "$pipe" | jq -r .data )"
     
-    echo "$title ($playlistpos/$playlistcount) $percent%"
-
+    if [[ $title != null ]]; then
+        
+        echo "$title ($playlistpos/$playlistcount) $percent%"
+    
+    fi
 }
 
 if [ "$1" == "-i" ] || [ "$1" == "--info" ]; then
