@@ -40,7 +40,7 @@ endmsg
 # action
 cd "$tmpdir" || exit
 env template=min.flam3 flam3-genome > real.flam3
-flam3-render < real.flam3 || exit
+env transparency=1 flam3-render < real.flam3 || exit
 
 # store
 name="flame_$RANDOM$RANDOM"
@@ -51,7 +51,7 @@ cp real.flam3 "$keep/$name.flam3"
 # mogrify -resize 1920x "$keep/$name.png"
 
 # set wall
-nitrogen --set-scaled "$keep/$name.png" && wbarRestart > /dev/null 2>&1
+nitrogen --set-scaled --set-color="#364650" "$keep/$name.png" > /dev/null 2>&1 && wbarRestart > /dev/null 2>&1
  # 	--save : Saves the background permanently in the config. Only used with one of the --set-xxx options.
 
 # benchmark end
