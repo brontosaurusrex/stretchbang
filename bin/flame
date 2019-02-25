@@ -51,7 +51,7 @@ cp real.flam3 "$keep/$name.flam3"
 # mogrify -resize 1920x "$keep/$name.png"
 
 # set wall
-nitrogen --set-scaled --set-color="#364650" "$keep/$name.png" > /dev/null 2>&1 && wbarRestart > /dev/null 2>&1
+nitrogen --set-tiled --set-color="#29353B" "$keep/$name.png" > /dev/null 2>&1 && wbarRestart > /dev/null 2>&1
  # 	--save : Saves the background permanently in the config. Only used with one of the --set-xxx options.
 
 # benchmark end
