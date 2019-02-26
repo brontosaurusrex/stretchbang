@@ -29,7 +29,7 @@ mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; ex
 cd "$tmpdir" || exit
 cat > min.flam3 <<'endmsg'
 <pick version="FLAM3-LNX-3.0.1.">
-<flame version="FLAM3-LNX-3.0.1." time="0" size="1920 1200" supersample="4" filter="1" filter_shape="gaussian" temporal_filter_type="box" temporal_filter_width="1" quality="1000" passes="10" temporal_samples="0" background="0.19 0.25 0.29" highlight_power="-1" vibrancy="-1">
+<flame version="FLAM3-LNX-3.0.1." time="0" size="1920 1200" supersample="4" filter="1" filter_shape="gaussian" temporal_filter_type="box" temporal_filter_width="1" quality="1000" passes="10" temporal_samples="50" background="0.19 0.25 0.29" highlight_power="-1" vibrancy="-1">
 </flame>
 </pick>
 endmsg
