@@ -29,7 +29,7 @@ mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; ex
 cd "$tmpdir" || exit
 cat > min.flam3 <<'endmsg'
 <pick version="FLAM3-LNX-3.0.1.">
-<flame version="FLAM3-LNX-3.0.1." time="0" size="1920 1200" supersample="2" filter="1" filter_shape="gaussian" temporal_filter_type="box" temporal_filter_width="1" quality="100" passes="10" temporal_samples="0" background="0.19 0.25 0.29" highlight_power="-1" vibrancy="-1">
+<flame version="FLAM3-LNX-3.0.1." time="0" size="1920 1200" supersample="4" filter="1" filter_shape="gaussian" temporal_filter_type="box" temporal_filter_width="1" quality="1000" passes="10" temporal_samples="0" background="0.19 0.25 0.29" highlight_power="-1" vibrancy="-1">
 </flame>
 </pick>
 endmsg
@@ -40,7 +40,7 @@ endmsg
 # action
 cd "$tmpdir" || exit
 env template=min.flam3 flam3-genome > real.flam3
-env transparency=1 flam3-render < real.flam3 || exit
+nice -n 10 env transparency=1 flam3-render < real.flam3 || exit
 
 # store
 name="flame_$RANDOM$RANDOM"
@@ -48,7 +48,7 @@ cp 00000.png "$keep/$name.png"
 cp real.flam3 "$keep/$name.flam3"
 
 # scale down
-# mogrify -resize 1920x "$keep/$name.png"
+#mogrify -resize 1920x "$keep/$name.png"
 
 # set wall
 nitrogen --set-tiled --set-color="#29353B" "$keep/$name.png" > /dev/null 2>&1 && wbarRestart > /dev/null 2>&1
