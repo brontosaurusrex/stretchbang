@@ -10,7 +10,7 @@
 
 # vars
 x="1920" ; y="1200" # final size
-mul="3" # render at what size, before downsizing
+mul="1" # render at what size, before downsizing
 x2=$(( x * mul )) ; y2=$(( y * mul )) ; supersample="3"
 
 # naming function
@@ -45,7 +45,7 @@ mkdir -m 700 "$tmpdir" || { echo '!! unable to create a tmpdir' >&2; tmpdir=; ex
 cd "$tmpdir" || exit
 
 echo "<pick version=\"FLAM3-LNX-3.0.1.\">
-<flame version=\"FLAM3-LNX-3.0.1.\" time=\"0\" size=\"$x2 $y2\" supersample=\"$supersample\" filter=\"1\" filter_shape=\"gaussian\" temporal_filter_type=\"gaussian\" temporal_filter_width=\"1\" quality=\"1000\" passes=\"10\" temporal_samples=\"100\" background=\"0.19 0.25 0.29\" highlight_power=\"-1\" vibrancy=\"-1\">
+<flame version=\"FLAM3-LNX-3.0.1.\" time=\"0\" size=\"$x2 $y2\" supersample=\"$supersample\" filter=\"1\" filter_shape=\"gaussian\" temporal_filter_type=\"gaussian\" temporal_filter_width=\"1\" quality=\"100\" passes=\"10\" temporal_samples=\"100\" background=\"0.19 0.25 0.29\" highlight_power=\"-1\" vibrancy=\"-1\">
 </flame>
 </pick>" > min.flam3
 
