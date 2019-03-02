@@ -2,4 +2,4 @@
 
 # geany in background
 
-geany "$@" &
+geany "$@" 2>/dev/null &
