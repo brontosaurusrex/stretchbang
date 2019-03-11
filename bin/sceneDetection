@@ -25,7 +25,7 @@ while [ $# -gt 0 ]; do
     
     # non-reliable scene detection
     ffmpeg -hide_banner -i "$file" -an \
-           -filter:v "select='gt(scene\,0.1)',showinfo" \
+           -filter:v "select='gt(scene\,0.4)',showinfo" \
            -f null \
            - 2>&1 | tee "$tmp/all.txt"
     
