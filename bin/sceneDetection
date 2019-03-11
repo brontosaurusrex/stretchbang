@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# scene detection
+
+# needs: ffmpeg, mediainfo, tee, awk
+
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmp="/tmp/$RANDOM-$$"
+trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
+mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
+
+# func
+calc () {
+    echo "scale=5; $*" | bc
+}
+awk_round () {
+    awk 'BEGIN{printf "%."'$1'"f\n", "'$2'"}'
+}
+
+# action
+while [ $# -gt 0 ]; do
+
+    file=$(readlink -f "$1")
+    echo "$file"
+    
+    # non-reliable scene detection
+    ffmpeg -hide_banner -i "$file" -an \
+           -filter:v "select='gt(scene\,0.1)',showinfo" \
+           -f null \
+           - 2>&1 | tee "$tmp/all.txt"
+    
+    echo ; echo "$file cut detection points in seconds"
+    echo "0" > "$tmp/greped.txt"
+    grep showinfo "$tmp/all.txt" | grep "pts_time:[0-9.]*" -o | grep "[0-9.]*" -o | tee -a "$tmp/greped.txt"
+
+    echo ; echo "$file timeline" 
+    # echo simple timeline
+    # ||------------|----|-----|----|----|||||||||||||||----|-|--|--|-|-|||
+    { read -r v2; while v1=$v2; read -r v2; do 
+        
+        dur="$(calc "$v2 - $v1")"
+        echo "$dur" >> "$tmp/dur.txt"
+        round="$(awk_round 0 "$dur")"
+
+        if [ "$round" -ne "0" ]; then
+            printf '%0.s-' $(seq 1 "$round")
+        fi
+        
+        printf "|"
+
+        
+    done; } < "$tmp/greped.txt"
+
+
+    # echo average length
+    echo
+    awk '{s+=$1}END{print "average clip length:",s/NR,"seconds"}' RS="\n" "$tmp/dur.txt"
+    
+    # various info
+    # fps, duration
+    #fps="$(mediainfo --Inform="Video;%FrameRate%" "$file")"
+    #dursec="$(mediainfo "--Inform=General;%Duration%" "$file")"
+    durfile="$(mediainfo "--Inform=General;%Duration/String1%" "$file")"
+    
+    shots="$( cat "$tmp/dur.txt" | wc -l )"
+    echo "$shots clips, $durfile"
+
+shift
+done 
