@@ -4,10 +4,15 @@
 
 # needs: ffmpeg, mediainfo, tee, awk
 
-# tmp dir http://mywiki.wooledge.org/BashFAQ/062
-tmp="/tmp/$RANDOM-$$"
-trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
-mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
+maketmpdir () {
+    # tmp dir http://mywiki.wooledge.org/BashFAQ/062
+    # delete old one first
+    [ -n "$tmp" ] && rm -fr "$tmp"
+    # busines as usual
+    tmp="/tmp/$RANDOM-$$"
+    trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
+    mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
+}
 
 # func
 calc () {
@@ -20,12 +25,14 @@ awk_round () {
 # action
 while [ $# -gt 0 ]; do
 
+    maketmpdir
+
     file=$(readlink -f "$1")
     echo "$file"
     
     # non-reliable scene detection
     ffmpeg -hide_banner -i "$file" -an \
-           -filter:v "select='gt(scene\,0.4)',showinfo" \
+           -filter:v "select='gt(scene,0.2)',showinfo" \
            -f null \
            - 2>&1 | tee "$tmp/all.txt"
     
