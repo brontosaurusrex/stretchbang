@@ -1,0 +1,210 @@
+#!/bin/sh
+appname="${1##/*/}"
+tmpname=${appname%.*}
+
+echo .........................................................................................
+echo #
+echo "     " $tmpname
+echo #
+echo .........................................................................................
+echo #
+
+#timer
+function timer()
+{
+    if [[ $# -eq 0 ]]; then
+        echo $(date '+%s')
+    else
+        local  stime=$1
+        etime=$(date '+%s')
+
+        if [[ -z "$stime" ]]; then stime=$etime; fi
+
+        dt=$((etime - stime))
+        ds=$((dt % 60))
+        dm=$(((dt / 60) % 60))
+        dh=$((dt / 3600))
+        printf '%d:%02d:%02d' $dh $dm $ds
+    fi
+}
+
+# If invoked directly run test code.
+if [[ $(basename $0 .sh) == 'timer' ]]; then
+    t=$(timer)
+    read -p 'Enter when ready...' p
+    printf 'Elapsed time: %s\n' $(timer $t)
+fi
+# end timer
+
+date
+tmr=$(timer)
+
+
+# .........................................................................................
+# look around for ffdropbin folder
+
+if [ -d "$1/../../../../ffmpeg" ]; then ffdropbin="$1/../../../../ffmpeg";  fi
+if [ -d "$1/../../../ffmpeg" ]; then ffdropbin="$1/../../../ffmpeg";  fi
+if [ -d "$1/../../ffmpeg" ]; then ffdropbin="$1/../../ffmpeg";  fi
+if [ -d "$1/../ffmpeg" ]; then ffdropbin="$1/../ffmpeg";  fi
+
+
+if [[ "$ffdropbin" == "" ]] ; then
+   echo "binaries location not found"
+   exit
+fi
+
+
+echo using binaries from 
+cd "$ffdropbin"
+ffdropbin=$(PWD)
+echo "$ffdropbin"
+echo .........................................................................................
+echo #
+
+# end look around for ffdropbin folder
+
+
+
+# check for actual bin files
+if [ -f "$ffdropbin/ffmpeg" ]; then ffmpeg="$ffdropbin/ffmpeg"; else exit; fi
+if [ -f "$ffdropbin/x264" ]; then x264="$ffdropbin/x264"; else exit; fi
+if [ -f "$ffdropbin/mediainfo" ]; then mediainfo="$ffdropbin/mediainfo"; else exit; fi
+
+
+
+echo "droped files:"
+shift
+for files in "$@" ;do
+              echo "$files"
+
+done
+echo #
+
+for files in "$@" ;do
+			echo #
+echo '
+         (__)                 
+         (oo)           
+  /-------\/            
+ / |     ||           
+*  ||----||           
+   ~~    ~~   '
+			echo #
+
+	echo analyzing $files
+
+	# check if the output with the same name exists
+	tmpout=${files%.*}.txt
+	while [ -f "${tmpout%.*}.txt" ]
+	do
+	tmpout=${tmpout%.*}_.txt
+	done
+	out=${tmpout%.*}
+	
+	
+	frames=`"$mediainfo" "--Inform=Video;%FrameCount%" "$files"`
+	echo $frames
+	framerate=`"$mediainfo" "--Inform=Video;%FrameRate%" "$files"`
+	echo $framerate
+	
+	# -----------
+	# logs
+	
+	# ffmpeg command:
+	"$ffmpeg" -i "$files" -vf scale=100:100 -sws_flags neighbor -an -pix_fmt yuv420p -f yuv4mpegpipe - 2>/dev/null | "$x264" - --demuxer y4m --bframes 0 --min-keyint 10 --scenecut 45 --preset superfast --crf 30 --threads 1 -v --output /dev/null 2>&1 | tee -a "$out.txt"
+	cat "$out.txt" | grep scene 
+	
+	echo "0" > "$out.scenecut-frames.txt"
+	cat "$out.txt" | grep scene | cut -d ' ' -f 6 | tee -a "$out.scenecut-frames.txt"
+	echo "$frames" >> "$out.scenecut-frames.txt"
+	
+	
+	echo #
+	echo .........................................................
+    echo report
+    echo .........................................................
+	
+	# echo log in frames
+	echo #
+	echo "scene cuts in frames"
+	while read LINE #this are frames
+    do
+    echo $LINE
+    done < "$out.scenecut-frames.txt"
+	
+	# Convert to seconds and echo
+	echo #
+	echo "scene cuts in seconds"
+	while read LINE #this are frames
+    do
+    seconds=`echo "scale=2;$LINE/$framerate" | bc`    #scale=2 allowes floating point math
+    echo "$seconds" | tee -a "$out.scenecut-seconds.txt"
+    
+    #echo $LINE
+    done < "$out.scenecut-frames.txt"
+    # end logs
+    # -----------
+    
+    
+
+	
+	# cuting example /ffmpeg -ss 1334.84 -i ./Tulln_3del.mov -t 3.72 -acodec copy -vcodec copy ./out2.mov
+    
+    # math examples
+	#RG=`echo "256*$bar" | bc`
+	#RG=`echo "($RG+0.5)/1" | bc`
+
+
+echo #
+echo "scene cuts in frames + delta"
+
+    
+    { read v2; while v1=$v2; read v2; do 
+    
+    delta=$((v2-v1))
+    echo $v1 $delta
+    
+    
+    done; } < "$out.scenecut-frames.txt"
+
+echo #
+echo "scene cuts in seconds + delta"
+
+    
+    { read v2; while v1=$v2; read v2; do 
+    
+    delta=$((v2-v1))
+   
+
+    startsecond=`echo "scale=2;$v1/$framerate" | bc`    #scale=2 allowes floating point math
+    startsecond=`printf %4.2f $startsecond` #fix missing numbers in front of .
+    deltasecond=`echo "scale=2;$delta/$framerate" | bc`
+    deltasecond=`printf %4.2f $deltasecond` #fix missing numbers in front of .
+    
+    
+    echo $startsecond $deltasecond
+    
+    done; } < "$out.scenecut-frames.txt"
+
+
+done
+#end main loop
+
+
+
+
+
+
+echo #
+date
+echo #
+printf 'done in %s\n' $(timer $tmr)
+
+
+
+
+say done &
+
+
+
