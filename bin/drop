@@ -18,6 +18,7 @@ command -v socat >/dev/null 2>&1 || { echo "I need socat, exiting." >&2; exit 1;
 command -v awk >/dev/null 2>&1 || { echo "I need awk, exiting." >&2; exit 1; }
 command -v mediainfo >/dev/null 2>&1 || { echo "I need mediainfo, exiting." >&2; exit 1; }
 command -v jq >/dev/null 2>&1 || { echo "I would like jq for some cli stuff you can do." ; }
+command -v ack >/dev/null 2>&1 || { echo "I would like ack for some cli stuff you can do." ; }
 
 # vars
 pipe="/tmp/pipe" && touch "$pipe"
@@ -72,21 +73,27 @@ whatPlaying () {
     playlistpos="$(echo '{ "command": ["get_property", "playlist-pos-1"] }' | socat - "$pipe" | jq -r .data )"
     playlistcount="$(echo '{ "command": ["get_property", "playlist-count"] }' | socat - "$pipe" | jq -r .data )"
     
+
+}
+
+echoStuff () {
+ 
     if [[ $title != null ]]; then
-        
         echo "$title ($playlistpos/$playlistcount) $percent%"
-    
     fi
 }
 
 if [ "$1" == "-i" ] || [ "$1" == "--info" ]; then
 
-    whatPlaying && exit
+    whatPlaying && echoStuff && exit
     
 elif [ "$1" == "-l" ] || [ "$1" == "--log" ]; then
 
-    tail -n 12 "$log"
-    whatPlaying && exit
+    whatPlaying
+    tail -n 22 "$log" | ack --color --passthru "${title}"
+    echoStuff
+    
+    exit
     
 elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     echo "drop                  # start droplet gui"
