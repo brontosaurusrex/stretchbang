@@ -41,7 +41,11 @@ isRunning () {
     else
         echo "Mpv not running, starting now"
         
-        mpv --cache-secs=35 --idle --force-window --video-zoom=0.03 --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]' &
+        mpv --cache-secs=35 --idle --force-window --video-zoom=0.03 --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]/best[height<=730]' &
+        
+        # https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection
+        # --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]'
+        
         sleep 1 # naive approach to wait until pipe is ready
     fi
 }
