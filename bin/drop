@@ -80,6 +80,7 @@ whatPlaying () {
 
 }
 
+# echo stuff
 echoStuff () {
  
     if [[ $title != null ]]; then
@@ -114,7 +115,7 @@ elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 fi
 
 # gui action
-yad --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometry=200x200+50-50 --text-align=center --dnd | while read -r url
+yad --window-icon="yad" --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometry=200x200+50-50 --text-align=center --dnd | while read -r url
 
     do
 
