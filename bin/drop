@@ -62,22 +62,19 @@ dostuff () {
        
     echo "$url just droped"
         
-    # make absolute if it looks like file
+    # make path absolute if it looks like file
     if [[ -f "${url//file:\/\/}" ]]; then
     
         # make it without file://
         url="${url//file:\/\/}"
 
         # make it absolute
-        thing=$(realpath "$url")
-        echo "$thing is a file"
-    else
-        thing="$url"
-        echo "$thing is an url"
+        url=$(realpath "$url")
+        #echo "$url is a file"
     fi
     
     # load stuff to mpv pipe
-    echo "loadfile \"$thing\" append-play" | socat - "$pipe"
+    echo "loadfile \"$url\" append-play" | socat - "$pipe"
     
     # Geting more info from youtube-dl directly
     # url or file
@@ -130,6 +127,7 @@ dostuff () {
 
     # log
     echo "#EXTINF:$dursec, $desc | $dur" >> "$log"
+    echo "log $url"
     printf "%s\n\n" "$url" >> "$log"
     
     # reset vars
