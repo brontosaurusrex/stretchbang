@@ -6,6 +6,9 @@
 # This is workaround for chrome not supporting shift+drag behavior
 
 # needs: yad, mpv, youtube-dl, socat, awk, mediainfo
+# wishes: jq
+
+# cli switches: -i, -l, -h
 
 # checks
 command -v yad >/dev/null 2>&1 || { echo "I need yad, exiting." >&2; exit 1; }
@@ -14,6 +17,8 @@ command -v youtube-dl >/dev/null 2>&1 || { echo "I need youtube-dl, exiting." >&
 command -v socat >/dev/null 2>&1 || { echo "I need socat, exiting." >&2; exit 1; }
 command -v awk >/dev/null 2>&1 || { echo "I need awk, exiting." >&2; exit 1; }
 command -v mediainfo >/dev/null 2>&1 || { echo "I need mediainfo, exiting." >&2; exit 1; }
+command -v jq >/dev/null 2>&1 || { echo "I would like jq for some cli stuff you can do." ; }
+command -v ack >/dev/null 2>&1 || { echo "I would like ack for some cli stuff you can do." ; }
 
 # vars
 pipe="/tmp/pipe" && touch "$pipe"
@@ -36,7 +41,11 @@ isRunning () {
     else
         echo "Mpv not running, starting now"
         
-        mpv --cache-secs=35 --idle --force-window --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]' &
+        mpv --cache-secs=35 --idle --force-window --video-zoom=0.03 --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]/best[height<=730]' &
+        
+        # https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection
+        # --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]'
+        
         sleep 1 # naive approach to wait until pipe is ready
     fi
 }
@@ -46,8 +55,67 @@ awk_round () {
     awk 'BEGIN{printf "%."'$1'"f\n", "'$2'"}'
 }
 
-# action
-yad --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometry=200x200+50-50 --text-align=center --dnd | while read -r url
+# cli option -i or --info
+whatPlaying () {
+    
+    # exit if pipe not working
+    status="$(echo '{ "command": ["get_property", "mpv-version"] }' | socat - "$pipe" 2>/dev/null | jq -r .error)" 
+    
+    if [[  $status != "success" ]]; then
+    
+        echo "No."
+        exit 1
+    
+    fi
+
+    # get data
+    title="$(echo '{ "command": ["get_property", "media-title"] }' | socat - "$pipe" | jq -r .data )" 
+    percent="$(echo '{ "command": ["get_property", "percent-pos"] }' | socat - "$pipe" | jq -r .data )"
+    percent="$(awk_round 0 "$percent")"
+    #timepos="$(echo '{ "command": ["get_property", "playback-time"] }' | socat - "$pipe" | jq -r .data )"
+    #timerem="$(echo '{ "command": ["get_property", "playtime-remaining"] }' | socat - "$pipe" | jq -r .data )"
+    playlistpos="$(echo '{ "command": ["get_property", "playlist-pos-1"] }' | socat - "$pipe" | jq -r .data )"
+    playlistcount="$(echo '{ "command": ["get_property", "playlist-count"] }' | socat - "$pipe" | jq -r .data )"
+    
+
+}
+
+# echo stuff
+echoStuff () {
+ 
+    if [[ $title != null ]]; then
+        echo "$title ($playlistpos/$playlistcount) $percent%"
+    fi
+}
+
+# Just show what's playing
+if [ "$1" == "-i" ] || [ "$1" == "--info" ]; then
+
+    whatPlaying && echoStuff && exit
+
+# log and show what's playing
+elif [ "$1" == "-l" ] || [ "$1" == "--log" ]; then
+
+    whatPlaying
+    if [[ $title != null ]]; then
+        tail -n 22 "$log" | ack --color --passthru --literal "${title}"
+    else
+        tail -n 22 "$log"
+    fi
+    echoStuff
+    exit
+    
+elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    echo "drop                  # start droplet gui"
+    echo "drop -i or --info     # show what's playing"
+    echo "drop -l or --log      # tail log and show what's playing"
+    echo "drop -h or --help     # this help" 
+    exit
+
+fi
+
+# gui action
+yad --window-icon="yad" --on-top --no-buttons --title="drop urls here" --text="\n\n\nDROP" --geometry=200x200+50-50 --text-align=center --dnd | while read -r url
 
     do
 

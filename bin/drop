@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# drop
+# drop (brex 2019)
 
 # Drop stuff to be played in mpv to playlist
 # This is workaround for chrome not supporting shift+drag behavior
@@ -41,7 +41,7 @@ isRunning () {
     else
         echo "Mpv not running, starting now"
         
-        mpv --cache-secs=35 --idle --force-window --video-zoom=0.03 --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]/best[height<=730]' &
+        mpv --cache-secs=35 --idle --force-window --video-zoom=0.03 --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=60]+bestaudio[ext=m4a]/best[height<=730]' &
         
         # https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection
         # --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]'
@@ -53,6 +53,88 @@ isRunning () {
 # awk_round
 awk_round () {
     awk 'BEGIN{printf "%."'$1'"f\n", "'$2'"}'
+}
+
+# do stuff (this was decoupled from gui part to allow cli url/file input as well)
+dostuff () {
+    
+    isRunning
+       
+    echo "$url just droped"
+        
+    # make absolute if it looks like file
+    if [[ -f "${url//file:\/\/}" ]]; then
+    
+        # make it without file://
+        url="${url//file:\/\/}"
+
+        # make it absolute
+        thing=$(realpath "$url")
+        echo "$thing is a file"
+    else
+        thing="$url"
+        echo "$thing is an url"
+    fi
+    
+    # load stuff to mpv pipe
+    echo "loadfile \"$thing\" append-play" | socat - "$pipe"
+    
+    # Geting more info from youtube-dl directly
+    # url or file
+    if [[ $url == http* ]] ; then 
+        
+        # output of command to array
+        # mapfile -t line < <(some command)
+        mapfile -t line < <(youtube-dl -e --get-duration "$url")
+
+        # Array to vars
+        yt="$(echo "${line[0]}" | tr '-' '|')"
+        dur="${line[1]}"
+
+        # inform
+        echo "$yt | $dur"
+            
+        # to seconds for the playlist
+        dursec="$(echo "$dur" | awk -F\: '{ for(k=NF;k>0;k--) sum+=($k*(60^(NF-k))); print sum }')"
+            
+        desc="$yt"
+        
+    else # assume its a file 
+    
+        # Must be file, not a dir
+        if [[ -f "${url//file:\/\/}" ]]; then
+            true
+        else
+            echo "$url is not file"
+            return
+        fi
+        
+        # Just the file.ext part
+        desc="${url##*/}"
+        
+        # For info in HH:MM:SS:FF
+        dur="$(mediainfo "--Inform=General;%Duration/String4%" "$url")"
+        
+        # inform
+        echo "$desc | $dur"
+        
+        # For playlist
+        # miliseconds
+        dursec="$(mediainfo "--Inform=General;%Duration%" "$url")"
+        # to seconds and awk round
+        dursec="$(echo "scale=2;$dursec/1000" | bc)"
+        dursec="$(awk_round 0 "$dursec")"
+            
+
+    fi
+
+    # log
+    echo "#EXTINF:$dursec, $desc | $dur" >> "$log"
+    printf "%s\n\n" "$url" >> "$log"
+    
+    # reset vars
+    yt="" ; desc="" ; url=""
+    
 }
 
 # cli option -i or --info
@@ -104,14 +186,25 @@ elif [ "$1" == "-l" ] || [ "$1" == "--log" ]; then
     fi
     echoStuff
     exit
-    
+
+# show help
 elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     echo "drop                  # start droplet gui"
+    echo "drop file url1 url2   # add files and/or urls, don't show gui"
     echo "drop -i or --info     # show what's playing"
     echo "drop -l or --log      # tail log and show what's playing"
     echo "drop -h or --help     # this help" 
     exit
 
+# treat as list of input urls/files    
+elif [[ $# != 0 ]]; then
+
+    for url in "$@"
+    do
+        dostuff "$url"
+    done
+    exit # In this case gui never shows
+    
 fi
 
 # gui action
@@ -119,67 +212,6 @@ yad --window-icon="yad" --on-top --no-buttons --title="drop urls here" --text="\
 
     do
 
-        isRunning
-        
-        echo "$url just droped"
-        
-        # load stuff to mpv pipe
-        echo "loadfile \"$url\" append-play" | socat - "$pipe"
-        
-        # url or file
-        if [[ $url == http* ]] ; then 
-        
-            # output of command to array
-            # mapfile -t line < <(some command)
-            mapfile -t line < <(youtube-dl -e --get-duration "$url")
-
-            # Array to vars
-            yt="$(echo "${line[0]}" | tr '-' '|')"
-            dur="${line[1]}"
-
-            # inform
-            echo "$yt | $dur"
-            
-            # to seconds for the playlist
-            dursec="$(echo "$dur" | awk -F\: '{ for(k=NF;k>0;k--) sum+=($k*(60^(NF-k))); print sum }')"
-            
-            desc="$yt"
-        
-        else # assume its a file 
-        
-            # Must be file, not a dir
-            if [[ -f "${url//file:\/\/}" ]]; then
-                true
-          
-            else
-                echo "$url is not file"
-                continue
-            fi
-            
-            # Just the file.ext part
-            desc="${url##*/}"
-            
-            # For info in HH:MM:SS:FF
-            dur="$(mediainfo "--Inform=General;%Duration/String4%" "$url")"
-            
-            # inform
-            echo "$desc | $dur"
-            
-            # For playlist
-            # miliseconds
-            dursec="$(mediainfo "--Inform=General;%Duration%" "$url")"
-            # to seconds and awk round
-            dursec="$(echo "scale=2;$dursec/1000" | bc)"
-            dursec="$(awk_round 0 "$dursec")"
-            
-
-        fi
-
-        # log
-        echo "#EXTINF:$dursec, $desc | $dur" >> "$log"
-        printf "%s\n\n" "$url" >> "$log"
-        
-        # reset vars
-        yt="" ; desc="" ; url=""
+        dostuff
         
     done
