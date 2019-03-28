@@ -127,7 +127,7 @@ dostuff () {
 
     # log
     echo "#EXTINF:$dursec, $desc | $dur" >> "$log"
-    echo "log $url"
+    #echo "log $url"
     printf "%s\n\n" "$url" >> "$log"
     
     # reset vars
