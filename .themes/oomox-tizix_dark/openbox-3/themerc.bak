@@ -133,7 +133,6 @@ osd.button.pressed.bg.color: #126d7a
 
 osd.button.focused.bg: flat solid border
 osd.button.focused.bg.color: #dcdcdc
-osd.button.focused.bg.color: #126d7a
 #osd.button.focused.*.border.color: #1d2324
 
 osd.button.focused.box.color: #126d7a
