@@ -1,0 +1,27 @@
+#!/bin/bash
+
+temp () {
+    echo "scale=1; $(cat /sys/class/thermal/thermal_zone0/temp)/1000" | bc
+}
+
+freq () {
+    vcgencmd measure_clock arm
+}
+
+stressme () {
+    stress -c 8 -t 10
+}
+
+main () {    
+    stressme
+    freq
+    temp
+}
+
+temp
+for run in {1..10}
+do
+    echo "run $run"
+    main
+done
+
