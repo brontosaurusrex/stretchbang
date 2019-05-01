@@ -18,7 +18,7 @@ if (( chars == auto )); then
 fi
 prefil="|"
 postfil="."
-poschar=" " ; pos="$poschar"
+poschar="∵" ; pos="$poschar"
 
 # main
 faktor=$(echo "scale=2;$chars/100" | bc)
