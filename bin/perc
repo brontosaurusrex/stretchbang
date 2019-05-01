@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# percentage bar
+
+# usage: perc 44
+
+# checks
+#command -v awk >/dev/null 2>&1 || { echo "I need awk, exiting." >&2; exit 1; }
+command -v bc >/dev/null 2>&1 || { echo "I need bc, exiting." >&2; exit 1; }
+
+# config
+chars="auto" # number or auto
+if (( chars == auto )); then
+    chars="$(tput cols)"
+fi
+fil="|"
+poschar=" " ; pos="$poschar"
+
+# input
+perc="$1"
+
+# main
+    faktor=$(echo "scale=2;$chars/100" | bc)
+
+    vol=$(echo "scale=0;($perc*$faktor+0.5)/1" | bc -l)
+
+    postloop=$(echo "$chars-$vol" | bc)
+
+    if (( vol == chars )); then
+        postloop=0
+    fi
+
+    preloop=$(echo "$vol-1" | bc)
+
+    if (( vol == 0 )); then
+        preloop=0
+        postloop=$(echo "$chars-$vol-1" | bc)
+    fi
+
+    a=$(for i in $(seq 1 $preloop); do
+        printf "%s" "$fil" 
+    done)
+    b=$(printf "%s" "$pos")
+    c=$(for i in $(seq 1 $postloop); do
+        printf "%s" "$fil"
+    done)
+
+    printf "%s%s%s\n" "$a$b$c"
+
+#end

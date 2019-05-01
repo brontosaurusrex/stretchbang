@@ -19,6 +19,7 @@ command -v awk >/dev/null 2>&1 || { echo "I need awk, exiting." >&2; exit 1; }
 command -v mediainfo >/dev/null 2>&1 || { echo "I need mediainfo, exiting." >&2; exit 1; }
 command -v jq >/dev/null 2>&1 || { echo "I would like jq for some cli stuff you can do." ; }
 command -v ack >/dev/null 2>&1 || { echo "I would like ack for some cli stuff you can do." ; }
+command -v perc >/dev/null 2>&1 || { echo "I would like perc script for info with graph, that is --ii command." ; }
 
 # vars
 pipe="/tmp/pipe" && touch "$pipe"
@@ -165,13 +166,21 @@ echoStuff () {
  
     if [[ $title != null ]]; then
         echo "$title ($playlistpos/$playlistcount) $percent%"
+        
     fi
 }
 
 # Just show what's playing
 if [ "$1" == "-i" ] || [ "$1" == "--info" ]; then
 
-    whatPlaying && echoStuff && exit
+    whatPlaying && echoStuff
+    exit
+    
+# Just show what's playing with percentage bar (needs 'perc' graph script)
+elif [ "$1" == "-ii" ] || [ "$1" == "--info2" ]; then
+
+    whatPlaying && echoStuff && perc "$percent"
+    exit
 
 # log and show what's playing
 elif [ "$1" == "-l" ] || [ "$1" == "--log" ]; then
@@ -190,6 +199,7 @@ elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     echo "drop                  # start droplet gui"
     echo "drop file url1 url2   # add files and/or urls, don't show gui"
     echo "drop -i or --info     # show what's playing"
+    echo "drop -ii or --info2   # show what's playing + percentage bar"
     echo "drop -l or --log      # tail log and show what's playing"
     echo "drop -h or --help     # this help" 
     exit
