@@ -20,9 +20,9 @@ fi
 
 # █ ░ ▓
 
-prefil="▓"
-postfil="░"
-poschar="▓" ; pos="$poschar"
+prefil="░"
+postfil=" "
+poschar="░" ; pos="$poschar"
 
 
 # main
