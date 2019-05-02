@@ -179,7 +179,7 @@ if [ "$1" == "-i" ] || [ "$1" == "--info" ]; then
 # Just show what's playing with percentage bar (needs 'perc' graph script)
 elif [ "$1" == "-ii" ] || [ "$1" == "--info2" ]; then
 
-    whatPlaying && echoStuff && echo && perc "$percent"
+    whatPlaying && echoStuff && echo && perc "$percent" && perc "$percent" && perc "$percent"
     exit
 
 # log and show what's playing

@@ -19,11 +19,11 @@ fi
 #remove two for start and endchars
 chars="$(echo "$chars-2" | bc)"
     
-startchar="["
-prefil="|"
+startchar="█"
+prefil="█"
 postfil=" "
-poschar=" " ; pos="$poschar"
-endchar="]"
+poschar="█" ; pos="$poschar"
+endchar="█"
 
 # main
 faktor=$(echo "scale=2;$chars/100" | bc)
