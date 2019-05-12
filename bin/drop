@@ -160,6 +160,7 @@ whatPlaying () {
     
     timepos="$(echo '{ "command": ["get_property", "time-pos"] }' | socat - "$pipe" | jq -r .data )" && timepos="${timepos%.*}"
     duration="$(echo '{ "command": ["get_property", "duration"] }' | socat - "$pipe" | jq -r .data )" && duration="${duration%.*}"
+    left=$(($playlistcount - $playlistpos))
     
     
     
@@ -169,7 +170,15 @@ whatPlaying () {
 echoStuff () {
  
     if [[ $title != null ]]; then
-        echo "$title $timepos/$duration $percent% ($playlistpos/$playlistcount)" 
+        echo -n "$title $timepos/$duration $percent% ($playlistpos/$playlistcount)"
+        
+        if (( left > 0 && left < 6 )); then
+            #echo " $left"
+            printf "%.s  ░░" $(seq 1 "$left") ; printf "\n"
+        else
+            printf "\n"
+        fi
+    #░░░
     fi
 }
 
