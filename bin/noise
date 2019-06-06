@@ -12,8 +12,9 @@
 command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
 command -v nitrogen >/dev/null 2>&1 || { echo "I need nitrogen, exiting." >&2; exit 1; }
 
-# store & vars
-file="/tmp/noise.png"   # final wallpaper
+# store for single image
+file="$HOME/.noise.png"
+touch "$file" || exit
 
 # resolution
 mx=1920; my=1200
@@ -30,6 +31,7 @@ Order of parameters does matter:
 examples:
 
     noise                           # default
+    noise ++ -p                     # brighter and make permanent wall
     noise deep                      # with color preset 'deep'
     noise deep +                    # with color preset 'deep' and 10% brighter
     noise - +++                     # default, but 10% darker and 30% more saturated
@@ -49,6 +51,11 @@ EOF
 
 exit 
 
+fi
+
+# Permanent wallpaper or not, must be last
+if [ "${!#}" == "-p" ] || [ "$1" == "--perm" ]; then
+    save="--save"
 fi
 
 # fill colors
@@ -154,14 +161,18 @@ fi
 
 # noise
 noise () {
-set -x
-convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level ${low}%,${high}% -tint "100" -modulate "$bri,$col,$hue" "$file"
-set +x
+convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill "$color" +level ${low}%,${high}% -tint "100" -sharpen 0x1 -modulate "$bri,$col,$hue" "$file"
 }
 # +level 18%,24%
 # -sharpen 0x1
 # -modulate bright,color,hue
 
+# nitrogen, set wall
+setwall () {
+    nitrogen "${save}" --set-tiled "$file" || echo "nitrogen failed"
+}
+
+# restart wbar
 restart() {
 if pgrep -x "$1" > /dev/null
 then
@@ -173,11 +184,8 @@ else
 fi
 }
 
-setwall () {
-    nitrogen --set-tiled "$file"
-}
-
 # action
+set -x
 noise
 setwall
 restart wbar > /dev/null 2>&1
