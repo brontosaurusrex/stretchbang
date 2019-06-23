@@ -1,0 +1,110 @@
+#!/bin/bash
+
+# percentage bar 2 (with 1/8 of the single char precision)
+
+# usage: perc2 44
+#        perc2 9.12
+#        perc2 12 10 # 2nd one is scale
+
+# tests
+# for i in {1..100} ; do echo -n "$i\t"; perc2 $i ; done # integer loop
+# for i in $(seq 0 0.1 100) ; do echo -n "$i\t"; perc2 $i 50 ; done # floating loop
+
+debug="0"
+((debug)) && set -x
+info="0"
+
+# checks
+command -v bc >/dev/null 2>&1 || { echo "I need bc, exiting." >&2; exit 1; }
+
+# input
+# one is percentage
+if [[ -n "$1" ]]; then 
+    perc="$1" 
+fi
+
+# two is optional scale in chars
+if [[ -n "$2" ]]; then
+
+    chars="$2"
+    
+else
+
+    # config
+    chars="auto" # number or auto
+    if [[ "$chars" == "auto" ]]; then
+        chars="$(tput cols)"
+    fi
+    
+fi
+
+faktor=$(echo "scale=2;$chars/100" | bc -sl)
+vol=$(echo "scale=2;($perc*$faktor)" | bc -sl)
+
+fullblocks=$(echo "$vol" | cut -d. -f1) ; [[ -z "$fullblocks" ]] && fullblocks="0"
+whatsleft=$(echo "$vol" | cut -d. -f2)  ; [[ -z "$whatsleft" ]] && whatsleft="0"
+
+((debug)) && set +x
+
+# one block is 8 possible parts, 12.5 % in each
+#U+2588	█	Full block                  100  %
+#U+2589	▉	Left seven eighths block    87.5 %
+#U+258A	▊	Left three quarters block   75   %
+#U+258B	▋	Left five eighths block     62.5 %  
+#U+258C	▌	Left half block             50   %
+#U+258D	▍	Left three eighths block    37.5 %
+#U+258E	▎	Left one quarter block      25   %
+#U+258F	▏	Left one eighth block       12.5 %
+
+# quasy 2d array with 'number,asci' fields
+data=(
+0,
+12.5,▏
+25,▎
+37.5,▍
+50,▌
+62.5,▋
+75,▊
+87.5,█
+100,█
+)
+
+((debug)) && set -x
+# if whatsleft is not 0 then find out which block is the closest
+#if (( whatsleft != 0 )); then
+if (( $(echo "scale=2;($whatsleft != 0)" | bc -l) )); then
+
+    diff=100
+    while read -r line; do
+        IFS=, read -r number asci <<< "$line"
+
+        #echo "$number $asci"
+        
+        tmpdiff=$(echo "scale=2;($whatsleft-$number)" | bc -sl)
+        # absolute?
+        tmpdiff="${tmpdiff#-}"
+
+        # compare absolute
+        if (( $(echo "scale=2;($tmpdiff <= $diff)" | bc -l) )); then
+            diff="$tmpdiff"
+            finalasci="$asci"
+            finalnum="$number" # just for debug
+        fi
+
+    done < <(printf '%s\n' "${data[@]}")
+fi
+((debug)) && echo "$diff $finalasci"
+
+# echo fullblocks and halfblocks
+if (( fullblocks != 0 )); then
+    for i in $(seq 1 $fullblocks); do
+        printf "%s" "█"
+    done
+fi
+((debug)) && set -x
+if (( $(echo "scale=2;($whatsleft != 0)" | bc -l) )); then
+    printf "%s" "$finalasci"
+fi
+((info)) && echo -n "full=$fullblocks perc=$finalnum asci=$finalasci"
+printf "\n" 
+
