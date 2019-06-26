@@ -7,8 +7,8 @@
 #        perc2 12 10 # 2nd one is scale
 
 # tests
-# for i in {1..100} ; do echo -n "$i\t"; perc2 $i ; done # integer loop
-# for i in $(seq 0 0.1 100) ; do echo -n "$i\t"; perc2 $i 50 ; done # floating loop
+# for i in {1..100} ; do echo -ne "$i\t"; perc2 $i ; done # integer loop
+# for i in $(seq 0 0.1 100) ; do echo -ne "$i\t"; perc2 $i 50 ; done # floating loop
 
 debug="0"
 ((debug)) && set -x
@@ -25,9 +25,7 @@ fi
 
 # two is optional scale in chars
 if [[ -n "$2" ]]; then
-
     chars="$2"
-    
 else
 
     # config
