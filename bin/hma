@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# hours and minutes to angle
+
+# usage: hma 9 20 # int hour, int min
+#        hma      # take curent system time
+
+# returns int angle of hour pointer in degrees
+
+# checks
+command -v bc >/dev/null 2>&1 || { echo "I need bc, exiting." >&2; exit 1; }
+
+# input    
+h="$1"
+m="$2"
+
+# If no user input take system hour and minute
+if [[ $# -eq 0 ]] ; then
+    h="$(date +"%I")"
+    m="$(date +"%M")"
+fi
+
+# action
+angle="$(echo "((60*$h)+$m)/2" | bc )"
+echo "$angle"
+
+# draw
+#<svg width="200" height="200">
+  #<g stroke="white" stroke-width="12" stroke-linecap="square">
+   #<line x1="100" y1="100" x2="100" y2="10" transform="rotate(16  100 100)" />
+  #</g>
+#</svg>
+# convert -background transparent clock.svg clock.png
+# img2txt -W 20 -y 20 -f utf8 clock.png    
