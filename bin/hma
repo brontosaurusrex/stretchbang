@@ -6,13 +6,16 @@
 #        hma      # take curent system time
 
 # returns int angle of hour pointer in degrees
-
+set -x
 # checks
 command -v bc >/dev/null 2>&1 || { echo "I need bc, exiting." >&2; exit 1; }
 
 # input    
 h="$1"
 m="$2"
+if [[ $m -eq 0 ]] ; then
+    m="0"
+fi
 
 # If no user input take system hour and minute
 if [[ $# -eq 0 ]] ; then
