@@ -3,6 +3,7 @@
 # hours and minutes to angle
 
 # usage: hma 9 20 # int hour, int min
+#        hma 6    # int hour
 #        hma      # take curent system time
 
 # returns int angle of hour pointer in degrees
