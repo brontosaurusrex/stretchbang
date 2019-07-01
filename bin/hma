@@ -7,7 +7,7 @@
 #        hma      # take curent system time
 
 # returns int angle of hour pointer in degrees
-set -x
+#set -x
 # checks
 command -v bc >/dev/null 2>&1 || { echo "I need bc, exiting." >&2; exit 1; }
 
