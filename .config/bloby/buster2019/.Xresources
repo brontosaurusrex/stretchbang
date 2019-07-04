@@ -11,6 +11,7 @@ URxvt*.scrollBar:           false
 URxvt.geometry: 120x25
 
 ! URxvt icon - https://aur.archlinux.org/packages/rxvt-unicode-pixbuf/
+! URxvt.iconFile:    /home/b/.icons/Papirus-GTK/32x32/apps/xterm-color.svg
 URxvt.iconFile:    /home/b/.icons/Luv-dark/apps/64/utilities-terminal.svg
 
 ! URxvt line space > http://brontosaurusrex.github.io/2016/07/19/urxvt-lsp-3/
@@ -148,3 +149,33 @@ URxvt.iso14755_52:      false
 ! white
 *.color7:       #d5f1f2
 *.color15:      #e2f1f6
+
+
+
+! oomox
+*background:  #272f30
+*foreground:  #dcdcdc
+*color0:  #0d0d0d
+*color1:  #b75228
+*color2:  #72ce45
+*color3:  #cdbd43
+*color4:  #5c9e94
+*color5:  #956c87
+*color6:  #69998d
+*color7:  #b6cdc7
+*color8:  #566963
+*color9:  #c46c54
+*color10:  #acd285
+*color11:  #e1db47
+*color12:  #a9c7c2
+*color13:  #b08599
+*color14:  #8dada6
+*color15:  #fefbf4
+
+
+
+
+
+
+
+

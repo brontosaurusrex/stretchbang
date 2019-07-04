@@ -7,7 +7,11 @@
 			</action>
 		</item>
 		<separator/>
-        <menu execute="cat ~/bin/misc.xml" id="pipeMisc_cached" label="pipe"/>
+		<menu execute="cat ~/bin/misc.xml" id="pipeMisc_cached" label="pipe"/>
+		<separator/>
+		<menu execute="pipeRecent" id="recent" label="recent"/>
+		<separator/>
+		<menu execute="radioClicky openbox" id="radio" label="radio"/>
 		<separator/>
 		<item label="urxvt">
 			<action name="Execute">
@@ -24,14 +28,14 @@
 				<execute>thunar</execute>
 			</action>
 		</item>
-		<item label="firefox">
+		<item label="chrome">
 			<action name="Execute">
-				<execute>firefox</execute>
+				<execute>google-chrome</execute>
 			</action>
 		</item>
 		<item label="mpv">
 			<action name="Execute">
-				<execute>mpv --force-window --idle --autofit-larger=50% --geometry 49%+0+0</execute>
+				<execute>mpv --force-window --idle --autofit-larger=50% --geometry 49%</execute>
 			</action>
 		</item>
 		<separator/>
@@ -47,7 +51,6 @@
 				</action>
 			</item>
 		</menu>
-		<!-- This requires the presence of the 'menu' package to work -->
 		<separator/>
 		<menu id="root-menu-251146" label="config">
 			<menu execute="pipeSysInfo pipe" id="sysInfo" label="sysInfo"/>
@@ -122,5 +125,6 @@
 				</action>
 			</item>
 		</menu>
+	
 	</menu>
 </openbox_menu>

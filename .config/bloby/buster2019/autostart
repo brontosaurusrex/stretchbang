@@ -13,18 +13,20 @@
 # legacy nvidia, Debian Stretch
 # compton -cCG --backend glx &
 
-#compton & # check .config/compton.conf
+# compton & # check .config/compton.conf
 
 ## arandr script
 ~/.screenlayout/screen.sh &
+
+# automount 
+# https://wiki.archlinux.org/index.php/thunar#Automounting_of_large_external_drives
+udiskie -2 &
 
 ## nitrogen and wbar
 # check if nitrogen is even there before any logic
 if hash nitrogen 2>/dev/null; then
     # wbar should wait for nitrogen
-    (nitrogen --restore && wbar) &
-    #(noiseAndDirt deep _ +++++++++++ _ -------- && wbar) &
-    
+    (sleep 12 && nitrogen --restore && wbar) &
     
 else
     wbar &
@@ -48,14 +50,11 @@ xset s off &        # don't activate screensaver
 xset -dpms  &       # disable DPMS (Energy Star) features.
 xset s noblank &    # don't blank the video device
 
-# automount 
-# https://wiki.archlinux.org/index.php/thunar#Automounting_of_large_external_drives
-udiskie -2 &
-
 # mountpi
-sshfs pi@192.168.1.6:/media/usb/filmi ~/pi
+#sshfs pi@192.168.1.6:/media/usb/filmi ~/pi
+sshfs pi@192.168.1.6:/home/pi/usbman/filmi ~/pi
 
 # open ob menu
-xdotool mousemove 20 20 click 3
+#xdotool mousemove 20 20 click 3
 
 

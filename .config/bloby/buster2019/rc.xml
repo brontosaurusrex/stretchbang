@@ -33,7 +33,7 @@
     <primaryMonitor>1</primaryMonitor>
   </placement>
   <theme>
-    <name>Triste-Crimson-Adapta2</name>
+    <name>oomox-tizix_dark</name>
     <titleLayout>CIMLS</titleLayout>
     <!--
       avaible characters are NDSLIMC, each can occur at most once.
@@ -105,7 +105,7 @@
 
        use obconf if you want to change these without having to log out
        and back in -->
-    <number>2</number>
+    <number>1</number>
     <firstdesk>1</firstdesk>
     <names>
       <name>I</name>
@@ -139,11 +139,11 @@
     <right>6</right>
   </margins>
   <dock>
-    <position>BottomLeft</position>
+    <position>Left</position>
     <!-- (Top|Bottom)(Left|Right|)|Top|Bottom|Left|Right|Floating -->
     <floatingX>0</floatingX>
     <floatingY>0</floatingY>
-    <noStrut>no</noStrut>
+    <noStrut>yes</noStrut>
     <stacking>Below</stacking>
     <!-- 'Above', 'Normal', or 'Below' -->
     <direction>Vertical</direction>
@@ -1170,6 +1170,20 @@
     </application>
     <application class="Zathura" name="zathura" type="normal">
       <decor>no</decor>
+      <focus>yes</focus>
+    </application>
+    <application class="Google-chrome" name="google-chrome" role="browser" type="normal">
+      <decor>no</decor>
+    </application>
+    <application class="Chromium" name="chromium" role="browser" type="normal">
+      <decor>no</decor>
+    </application>
+    <application class="Termite" name="termite" type="normal">
+      <decor>no</decor>
+      <position force="no">
+        <x>default</x>
+        <y>default</y>
+      </position>
     </application>
   </applications>
 </openbox_config>
