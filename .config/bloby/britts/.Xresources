@@ -1,0 +1,181 @@
+! URxvt font
+URxvt.font: xft:FantasqueSansMono-Regular:size=12
+URxvt.letterSpace: -1
+
+! URxvt look
+! set URxvt  bold to empty to disable bold
+URXvt.boldFont:
+URxvt*.scrollBar:           false
+
+! URxvt size in chars
+URxvt.geometry: 120x25
+
+! URxvt icon - https://aur.archlinux.org/packages/rxvt-unicode-pixbuf/
+! URxvt.iconFile:    /home/b/.icons/Papirus-GTK/32x32/apps/xterm-color.svg
+URxvt.iconFile:    /home/b/.icons/Luv-dark/apps/64/utilities-terminal.svg
+
+! URxvt line space > http://brontosaurusrex.github.io/2016/07/19/urxvt-lsp-3/
+URxvt.lineSpace: 6
+
+! URxvt extensions
+URxvt.perl-ext-common:  default,matcher,selection-to-clipboard
+
+! URxvt url matcher extension
+URxvt*matcher.button:       1 
+URxvt*matcher.pattern:      \\bwww\\.[\\w-]\\.[\\w./?&@#-]*[\\w/-]
+URxvt.mapAlert:             true
+
+! no idea what this is
+URxvt.selection.pattern-0:  ([[:word:]]+)
+URxvt*secondaryscroll:      true
+URxvt*scrollTtyOutput:      false
+
+! URxvt scroll in relation to buffer (with mouse scroll or Shift+Page Up)
+URxvt*scrollWithBuffer:     true
+
+! URxvt scroll back to the bottom on keypress
+URxvt*scrollTtyKeypress:    true
+
+URxvt*dynamicColors:        on
+URxvt*depth:                24
+URxvt*transparent:	        false
+URxvt*shading:              15	
+URxvt*fading:		        0
+URxvt.tintColor:            gray
+*.fadeColor:	            #252525
+*.borderless:	            true 
+
+*background:       	        #222D32
+*.hightlightSection: 	    true	
+*.highlightColor:	        #1a1a1a
+*.highlightTextColor:       #008800
+*.trimSelection:            true 
+*.scrollLines:              5000
+
+! font settings --------------------------------------------------------------
+
+Xft.autohint:           true
+Xft.antialias:          true
+Xft.hinting:            true
+Xft.hintstyle:          hintslight
+!Xft.dpi: 96
+Xft.rgba:               rgb
+Xft.lcdfilter:          lcddefault
+
+! adding stuff for dwm and urxvt
+URxvt.internalBorder:  0
+URxvt.borderColor: #333333
+
+! disable catching ctrl+shift, since I want ctrl+shift+r to be vims redo 
+URxvt.iso14755:         false
+URxvt.iso14755_52:      false
+
+! color scheme
+
+! google dark
+
+! special
+*.foreground:   #c5c8c6
+*.background:   #1d1f21
+*.cursorColor:  #c5c8c6
+
+! black
+!*.color0:       #1d1f21
+*.color0:       #222D32
+*.color8:       #969896
+
+! red
+*.color1:       #cc342b
+*.color9:       #cc342b
+
+! green
+*.color2:       #198844
+*.color10:      #198844
+
+! yellow
+*.color3:       #fba922
+*.color11:      #fba922
+
+! blue
+*.color4:       #3971ed
+*.color12:      #3971ed
+
+! magenta
+*.color5:       #a36ac7
+*.color13:      #a36ac7
+
+! cyan
+*.color6:       #3971ed
+*.color14:      #3971ed
+
+! white
+*.color7:       #c5c8c6
+*.color15:      #ffffff
+
+! Colorful colors
+! special
+*.foreground:   #ffffff
+!*.background:   #000000
+*.cursorColor:  #ffffff
+
+! black
+*.color0:       #151515
+*.color8:       #696969
+
+! red
+*.color1:       #ff8eaf
+*.color9:       #ed4c7a
+
+! green
+*.color2:       #a6e25f
+*.color10:      #a6e179
+
+! yellow
+*.color3:       #f8e578
+*.color11:      #ffdf6b
+
+! blue
+*.color4:       #a6e2f0
+*.color12:      #79d2ff
+
+! magenta
+*.color5:       #e85b92
+*.color13:      #bb5d79
+
+! cyan
+*.color6:       #5f868f
+*.color14:      #87a8af
+
+! white
+*.color7:       #d5f1f2
+*.color15:      #e2f1f6
+
+
+
+! oomox
+*background:  #272f30
+*foreground:  #dcdcdc
+*color0:  #0d0d0d
+*color1:  #b75228
+*color2:  #72ce45
+*color3:  #cdbd43
+*color4:  #5c9e94
+*color5:  #956c87
+*color6:  #69998d
+*color7:  #b6cdc7
+*color8:  #566963
+*color9:  #c46c54
+*color10:  #acd285
+*color11:  #e1db47
+*color12:  #a9c7c2
+*color13:  #b08599
+*color14:  #8dada6
+*color15:  #fefbf4
+
+
+
+
+
+
+
+

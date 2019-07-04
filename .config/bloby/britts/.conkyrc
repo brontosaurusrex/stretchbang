@@ -1,0 +1,41 @@
+conky.config = {
+    alignment = 'bottom_right',
+    background = true,
+    border_width = 0,
+    cpu_avg_samples = 2,
+	default_color = 'white',
+    default_outline_color = 'white',
+    default_shade_color = 'white',
+    draw_borders = false,
+    draw_graph_borders = true,
+    draw_outline = false,
+    draw_shades = false,
+    use_xft = true,
+    font = 'Cuprum:size=13',
+    gap_x = 12,
+    gap_y = 12,
+    minimum_height = 5,
+	minimum_width = 5,
+    net_avg_samples = 2,
+    no_buffers = false,
+    out_to_console = false,
+    out_to_stderr = false,
+    extra_newline = false,
+    own_window = false,
+    own_window_class = 'Conky',
+    own_window_type = 'desktop',
+    own_window_argb_visual = true,
+    own_window_hints = undecorated,below,sticky,skip_taskbar,skip_pager,
+    own_window_transparent = true,
+    stippled_borders = 0,
+    update_interval = 5.0,
+    uppercase = false,
+    use_spacer = 'none',
+    show_graph_scale = false,
+    show_graph_range = false
+}
+
+conky.text = [[
+${color #131313}
+${execi 6 drop -l}
+]]
