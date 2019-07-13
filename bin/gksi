@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# gksi
+
 # gksu simulation in buster using pkexec
-# usage example: gksu geany /path/file1 file2 file3
+# usage example: gksi geany /path/file1 file2 file3
 # https://askubuntu.com/questions/287845/how-to-configure-pkexec
 
 # check
