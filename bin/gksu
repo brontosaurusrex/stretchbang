@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# gksu simulation in buster using pkexec
+# usage example: gksu geany /path/file1 file2 file3
+# https://askubuntu.com/questions/287845/how-to-configure-pkexec
+
+# check
+command -v pkexec >/dev/null 2>&1 || { echo "I need pkexec, exiting." >&2; exit 1; }
+
+# check 2
+[ $# -eq 0 ] && exit 1
+
+editor="$1"
+shift
+
+for file in "$@"
+do
+    tmp+=("$(readlink -f "$file")")
+done
+
+echo "${tmp[@]}"
+
+pkexec env DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" "$editor" "${tmp[@]}"
