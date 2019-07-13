@@ -42,7 +42,7 @@ isRunning () {
     else
         echo "Mpv not running, starting now"
         
-        mpv --cache-secs=35 --idle --force-window --video-zoom=0.03 --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=60]+bestaudio[ext=m4a]/best[height<=730]' &
+        mpv --cache-secs=1035 --idle --force-window --video-zoom=0.03 --autofit-larger=50% --geometry 49% --input-ipc-server="$pipe" --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=60]+bestaudio[ext=m4a]/best[height<=730]' &
         
         # https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection
         # --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]'
@@ -160,9 +160,7 @@ whatPlaying () {
     
     timepos="$(echo '{ "command": ["get_property", "time-pos"] }' | socat - "$pipe" | jq -r .data )" && timepos="${timepos%.*}"
     duration="$(echo '{ "command": ["get_property", "duration"] }' | socat - "$pipe" | jq -r .data )" && duration="${duration%.*}"
-    left=$(($playlistcount - $playlistpos))
-    
-    
+    left=$(( playlistcount - playlistpos ))
     
 }
 
@@ -172,9 +170,9 @@ echoStuff () {
     if [[ $title != null ]]; then
         echo -n "$title $timepos/$duration $percent% ($playlistpos/$playlistcount)"
         
-        if (( left > 0 && left < 6 )); then
+        if (( left > 0 && left < 12 )); then
             #echo " $left"
-            printf "%.s  ░░" $(seq 1 "$left") ; printf "\n"
+            printf "%.s  ∎ " $(seq 1 "$left") ; printf "\n"
         else
             printf "\n"
         fi
