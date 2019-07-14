@@ -144,7 +144,7 @@ whatPlaying () {
     
     if [[  $status != "success" ]]; then
     
-        echo "No."
+        #echo "No."
         exit 1
     
     fi
@@ -160,7 +160,7 @@ whatPlaying () {
     
     timepos="$(echo '{ "command": ["get_property", "time-pos"] }' | socat - "$pipe" | jq -r .data )" && timepos="${timepos%.*}"
     duration="$(echo '{ "command": ["get_property", "duration"] }' | socat - "$pipe" | jq -r .data )" && duration="${duration%.*}"
-    left=$(( playlistcount - playlistpos ))
+    left=$(( playlistcount - playlistpos + 1 ))
     
 }
 
@@ -191,6 +191,22 @@ elif [ "$1" == "-ii" ] || [ "$1" == "--info2" ]; then
 
     whatPlaying && echoStuff && perc "$percent"
     exit
+    
+# Just show blocks (for tint2)
+elif [ "$1" == "-b" ] || [ "$1" == "--blocks" ]; then
+
+    whatPlaying && echoStuff | grep -iEo " ∎" | tr -d '\n'
+    exit
+
+# toggle pause (for tint2)    
+elif [ "$1" == "--pause" ]; then
+    
+    #echo '{ "command": ["cycle pause"] }' | socat - "$pipe"
+    #echo '{ "command": ["set_property", "pause", true] }' | socat - "$pipe"
+    echo "cycle pause" | socat - "$pipe"
+    exit
+    
+
 
 # log and show what's playing
 elif [ "$1" == "-l" ] || [ "$1" == "--log" ]; then
@@ -233,3 +249,27 @@ yad --window-icon="yad" --on-top --no-buttons --title="drop urls here" --text="\
         dostuff
         
     done
+    
+## tint2 example
+##-------------------------------------
+## Executor drop -b
+#execp = new
+#execp_command = drop -b
+#execp_interval = 6
+#execp_has_icon = 0
+#execp_cache_icon = 1
+#execp_continuous = 0
+#execp_markup = 0
+#execp_tooltip = drop
+#execp_lclick_command = drop --pause
+#execp_rclick_command = 
+#execp_mclick_command = 
+#execp_uwheel_command = 
+#execp_dwheel_command = 
+#execp_font = cuprum 11
+#execp_font_color = #111111 80
+#execp_padding = 0 0
+#execp_background_id = 0
+#execp_centered = 1
+#execp_icon_w = 0
+#execp_icon_h = 0
