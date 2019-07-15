@@ -195,7 +195,7 @@ elif [ "$1" == "-ii" ] || [ "$1" == "--info2" ]; then
 # Just show blocks (for tint2)
 elif [ "$1" == "-b" ] || [ "$1" == "--blocks" ]; then
 
-    whatPlaying && echoStuff | grep -iEo " ∎" | tr -d '\n'
+    whatPlaying && echoStuff | grep -iEo "  ∎ " | tr -d '\n'
     exit
 
 # toggle pause (for tint2)    
