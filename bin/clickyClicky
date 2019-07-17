@@ -16,5 +16,5 @@ echo "$l $w $h"
 
 # clicky destination
 echo "clicky destination"
-#wmctrl -r :SELECT: -e 0,-1,-1,"$w","$h"
-wmctrl -r :SELECT: -e 0,$l,-1,"$w","$h"
+wmctrl -r :SELECT: -e 0,-1,-1,"$w","$h" # just size
+#wmctrl -r :SELECT: -e 0,$l,-1,"$w","$h" # size and position
