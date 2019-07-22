@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# watermark one image with another
+
+# usage: watermark back.png logo.png out.png 20
+
+#http://www.imagemagick.org/discourse-server/viewtopic.php?t=33782
+
+# checks
+command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
+
+# Check if enough parameters were passed
+if (($# < 3)) || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+
+    echo "Must be 3 or 4 arguments, example:"
+    echo
+    echo "watermark back.png logo.png outBaseName 20"
+    echo "                                        ^"
+    echo "                             logo size in percents (can be omitted)"
+
+    exit 1
+
+fi
+
+# input
+back="$1"
+logo="$2"
+ out="$3"
+ pct="$4"
+ 
+# how big will the logo be
+[[ -z "$pct" ]] && pct=25
+ 
+# How big will the logo really be  
+amt=$(convert -ping "$back" -format "%[fx:($pct*min(w,h)/100)^2]" info:)
+echo "$amt"     
+
+# methods to try https://imagemagick.org/script/compose.php
+# over plus darken overlay
+method=( overlay plus darken lighten src-over multiply screen pegtop-light pin-light )
+
+set -x
+# action
+for var in "${method[@]}"
+do
+  echo "${var}"
+
+    touch "$out-${var}.png" || exit 1
+    convert "$back" \( "$logo" -resize "$amt"@ \) -gravity center -compose "${var}" -depth 8 +repage -composite "$out-${var}_.png" || exit 1
+    # tone down
+    convert "$back" "$out-${var}_.png" -define compose:args=90 -compose blend -composite "$out-${var}.png" || exit 1
+    rm "$out-${var}_.png" || exit 1
+    # The "at" symbol '@', will resize an image to contain no more than the given number of pixels. 
+    # "$logo" -trim -resize "$amt"@ # ?
+
+done
+
