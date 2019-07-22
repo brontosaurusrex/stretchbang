@@ -48,7 +48,7 @@ do
     touch "$out-${var}.png" || exit 1
     convert "$back" \( "$logo" -resize "$amt"@ \) -gravity center -compose "${var}" -depth 8 +repage -composite "$out-${var}_.png" || exit 1
     # tone down
-    convert "$back" "$out-${var}_.png" -define compose:args=90 -compose blend -composite "$out-${var}.png" || exit 1
+    convert "$back" "$out-${var}_.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "$out-${var}.png" || exit 1
     rm "$out-${var}_.png" || exit 1
     # The "at" symbol '@', will resize an image to contain no more than the given number of pixels. 
     # "$logo" -trim -resize "$amt"@ # ?
