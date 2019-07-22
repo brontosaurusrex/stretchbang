@@ -7,7 +7,7 @@
 
 # clicky source
 echo "clicky source"
-read -r _ _ _ l _ w _ h <<<"$(xwininfo -shape | grep 'Width\|Height\|Absolute upper-left X:' | tr -d '\n')"
+read -r _ _ _ l _ w _ h <<<"$(xwininfo -shape | grep 'Width\|Height\|Absolute upper-left Y:' | tr -d '\n')"
 
 # take one px away (why?)
 l=$(( l - 1 ))
@@ -16,5 +16,17 @@ echo "$l $w $h"
 
 # clicky destination
 echo "clicky destination"
-wmctrl -r :SELECT: -e 0,-1,-1,"$w","$h" # just size
-#wmctrl -r :SELECT: -e 0,$l,-1,"$w","$h" # size and position
+#wmctrl -r :SELECT: -e 0,-1,-1,"$w","$h" # just size
+wmctrl -r :SELECT: -e 0,-1,$l,"$w","$h" # size and y position
+
+
+
+#<MVARG>
+      #A move and resize argument has the format 'g,x,y,w,h'.  All five components are integers.  The  first
+      #value, g, is the gravity of the window, with 0 being the most common value (the default value for the
+      #window). Please see the EWMH specification for other values.
+
+      #The four remaining values are a standard geometry specification: x,y is the position of the top  left
+      #corner  of  the  window,  and  w,h is the width and height of the window, with the exception that the
+      #value of -1 in any position is interpreted to mean that the current geometry value should not be mod‐
+      #ified.
