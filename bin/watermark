@@ -14,19 +14,38 @@ if (($# < 3)) || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 
     echo "Must be 3 or 4 arguments, example:"
     echo
-    echo "watermark back.png logo.png outBaseName 20"
-    echo "                                        ^"
+    echo "watermark back.png logo.png out.png 20"
+    echo "                                    ^"
     echo "                             logo size in percents (can be omitted)"
 
     exit 1
 
 fi
 
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmp="/tmp/$RANDOM-$$"
+#trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
+mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
+
 # input
 back="$1"
 logo="$2"
  out="$3"
  pct="$4"
+
+# out breakdown 
+file=$(readlink -f "$out")       # quasi absolute
+baseext=$(basename "${out}")     # or
+base="${baseext%.*}"             # file
+ext="${file##*.}"                # ext
+dir=${file%/*}                   # directory
+ 
+# echo
+#echo "$file"
+#echo "$baseext" 
+#echo "$base" 
+#echo "$ext" 
+#echo "$dir"
  
 # how big will the logo be
 [[ -z "$pct" ]] && pct=25
@@ -36,7 +55,6 @@ amt=$(convert -ping "$back" -format "%[fx:($pct*min(w,h)/100)^2]" info:)
 echo "$amt"     
 
 # methods to try https://imagemagick.org/script/compose.php
-# over plus darken overlay
 method=( overlay plus darken lighten src-over multiply screen pegtop-light pin-light )
 
 set -x
@@ -45,11 +63,11 @@ for var in "${method[@]}"
 do
   echo "${var}"
 
-    touch "$out-${var}.png" || exit 1
-    convert "$back" \( "$logo" -resize "$amt"@ \) -gravity center -compose "${var}" -depth 8 +repage -composite "$out-${var}_.png" || exit 1
+    touch "${out}-${var}.${ext}" || exit 1
+    convert "$back" \( "$logo" -resize "$amt"@ \) -gravity center -compose "${var}" -depth 8 +repage -composite "$tmp/one.png" || exit 1
     # tone down
-    convert "$back" "$out-${var}_.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "$out-${var}.png" || exit 1
-    rm "$out-${var}_.png" || exit 1
+    convert "$back" "$tmp/one.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "${out}-${var}.${ext}" || exit 1
+
     # The "at" symbol '@', will resize an image to contain no more than the given number of pixels. 
     # "$logo" -trim -resize "$amt"@ # ?
 
