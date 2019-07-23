@@ -6,6 +6,8 @@
 
 #http://www.imagemagick.org/discourse-server/viewtopic.php?t=33782
 
+debug="1"
+
 # checks
 command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
 
@@ -41,35 +43,69 @@ ext="${file##*.}"                # ext
 dir=${file%/*}                   # directory
  
 # echo
-#echo "$file"
-#echo "$baseext" 
-#echo "$base" 
-#echo "$ext" 
-#echo "$dir"
- 
-# how big will the logo be
+if (( debug )); then
+    echo "file $file"
+    echo "baseext $baseext" 
+    echo "base $base" 
+    echo "ext $ext" 
+    echo "dir $dir"
+    echo
+fi
+
+# exit if no ext
+[[ -z "$ext" ]] && exit 1 
+
+# How big will the logo be
 [[ -z "$pct" ]] && pct=25
  
 # How big will the logo really be  
 amt=$(convert -ping "$back" -format "%[fx:($pct*min(w,h)/100)^2]" info:)
-echo "$amt"     
+(( debug )) && echo "$amt"     
 
 # methods to try https://imagemagick.org/script/compose.php
 method=( overlay plus darken lighten src-over multiply screen pegtop-light pin-light )
 
-set -x
+# resize logo
+convert "$logo" -resize "$amt"@ "$tmp/logoresized.png"
+
+one () {
+    
+    #set -x
+    for var in "${method[@]}"
+    do
+        echo "${var}"
+
+        touch "${dir}/${base}-${var}.${ext}" || exit 1
+        convert "$back" "$tmp/logoresized.png" -gravity center -compose "${var}" -depth 8 +repage -composite "$tmp/one.png" || exit 1
+        # tone down
+        convert "$back" "$tmp/one.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "${dir}/${base}-${var}.${ext}" || exit 1
+        
+        echo "${base}-${var}.${ext}"
+        
+        # The "at" symbol '@', will resize an image to contain no more than the given number of pixels. 
+        # "$logo" -trim -resize "$amt"@ # ?
+
+    done
+}
+
+two () {
+ 
+        # copy alpha from logo to back
+        convert "$back" \( "$tmp/logoresized.png" -channel a -separate +channel \) -alpha off -gravity center -compose copy_opacity -composite "$tmp/backWithAlpha.png" || exit 1
+        
+        # slap back with alpha onto back
+        echo "back"
+        convert "$back" "$tmp/backWithAlpha.png" -gravity center -compose "screen" -depth 8 +repage -composite "$tmp/two.png" || exit 1
+        # tone down
+        convert "$back" "$tmp/two.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-back.${ext}" || exit 1
+        
+        # "${dir}/${base}-back.${ext}"
+        echo "${base}-back.${ext}"
+       
+        #convert new.tif \( input.tif -channel a -separate +channel \) -alpha off -compose copy_opacity -composite new.tif
+   
+}
+
+
 # action
-for var in "${method[@]}"
-do
-  echo "${var}"
-
-    touch "${out}-${var}.${ext}" || exit 1
-    convert "$back" \( "$logo" -resize "$amt"@ \) -gravity center -compose "${var}" -depth 8 +repage -composite "$tmp/one.png" || exit 1
-    # tone down
-    convert "$back" "$tmp/one.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "${out}-${var}.${ext}" || exit 1
-
-    # The "at" symbol '@', will resize an image to contain no more than the given number of pixels. 
-    # "$logo" -trim -resize "$amt"@ # ?
-
-done
-
+one && two
