@@ -24,7 +24,7 @@ fi
 
 # tmp dir http://mywiki.wooledge.org/BashFAQ/062
 tmp="/tmp/$RANDOM-$$"
-#trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
+trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
 mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
 
 # input
