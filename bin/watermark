@@ -43,7 +43,11 @@ baseext=$(basename "${out}")     # or
 base="${baseext%.*}"             # file
 ext="${file##*.}"                # ext
 dir=${file%/*}                   # directory
- 
+
+if [ "$ext" != "png" ] && [ "$ext" != "jpg" ]; then
+    ext="png"
+fi
+
 # echo
 if (( debug )); then
     echo "file $file"
@@ -77,7 +81,7 @@ convert "$tmp/logoresized_.png" -gravity north -background transparent -extent \
 rm "$tmp/logoresized_.png"
 
 # action functions
-one () {
+many () {
     
     #set -x
     for var in "${method[@]}"
@@ -97,7 +101,7 @@ one () {
     done
 }
 
-two () {
+justmask () {
  
         # copy alpha from logo to back
         convert "$back" \( "$tmp/logoresized.png" -channel a -separate +channel \) -alpha off -gravity "${grvt}" -compose copy_opacity -composite "$tmp/backWithAlpha.png" || exit 1
@@ -110,11 +114,95 @@ two () {
         
         # "${dir}/${base}-back.${ext}"
         echo "${base}-back.${ext}"
-       
-        #convert new.tif \( input.tif -channel a -separate +channel \) -alpha off -compose copy_opacity -composite new.tif
    
+}
+
+lines () {
+    
+    # make empty image
+    convert -size "${width}"x1 xc:black "$tmp/lines.png"
+
+    # random
+    random () {
+        # 0 - 255
+        r=$(( RANDOM % 256 ))
+        g=$(( RANDOM % 256 ))
+        b=$(( RANDOM % 256 ))
+
+        # 1 - 100
+        linewidth=$(( RANDOM % 50 + 1 ))
+
+        # 0 - 1920
+        linepos=$(( RANDOM % width ))
+    }
+
+
+    # action
+    for ((i=1;i<=50;i++)); 
+    do
+        echo -n "$i "
+        random
+        mogrify -stroke "rgba(${r},${g},${b},0.25)" -linewidth "${linewidth}" \
+        -draw "line ${linepos},0 ${linepos},10" "$tmp/lines.png"
+
+    done
+    echo
+    
+    # bw
+    mogrify -scale "${alphasize}"\! -colorspace gray "$tmp/lines.png"
+    
+}
+
+destroyedmask () {
+    
+        # extract alpha from logo to rgb
+        convert "$tmp/logoresized.png" -alpha extract "$tmp/alpha.png"
+        
+        # What is the size of that alpha in XxY format
+        alphasize="$(convert -ping "$tmp/alpha.png" -format "%wx%h" info:)"
+        (( debug )) && echo "$alphasize"
+        
+        # lines
+        width="$(convert -ping "$tmp/alpha.png" -format "%w" info:)"
+        lines # must know the size ^ (alphasize and width)
+        #cp "$tmp/lines.png" "${dir}/lines.png"
+        
+        #set -x
+        # mix with some other mask, but clip/limit somehow
+        convert "$tmp/lines.png" "$tmp/alpha.png" -gravity center -compose minus -depth 8 +repage -composite  -auto-level -crop "${alphasize}+0+0" "$tmp/alphacomp.png" || exit 1
+    
+        # replace mask
+        convert "$tmp/logoresized.png" "$tmp/alphacomp.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalpha.png" || exit 1
+        
+        # replace mask and rgb to black
+        convert -size "${alphasize}" xc:black "$tmp/alphacomp.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphaBlack.png" || exit 1
+    
+        # compose, use new mixed mask
+        echo "destroyed mask"
+        convert "$back" "$tmp/logonewalpha.png" -gravity center -compose src-over -depth 8 +repage -composite "${dir}/${base}-destroyedDefault.${ext}" || exit 1
+        
+        echo "${base}-destroyedDefault.${ext}"
+                
+        # compose, use new mixed mask, fill front with black
+        echo "destroyed mask + fill black"
+        convert "$back" "$tmp/logonewalphaBlack.png" -gravity center -compose src-over -depth 8 +repage -composite "${dir}/${base}-destroyedBlack.${ext}" || exit 1
+        
+        echo "${base}-destroyedBlack.${ext}"
+        
+        # copy with destroyed mask (similar to justmask method)
+        echo "destroyed mask plus"
+        # copy alpha from destroyed logo to back
+        convert "$back" \( "$tmp/logonewalpha.png" -channel a -separate +channel \) -alpha off -gravity "${grvt}" -compose copy_opacity -composite "$tmp/backWithAlpha2.png" || exit 1
+        # slap back with alpha onto back
+        convert "$back" "$tmp/backWithAlpha2.png" -gravity "${grvt}" -compose "screen" -depth 8 +repage -composite "$tmp/two2.png" || exit 1
+        # tone down
+        convert "$back" "$tmp/two2.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-destroyedBack.${ext}" || exit 1
+        
+        echo "${base}-destroyedBack.${ext}"
 }
 
 
 # action
-one && two
+#many
+justmask
+destroyedmask
