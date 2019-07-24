@@ -34,6 +34,8 @@ back="$1"
 logo="$2"
  out="$3"
  pct="$4"
+ 
+grvt="center"
 
 # out breakdown 
 file=$(readlink -f "$out")       # quasi absolute
@@ -65,9 +67,16 @@ amt=$(convert -ping "$back" -format "%[fx:($pct*min(w,h)/100)^2]" info:)
 # methods to try https://imagemagick.org/script/compose.php
 method=( overlay plus darken lighten src-over multiply screen pegtop-light pin-light )
 
-# resize logo
-convert "$logo" -resize "$amt"@ "$tmp/logoresized.png"
+# resize and pad-bottom logo
+convert "$logo" -resize "$amt"@ "$tmp/logoresized_.png"
+# pad bottom for some% so that the final composition will have logo a bit higher than geometric center
+convert "$tmp/logoresized_.png" -gravity north -background transparent -extent \
+"$(identify -format '%Wx%[fx:H*1.1]' "$tmp/logoresized_.png")" \
+"$tmp/logoresized.png" || exit 1
+# some cleaning
+rm "$tmp/logoresized_.png"
 
+# action functions
 one () {
     
     #set -x
@@ -76,7 +85,7 @@ one () {
         echo "${var}"
 
         touch "${dir}/${base}-${var}.${ext}" || exit 1
-        convert "$back" "$tmp/logoresized.png" -gravity center -compose "${var}" -depth 8 +repage -composite "$tmp/one.png" || exit 1
+        convert "$back" "$tmp/logoresized.png" -gravity "${grvt}" -compose "${var}" -depth 8 +repage -composite "$tmp/one.png" || exit 1
         # tone down
         convert "$back" "$tmp/one.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "${dir}/${base}-${var}.${ext}" || exit 1
         
@@ -91,11 +100,11 @@ one () {
 two () {
  
         # copy alpha from logo to back
-        convert "$back" \( "$tmp/logoresized.png" -channel a -separate +channel \) -alpha off -gravity center -compose copy_opacity -composite "$tmp/backWithAlpha.png" || exit 1
+        convert "$back" \( "$tmp/logoresized.png" -channel a -separate +channel \) -alpha off -gravity "${grvt}" -compose copy_opacity -composite "$tmp/backWithAlpha.png" || exit 1
         
         # slap back with alpha onto back
         echo "back"
-        convert "$back" "$tmp/backWithAlpha.png" -gravity center -compose "screen" -depth 8 +repage -composite "$tmp/two.png" || exit 1
+        convert "$back" "$tmp/backWithAlpha.png" -gravity "${grvt}" -compose "screen" -depth 8 +repage -composite "$tmp/two.png" || exit 1
         # tone down
         convert "$back" "$tmp/two.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-back.${ext}" || exit 1
         
