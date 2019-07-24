@@ -4,7 +4,8 @@
 echo -n "internal: "
 #/sbin/ifconfig $1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}' | head -1
 # https://askubuntu.com/questions/430853/how-do-i-find-my-internal-ip-address
-ip route get 8.8.8.8 | awk '{print $NF; exit}'
+#ip route get 8.8.8.8 | awk '{print $NF; exit}'
+hostname -I
 
 # external
 echo -n "external: "
