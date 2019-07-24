@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# lines (draw some lines)
+
+# usage: lines out.png
+
+# var
+out="$1"
+
+# make empty image
+convert -size 1920x1 xc:black "$out"
+
+# random
+random () {
+    # 0 - 255
+    r=$(( RANDOM % 256 ))
+    g=$(( RANDOM % 256 ))
+    b=$(( RANDOM % 256 ))
+
+    # 1 - 100
+    linewidth=$(( RANDOM % 60 + 1 ))
+
+    # 0 - 1920
+    linepos=$(( RANDOM % 1921 ))
+}
+
+set -x
+# action
+for ((i=1;i<=200;i++)); 
+do
+    echo "$i"
+    random
+    mogrify -stroke "rgba(${r},${g},${b},0.5)" -linewidth "${linewidth}" \
+    -draw "line ${linepos},0 ${linepos},10" "$out"
+
+done
+
+# bw
+mogrify -scale 1920x1200\! -auto-level -colorspace gray "$out"
