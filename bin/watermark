@@ -142,25 +142,32 @@ lines () {
     do
         echo -n "$i "
         random
-        mogrify -stroke "rgba(${r},${g},${b},0.5)" -linewidth "${linewidth}" \
+        mogrify -stroke "rgba(${r},${g},${b},0.2)" -linewidth "${linewidth}" \
         -draw "line ${linepos},0 ${linepos},10" "$tmp/lines.png"
 
     done
     echo
     
     # bw
-    mogrify -scale "${alphasize}"\! -auto-level -colorspace gray "$tmp/lines.png"
+    mogrify -blur 0x3 -scale "${alphasize}"\! -auto-level -evaluate Min 30% -colorspace gray "$tmp/lines.png"
     
 }
 
+extractalpha () {
+
+        # extract alpha from logo to rgb
+        if [ ! -f "$tmp/alpha.png" ]; then
+            convert "$tmp/logoresized.png" -alpha extract "$tmp/alpha.png"
+            # What is the size of that alpha in XxY format
+            alphasize="$(convert -ping "$tmp/alpha.png" -format "%wx%h" info:)"
+            (( debug )) && echo "$alphasize"    
+        fi
+}
+
+
 destroyedmask () {
     
-        # extract alpha from logo to rgb
-        convert "$tmp/logoresized.png" -alpha extract "$tmp/alpha.png"
-        
-        # What is the size of that alpha in XxY format
-        alphasize="$(convert -ping "$tmp/alpha.png" -format "%wx%h" info:)"
-        (( debug )) && echo "$alphasize"
+        extractalpha # and get size 
         
         # lines
         width="$(convert -ping "$tmp/alpha.png" -format "%w" info:)"
@@ -169,8 +176,10 @@ destroyedmask () {
         
         #set -x
         # mix with some other mask, but clip/limit somehow
-        convert "$tmp/lines.png" "$tmp/alpha.png" -gravity center -compose minus -depth 8 +repage -composite  -auto-level -crop "${alphasize}+0+0" "$tmp/alphacomp.png" || exit 1
-    
+        #convert -auto-level "$tmp/alpha.png" "$tmp/alphaauto.png" || exit 1
+        convert "$tmp/lines.png" "$tmp/alpha.png" -gravity center -compose minus \
+         -depth 8 +repage -composite -crop "${alphasize}+0+0" "$tmp/alphacomp.png" || exit 1
+         
         # replace mask
         convert "$tmp/logoresized.png" "$tmp/alphacomp.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalpha.png" || exit 1
         
@@ -201,8 +210,31 @@ destroyedmask () {
         echo "${base}-destroyedBack.${ext}"
 }
 
+jpegmask () {
+    
+    extractalpha
+    
+    echo "jpeg mask"
+    
+    convert -scale 5% -scale 2000% "$tmp/alpha.png" "$tmp/alphapixel.png"
+    # blend
+    convert "$tmp/alpha.png" "$tmp/alphapixel.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "$tmp/alphablend.png" || exit 1
+    
+    # replace mask
+    convert "$tmp/logoresized.png" "$tmp/alphablend.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphapixel.png" || exit 1
+    
+    # comp 
+    convert "$back" "$tmp/logonewalphapixel.png" -gravity center -compose screen -depth 8 +repage -composite "$tmp/logonewalphapixelcomp.png" || exit 1
+    
+    # tone down
+    convert "$back" "$tmp/logonewalphapixelcomp.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-jpegPlus.${ext}" || exit 1
+        
+    echo "${base}-jpegPlus.${ext}"
+}
+
 
 # action
-#many
+many
 justmask
 destroyedmask
+jpegmask
