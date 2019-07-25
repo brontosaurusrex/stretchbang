@@ -138,18 +138,18 @@ lines () {
 
 
     # action
-    for ((i=1;i<=50;i++)); 
+    for ((i=1;i<=150;i++)); 
     do
         echo -n "$i "
         random
-        mogrify -stroke "rgba(${r},${g},${b},0.25)" -linewidth "${linewidth}" \
+        mogrify -stroke "rgba(${r},${g},${b},0.5)" -linewidth "${linewidth}" \
         -draw "line ${linepos},0 ${linepos},10" "$tmp/lines.png"
 
     done
     echo
     
     # bw
-    mogrify -scale "${alphasize}"\! -colorspace gray "$tmp/lines.png"
+    mogrify -scale "${alphasize}"\! -auto-level -colorspace gray "$tmp/lines.png"
     
 }
 
