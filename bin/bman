@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# bman 2
+
+# usage: bman geany
+
+set -e
+
+# tmp dir
+tmp="/tmp/$RANDOM-$$"
+trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
+mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
+
+
+# action
+for man in "$@"
+do
+
+    man -Thtml "$man" > "${tmp}/${man}.html" 2> /dev/null
+    xdg-open "${tmp}/${man}.html"            2> /dev/null
+
+done
