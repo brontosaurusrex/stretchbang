@@ -6,6 +6,8 @@
 
 #http://www.imagemagick.org/discourse-server/viewtopic.php?t=33782
 
+set -e # exit script on any error
+
 debug="1"
 
 # checks
@@ -76,7 +78,7 @@ convert "$logo" -resize "$amt"@ "$tmp/logoresized_.png"
 # pad bottom for some% so that the final composition will have logo a bit higher than geometric center
 convert "$tmp/logoresized_.png" -gravity north -background transparent -extent \
 "$(identify -format '%Wx%[fx:H*1.1]' "$tmp/logoresized_.png")" \
-"$tmp/logoresized.png" || exit 1
+"$tmp/logoresized.png" 
 # some cleaning
 rm "$tmp/logoresized_.png"
 
@@ -88,10 +90,10 @@ many () {
     do
         echo "${var}"
 
-        touch "${dir}/${base}-${var}.${ext}" || exit 1
-        convert "$back" "$tmp/logoresized.png" -gravity "${grvt}" -compose "${var}" -depth 8 +repage -composite "$tmp/one.png" || exit 1
+        touch "${dir}/${base}-${var}.${ext}" 
+        convert "$back" "$tmp/logoresized.png" -gravity "${grvt}" -compose "${var}" -depth 8 +repage -composite "$tmp/one.png" 
         # tone down
-        convert "$back" "$tmp/one.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "${dir}/${base}-${var}.${ext}" || exit 1
+        convert "$back" "$tmp/one.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "${dir}/${base}-${var}.${ext}" 
         
         echo "${base}-${var}.${ext}"
         
@@ -104,13 +106,13 @@ many () {
 justmask () {
  
         # copy alpha from logo to back
-        convert "$back" \( "$tmp/logoresized.png" -channel a -separate +channel \) -alpha off -gravity "${grvt}" -compose copy_opacity -composite "$tmp/backWithAlpha.png" || exit 1
+        convert "$back" \( "$tmp/logoresized.png" -channel a -separate +channel \) -alpha off -gravity "${grvt}" -compose copy_opacity -composite "$tmp/backWithAlpha.png" 
         
         # slap back with alpha onto back
         echo "back"
-        convert "$back" "$tmp/backWithAlpha.png" -gravity "${grvt}" -compose "screen" -depth 8 +repage -composite "$tmp/two.png" || exit 1
+        convert "$back" "$tmp/backWithAlpha.png" -gravity "${grvt}" -compose "screen" -depth 8 +repage -composite "$tmp/two.png" 
         # tone down
-        convert "$back" "$tmp/two.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-back.${ext}" || exit 1
+        convert "$back" "$tmp/two.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-back.${ext}" 
         
         # "${dir}/${base}-back.${ext}"
         echo "${base}-back.${ext}"
@@ -176,36 +178,36 @@ destroyedmask () {
         
         #set -x
         # mix with some other mask, but clip/limit somehow
-        #convert -auto-level "$tmp/alpha.png" "$tmp/alphaauto.png" || exit 1
+        #convert -auto-level "$tmp/alpha.png" "$tmp/alphaauto.png" 
         convert "$tmp/lines.png" "$tmp/alpha.png" -gravity center -compose minus \
-         -depth 8 +repage -composite -crop "${alphasize}+0+0" "$tmp/alphacomp.png" || exit 1
+         -depth 8 +repage -composite -crop "${alphasize}+0+0" "$tmp/alphacomp.png" 
          
         # replace mask
-        convert "$tmp/logoresized.png" "$tmp/alphacomp.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalpha.png" || exit 1
+        convert "$tmp/logoresized.png" "$tmp/alphacomp.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalpha.png" 
         
         # replace mask and rgb to black
-        convert -size "${alphasize}" xc:black "$tmp/alphacomp.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphaBlack.png" || exit 1
+        convert -size "${alphasize}" xc:black "$tmp/alphacomp.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphaBlack.png" 
     
         # compose, use new mixed mask
         echo "destroyed mask"
-        convert "$back" "$tmp/logonewalpha.png" -gravity center -compose src-over -depth 8 +repage -composite "${dir}/${base}-destroyedDefault.${ext}" || exit 1
+        convert "$back" "$tmp/logonewalpha.png" -gravity center -compose src-over -depth 8 +repage -composite "${dir}/${base}-destroyedDefault.${ext}" 
         
         echo "${base}-destroyedDefault.${ext}"
                 
         # compose, use new mixed mask, fill front with black
         echo "destroyed mask + fill black"
-        convert "$back" "$tmp/logonewalphaBlack.png" -gravity center -compose src-over -depth 8 +repage -composite "${dir}/${base}-destroyedBlack.${ext}" || exit 1
+        convert "$back" "$tmp/logonewalphaBlack.png" -gravity center -compose src-over -depth 8 +repage -composite "${dir}/${base}-destroyedBlack.${ext}" 
         
         echo "${base}-destroyedBlack.${ext}"
         
         # copy with destroyed mask (similar to justmask method)
         echo "destroyed mask plus"
         # copy alpha from destroyed logo to back
-        convert "$back" \( "$tmp/logonewalpha.png" -channel a -separate +channel \) -alpha off -gravity "${grvt}" -compose copy_opacity -composite "$tmp/backWithAlpha2.png" || exit 1
+        convert "$back" \( "$tmp/logonewalpha.png" -channel a -separate +channel \) -alpha off -gravity "${grvt}" -compose copy_opacity -composite "$tmp/backWithAlpha2.png" 
         # slap back with alpha onto back
-        convert "$back" "$tmp/backWithAlpha2.png" -gravity "${grvt}" -compose "screen" -depth 8 +repage -composite "$tmp/two2.png" || exit 1
+        convert "$back" "$tmp/backWithAlpha2.png" -gravity "${grvt}" -compose "screen" -depth 8 +repage -composite "$tmp/two2.png" 
         # tone down
-        convert "$back" "$tmp/two2.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-destroyedBack.${ext}" || exit 1
+        convert "$back" "$tmp/two2.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-destroyedBack.${ext}" 
         
         echo "${base}-destroyedBack.${ext}"
 }
@@ -218,16 +220,16 @@ jpegmask () {
     
     convert -scale 5% -scale 2000% "$tmp/alpha.png" "$tmp/alphapixel.png"
     # blend
-    convert "$tmp/alpha.png" "$tmp/alphapixel.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "$tmp/alphablend.png" || exit 1
+    convert "$tmp/alpha.png" "$tmp/alphapixel.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "$tmp/alphablend.png" 
     
     # replace mask
-    convert "$tmp/logoresized.png" "$tmp/alphablend.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphapixel.png" || exit 1
+    convert "$tmp/logoresized.png" "$tmp/alphablend.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphapixel.png" 
     
     # comp 
-    convert "$back" "$tmp/logonewalphapixel.png" -gravity center -compose screen -depth 8 +repage -composite "$tmp/logonewalphapixelcomp.png" || exit 1
+    convert "$back" "$tmp/logonewalphapixel.png" -gravity center -compose screen -depth 8 +repage -composite "$tmp/logonewalphapixelcomp.png" 
     
     # tone down
-    convert "$back" "$tmp/logonewalphapixelcomp.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-jpegPlus.${ext}" || exit 1
+    convert "$back" "$tmp/logonewalphapixelcomp.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-jpegPlus.${ext}" 
         
     echo "${base}-jpegPlus.${ext}"
 }
