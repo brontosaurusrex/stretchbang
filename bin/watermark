@@ -68,7 +68,19 @@ fi
  
 # How big will the logo really be  
 amt=$(convert -ping "$back" -format "%[fx:($pct*min(w,h)/100)^2]" info:)
-(( debug )) && echo "$amt"     
+(( debug )) && echo "$amt"
+
+# If logo is svg convert to png
+logoext="${logo##*.}"
+if [ "$logoext" == "svg" ]; then
+
+    convert -background none -density 300 "$logo" "$tmp/logofromsvg.png"
+    #inkscape -z "$logo" -e "$tmp/logofromsvg.png"
+    logo="$tmp/logofromsvg.png"
+
+fi
+
+#exit
 
 # methods to try https://imagemagick.org/script/compose.php
 method=( overlay plus darken lighten src-over multiply screen pegtop-light pin-light )
