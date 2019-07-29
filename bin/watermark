@@ -128,6 +128,17 @@ justmask () {
         
         # "${dir}/${base}-back.${ext}"
         echo "${base}-back.${ext}"
+        
+        #---
+        # slap back with alpha onto back
+        echo "back dark"
+        
+        convert "$back" "$tmp/backWithAlpha.png" -gravity "${grvt}" -compose "multiply" -depth 8 +repage -composite "$tmp/two.png" 
+        # tone down
+        convert "$back" "$tmp/two.png" -define compose:args=55 -compose blend -depth 8 +repage -composite "${dir}/${base}-backdark.${ext}" 
+        
+        # "${dir}/${base}-back.${ext}"
+        echo "${base}-backdark.${ext}"
    
 }
 
@@ -269,7 +280,7 @@ digimask () {
     # digi effect
     convert "$tmp/noise.png" -virtual-pixel tile \
     -auto-level -statistic Mode 120 \
-    -colorspace gray -auto-level -scale 200% "$tmp/stats.png"
+    -colorspace gray -auto-level -scale 100% "$tmp/stats.png"
 
     # mix masks
     convert "$tmp/stats.png" "$tmp/alpha.png" -gravity center -compose minus \
