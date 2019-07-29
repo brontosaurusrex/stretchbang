@@ -246,9 +246,66 @@ jpegmask () {
     echo "${base}-jpegPlus.${ext}"
 }
 
+noiseheadless () {
+     
+     convert -size "${alphasize}" 'xc:gray(50%)' -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill '#263945' +level 18%,24% -tint 100 -sharpen 0x1 -modulate 130,100,100 "$tmp/noise.png"
+    
+}
+
+digimask () {
+    
+    if ( ! command -v noise >/dev/null 2>&1 ); then 
+        echo "digimask method requires noise script"
+        return
+    fi
+    
+    echo "digi mask"
+    
+    extractalpha
+    
+    echo "noise"
+    noiseheadless
+    
+    # digi effect
+    convert "$tmp/noise.png" -virtual-pixel tile \
+    -auto-level -statistic Mode 120 \
+    -colorspace gray -auto-level -scale 200% "$tmp/stats.png"
+
+    # mix masks
+    convert "$tmp/stats.png" "$tmp/alpha.png" -gravity center -compose minus \
+    -depth 8 +repage -composite -crop "${alphasize}+0+0" "$tmp/alphacomp2.png"
+    
+    # replace mask
+    convert "$tmp/logoresized.png" "$tmp/alphacomp2.png" -alpha off -compose CopyOpacity -composite "$tmp/logonewalphastats.png"    
+    
+    # comp 
+    convert "$back" "$tmp/logonewalphastats.png" -gravity center -compose src-over -depth 8 +repage -composite "$tmp/logonewalphastatscomp.png" 
+    
+    # tone down
+    convert "$back" "$tmp/logonewalphastatscomp.png" -define compose:args=85 -compose blend -depth 8 +repage -composite "${dir}/${base}-digi.${ext}" 
+        
+    echo "${base}-digi.${ext}"
+    
+    # replace mask and rgb to black
+    convert -size "${alphasize}" xc:black "$tmp/alphacomp2.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphaBlack.png" 
+    
+    # compose, use new mixed mask, fill front with black
+    echo "digi mask + fill black"
+    convert "$back" "$tmp/logonewalphaBlack.png" -gravity center -compose src-over -depth 8 +repage -composite "$tmp/logonewalphaBlack_.png" 
+    
+    # tone down
+    convert "$back" "$tmp/logonewalphaBlack_.png" -define compose:args=85 -compose blend -depth 8 +repage -composite "${dir}/${base}-digiBlack.${ext}"
+        
+    echo "${base}-digiBlack.${ext}"
+    
+}
 
 # action
 many
 justmask
 destroyedmask
 jpegmask
+digimask
+
+# to fix:
+# code repetition, make many smaller functions
