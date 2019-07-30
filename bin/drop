@@ -32,13 +32,24 @@ if ! [ -f "$log" ]; then
 fi
 touch "$log" || echo "Can't write to $log"
 
+
+# check
+
+check () {
+    
+    # lets query whatever to see if the thing is already running
+    [ ! -f "$pipe" ] && (echo '{ "command": ["get_property", "mpv-version"] }' | socat - "$pipe") &> /dev/null
+    
+    
+}
+
 # mpv and pipe
 isRunning () {
 
-    # lets query whatever to see if the thing is already running
-    if [ ! -f "$pipe" ] && (echo '{ "command": ["get_property", "mpv-version"] }' | socat - "$pipe") &> /dev/null ; then 
-        #echo "Mpv instance already running"
+    if check ; then 
+        
         true
+        
     else
         echo "Mpv not running, starting now"
         
@@ -47,7 +58,17 @@ isRunning () {
         # https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection
         # --ytdl-format='bestvideo[ext=mp4][width<=1920][height<=1200][fps<=30]+bestaudio[ext=m4a]'
         
-        sleep 1 # naive approach to wait until pipe is ready
+        # and re-check if running
+        n="9" # retries
+        for i in $(seq 1 $n); do 
+        
+            #echo $i
+            check && break
+            sleep 1
+            
+        done 
+        (( i == n )) && { echo "mpv or pipe not ready error, exiting..." ; exit 1; }
+        
     fi
 }
 
