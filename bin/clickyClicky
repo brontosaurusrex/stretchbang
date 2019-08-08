@@ -7,8 +7,13 @@
 
 set -e
 
+superecho() {
+    echo "$1"
+    notify-send -t 5000 "$1"
+}
+
 # clicky source
-echo "clicky source"
+superecho "clicky source"
 read -r _ _ _ l _ w _ h <<<"$(xwininfo -shape | grep 'Width\|Height\|Absolute upper-left Y:' | tr -d '\n')"
 
 # take one px away (why?)
@@ -17,7 +22,7 @@ l=$(( l - 1 ))
 echo "$l $w $h"
 
 # clicky destination
-echo "clicky destination"
+superecho "clicky destination"
 #wmctrl -r :SELECT: -e 0,-1,-1,"$w","$h" # just size
 #wmctrl -r :SELECT: -e 0,-1,$l,"$w","$h" # size and y position
 #wmctrl -r :SELECT: -b add, 
@@ -25,7 +30,7 @@ echo "clicky destination"
 
 # get id of selected
 id="$(xwininfo -stats | grep id: | awk '{print $4}')"
-echo $id
+echo "$id"
 
 # activate by id
 xdotool windowactivate "$id"
