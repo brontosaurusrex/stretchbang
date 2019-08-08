@@ -5,6 +5,8 @@
 # copy/paste window width/height (without wm decorations) and align vertical
 # idea from https://forums.bunsenlabs.org/viewtopic.php?id=4121
 
+set -e
+
 # clicky source
 echo "clicky source"
 read -r _ _ _ l _ w _ h <<<"$(xwininfo -shape | grep 'Width\|Height\|Absolute upper-left Y:' | tr -d '\n')"
@@ -17,16 +19,18 @@ echo "$l $w $h"
 # clicky destination
 echo "clicky destination"
 #wmctrl -r :SELECT: -e 0,-1,-1,"$w","$h" # just size
-wmctrl -r :SELECT: -e 0,-1,$l,"$w","$h" # size and y position
+#wmctrl -r :SELECT: -e 0,-1,$l,"$w","$h" # size and y position
+#wmctrl -r :SELECT: -b add, 
+#-e 0,-1,$l,"$w","$h" # size and y position
 
+# get id of selected
+id="$(xwininfo -stats | grep id: | awk '{print $4}')"
+echo $id
 
+# activate by id
+xdotool windowactivate "$id"
 
-#<MVARG>
-      #A move and resize argument has the format 'g,x,y,w,h'.  All five components are integers.  The  first
-      #value, g, is the gravity of the window, with 0 being the most common value (the default value for the
-      #window). Please see the EWMH specification for other values.
-
-      #The four remaining values are a standard geometry specification: x,y is the position of the top  left
-      #corner  of  the  window,  and  w,h is the width and height of the window, with the exception that the
-      #value of -1 in any position is interpreted to mean that the current geometry value should not be mod‐
-      #ified.
+# unmaximize and resize
+wmctrl -r :ACTIVE: -b remove,maximized_horz
+wmctrl -r :ACTIVE: -b remove,maximized_vert
+wmctrl -r :ACTIVE: -e 0,-1,$l,"$w","$h" # size and y position

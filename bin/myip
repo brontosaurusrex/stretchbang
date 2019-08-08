@@ -10,8 +10,8 @@ hostname -I
 # external
 echo -n "external: "
 
-#curl -B http://wtfismyip.com/text
+curl -B http://wtfismyip.com/text
 
 # https://unix.stackexchange.com/questions/22615/how-can-i-get-my-external-ip-address-in-a-shell-script/194136#194136
 # faster than curl (dig is a part of dnsutils in debian)
-dig +short myip.opendns.com @resolver1.opendns.com
+#dig +short myip.opendns.com @resolver1.opendns.com
