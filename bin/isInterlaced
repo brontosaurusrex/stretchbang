@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# isInterlaced (Returns error if progressive for single file check)
+
+# example: isInterlaced file.mxf && echo "yes, it is interlaced!"
+
+set -e
+
+while [ $# -gt 0 ]; do
+	
+	echo "$1"
+
+	read -r _ _ _ _ _ _ _ tff _ bff _ progressive _ undef \
+	<<< "$(ffmpeg -filter:v idet -frames:v 1000 -an -f rawvideo -y /dev/null 2>&1 -i "$1" | grep "idet" | grep "Multi frame detection")"	
+	# if it makes no sense skip the rest
+	if [[ -z "$tff" ]]; then
+		
+		echo "no sense"
+		shift
+		continue
+
+	fi	
+
+	echo "tff $tff, bff $bff, progressive $progressive, undef $undef"
+
+	if (( tff + bff + progressive < undef )); then
+	
+		echo "undefined"
+	
+	elif (( tff + bff > progressive )); then
+
+		echo "interlaced"
+		status="1"
+	else 
+
+		echo "progressive"
+		status="0"
+
+	fi
+
+
+	shift
+done
+
+# this only makes sense if you check single file, like:
+# isInterlaced file.mxf && echo yes
+((status)) || exit 1
