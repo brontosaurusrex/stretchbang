@@ -29,11 +29,11 @@ while [ $# -gt 0 ]; do
 	
 	elif (( tff + bff > progressive )); then
 
-		echo "interlaced"
+		echo "☰ interlaced"
 		status="1"
 	else 
 
-		echo "progressive"
+		echo "█ progressive"
 		status="0"
 
 	fi
