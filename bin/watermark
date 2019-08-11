@@ -197,6 +197,15 @@ lines () {
     
     mogrify -scale "${alphasize}"\! -auto-level -evaluate Min 130% -colorspace gray "$tmp/lines.png"
     
+    # some additional destruction
+    convert "$tmp/lines.png" -spread 5 "$tmp/lines_spread.png"
+    
+    # tone down
+    convert "$tmp/lines_spread.png" "$tmp/lines.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "$tmp/lines_comp.png" 
+    
+    
+    mv "$tmp/lines_comp.png" "$tmp/lines.png"
+    
 }
 
 extractalpha () {
@@ -314,9 +323,9 @@ digimask () {
     convert "$back" "$tmp/logonewalphastats.png" -gravity center -compose src-over -depth 8 +repage -composite "$tmp/logonewalphastatscomp.png" 
     
     # tone down
-    convert "$back" "$tmp/logonewalphastatscomp.png" -define compose:args=85 -compose blend -depth 8 +repage -composite "${dir}/${base}-digi.${ext}" 
+    convert "$back" "$tmp/logonewalphastatscomp.png" -define compose:args=85 -compose blend -depth 8 +repage -composite "${dir}/${base}-digiDefault.${ext}" 
         
-    echo "${base}-digi.${ext}"
+    echo "${base}-digiDefault.${ext}"
     
     # replace mask and rgb to black
     convert -size "${alphasize}" xc:black "$tmp/alphacomp2.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphaBlack.png" 
