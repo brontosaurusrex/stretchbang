@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# InterlaceMagick (using imagemagick and ffmpeg)
+
+# input should be transparent image 
+
+# usage: interlaceMagick logo.png 0.5
+#                                  ^ percents of height-based offset
+
+set -e
+
+# input
+logo="$1"
+offset="$2"
+[[ -z "$offset" ]] && offset="2"
+
+# input breakdown 
+file=$(readlink -f "$logo")       # quasi absolute
+baseext=$(basename "${logo}")     # file.ext
+base="${baseext%.*}"              # file
+#ext="${file##*.}"                 # ext
+dir=${file%/*}                    # directory
+
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmp="/tmp/$RANDOM-$$"
+trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
+mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
+
+# get logo height in px
+height="$(convert "$1" -format "%h" info:)"
+echo "$height px"
+
+# now get N% of that height in px
+n="$(convert xc: -format "%[fx:$height*$offset/100]" info:)"
+echo "$n"
+
+# field 1
+convert "$file" -background transparent -splice "${n}"x"${n}" "$tmp/field_001.png"  
+
+# field 2
+convert "$file" -background transparent -gravity southeast -splice "${n}"x"${n}" "$tmp/field_002.png"
+
+# interlace
+ffmpeg -i "$tmp/field_%03d.png" -filter:v interlace=scan=1:lowpass=2 -y "$dir/${base}_interlaced.png"
