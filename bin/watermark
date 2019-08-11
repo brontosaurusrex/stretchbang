@@ -295,11 +295,6 @@ noiseheadless () {
 
 digimask () {
     
-    if ( ! command -v noise >/dev/null 2>&1 ); then 
-        echo "digimask method requires noise script"
-        return
-    fi
-    
     echo "digi mask"
     
     extractalpha
@@ -309,8 +304,8 @@ digimask () {
     
     # digi effect
     convert "$tmp/noise.png" -virtual-pixel tile \
-    -auto-level -statistic Mode 120 \
-    -colorspace gray -auto-level -scale 100% "$tmp/stats.png"
+    -auto-level -scale 10% -statistic Mode 40 \
+    -colorspace gray -auto-level -scale 1000% "$tmp/stats.png"
 
     # mix masks
     convert "$tmp/stats.png" "$tmp/alpha.png" -gravity center -compose minus \
