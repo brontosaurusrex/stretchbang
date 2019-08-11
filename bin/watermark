@@ -171,7 +171,7 @@ lines () {
 
 
     # action
-    for ((i=1;i<=150;i++)); 
+    for ((i=1;i<=100;i++)); 
     do
         echo -n "$i "
         random
@@ -182,7 +182,20 @@ lines () {
     echo
     
     # bw
-    mogrify -blur 0x3 -scale "${alphasize}"\! -auto-level -evaluate Min 30% -colorspace gray "$tmp/lines.png"
+    #mogrify -blur 0x3 -scale "${alphasize}"\! -auto-level -evaluate Min 30% -colorspace gray "$tmp/lines.png"
+    
+    rotateMaybe () {
+    if (( RANDOM %2 )) ; then
+        mogrify -rotate 90 "$tmp/lines.png"
+        echo "rotating lines 90"
+    else
+        echo "not rotating lines"
+    fi
+    }
+    
+    rotateMaybe
+    
+    mogrify -scale "${alphasize}"\! -auto-level -evaluate Min 130% -colorspace gray "$tmp/lines.png"
     
 }
 
@@ -205,7 +218,7 @@ destroyedmask () {
         # lines
         width="$(convert -ping "$tmp/alpha.png" -format "%w" info:)"
         lines # must know the size ^ (alphasize and width)
-        #cp "$tmp/lines.png" "${dir}/lines.png"
+        cp "$tmp/lines.png" "${dir}/lines.png"
         
         #set -x
         # mix with some other mask, but clip/limit somehow
