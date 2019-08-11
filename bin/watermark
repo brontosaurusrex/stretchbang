@@ -19,8 +19,9 @@ if (($# < 3)) || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     echo "Must be 3 or 4 arguments, example:"
     echo
     echo "watermark back.png logo.png out.png 20"
-    echo "                                    ^"
-    echo "                             logo size in percents (can be omitted)"
+    echo "                                     ^"
+    echo "                             logo size in percents (can be omitted),"
+    echo "                             set to 0 for no resizing."
 
     exit 1
 
@@ -86,7 +87,14 @@ fi
 method=( overlay plus darken lighten src-over multiply screen pegtop-light pin-light )
 
 # resize and pad-bottom logo
-convert "$logo" -resize "$amt"@ "$tmp/logoresized_.png"
+if [[ "$pct" != "0" ]] ; then
+    # resize
+    convert "$logo" -resize "$amt"@ "$tmp/logoresized_.png"
+else
+    # if pct = 0 is passed by user, we assume no resizing is to be done
+    cp "$logo" "$tmp/logoresized_.png"
+
+fi
 # pad bottom for some% so that the final composition will have logo a bit higher than geometric center
 convert "$tmp/logoresized_.png" -gravity north -background transparent -extent \
 "$(identify -format '%Wx%[fx:H*1.1]' "$tmp/logoresized_.png")" \
