@@ -219,7 +219,7 @@ extractalpha () {
         fi
 }
 
-
+# mostly lines
 destroyedmask () {
     
         extractalpha # and get size 
@@ -227,6 +227,20 @@ destroyedmask () {
         # lines
         width="$(convert -ping "$tmp/alpha.png" -format "%w" info:)"
         lines # must know the size ^ (alphasize and width)
+        #cp "$tmp/lines.png" "${dir}/lines.png"
+        
+        echo "noise"
+        noiseheadless
+    
+        # digi effect
+        convert "$tmp/lines.png" -virtual-pixel tile \
+        -auto-level -scale 10% -statistic Mode 40 \
+        -colorspace gray -auto-level -scale 1000% "$tmp/stats.png"
+        
+        # tone down
+        convert "$tmp/lines.png" "$tmp/stats.png" -define compose:args=35 -compose blend -depth 8 +repage -composite "$tmp/lines_comp.png"
+        mv "$tmp/lines_comp.png" "$tmp/lines.png"
+        
         cp "$tmp/lines.png" "${dir}/lines.png"
         
         #set -x
