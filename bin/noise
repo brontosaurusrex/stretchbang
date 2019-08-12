@@ -169,7 +169,8 @@ convert -size "${mx}x${my}" xc:"gray(50%)" -seed "${RANDOM}" -attenuate 2 +noise
 
 # nitrogen, set wall
 setwall () {
-    nitrogen "${save}" --set-tiled "$file" || echo "nitrogen failed"
+    #nitrogen "${save}" --set-tiled "$file" || echo "nitrogen failed"
+    nitrogen "${save}" --set-centered "$file" --set-color="#394A55" --head=0 || echo "nitrogen failed"
 }
 
 # restart wbar
