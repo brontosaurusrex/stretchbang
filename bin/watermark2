@@ -1,0 +1,407 @@
+#!/bin/bash
+
+# watermark one image with another
+
+# usage: watermark back.png logo.png out.png 20
+
+#http://www.imagemagick.org/discourse-server/viewtopic.php?t=33782
+
+set -e # exit script on any error
+
+debug="1"
+
+# checks
+command -v convert >/dev/null 2>&1 || { echo "I need imagemagick convert, exiting." >&2; exit 1; }
+
+# Check if enough parameters were passed
+if (($# < 3)) || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+
+    echo "Must be 3 or 4 arguments, example:"
+    echo
+    echo "watermark back.png logo.png out.png 20"
+    echo "                                     ^"
+    echo "                             logo size in percents (can be omitted),"
+    echo "                             set to 0 for no resizing."
+
+    exit 1
+
+fi
+
+# tmp dir http://mywiki.wooledge.org/BashFAQ/062
+tmp="/tmp/$RANDOM-$$"
+trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
+mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
+
+# input
+back="$1"
+logo="$2"
+ out="$3"
+ pct="$4"
+ 
+grvt="center"
+
+# out breakdown 
+file=$(readlink -f "$out")       # quasi absolute
+baseext=$(basename "${out}")     # or
+base="${baseext%.*}"             # file
+ext="${file##*.}"                # ext
+dir=${file%/*}                   # directory
+
+if [ "$ext" != "png" ] && [ "$ext" != "jpg" ]; then
+    ext="png"
+fi
+
+# echo
+if (( debug )); then
+    echo "file $file"
+    echo "baseext $baseext" 
+    echo "base $base" 
+    echo "ext $ext" 
+    echo "dir $dir"
+    echo
+fi
+
+# exit if no ext
+[[ -z "$ext" ]] && exit 1 
+
+# How big will the logo be
+[[ -z "$pct" ]] && pct=25
+ 
+# How big will the logo really be  
+amt=$(convert -ping "$back" -format "%[fx:($pct*min(w,h)/100)^2]" info:)
+(( debug )) && echo "$amt"
+
+# If logo is svg convert to png
+logoext="${logo##*.}"
+if [ "$logoext" == "svg" ]; then
+
+    convert -background none -density 300 "$logo" "$tmp/logofromsvg.png"
+    #inkscape -z "$logo" -e "$tmp/logofromsvg.png"
+    logo="$tmp/logofromsvg.png"
+
+fi
+
+#exit
+
+# methods to try https://imagemagick.org/script/compose.php
+method=( overlay plus darken lighten src-over multiply screen pegtop-light pin-light )
+
+# resize and pad-bottom logo
+if [[ "$pct" != "0" ]] ; then
+    # resize
+    convert "$logo" -resize "$amt"@ "$tmp/logoresized_.png"
+else
+    # if pct = 0 is passed by user, we assume no resizing is to be done
+    cp "$logo" "$tmp/logoresized_.png"
+
+fi
+# pad bottom for some% so that the final composition will have logo a bit higher than geometric center
+convert "$tmp/logoresized_.png" -gravity north -background transparent -extent \
+"$(identify -format '%Wx%[fx:H*1.1]' "$tmp/logoresized_.png")" \
+"$tmp/logoresized.png" 
+# some cleaning
+rm "$tmp/logoresized_.png"
+
+# action functions
+many () {
+    
+    #set -x
+    for var in "${method[@]}"
+    do
+        echo "${var}"
+
+        touch "${dir}/${base}-${var}.${ext}" 
+        convert "$back" "$tmp/logoresized.png" -gravity "${grvt}" -compose "${var}" -depth 8 +repage -composite "$tmp/one.png" 
+        # tone down
+        convert "$back" "$tmp/one.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "${dir}/${base}-${var}.${ext}" 
+        
+        echo "${base}-${var}.${ext}"
+        
+        # The "at" symbol '@', will resize an image to contain no more than the given number of pixels. 
+        # "$logo" -trim -resize "$amt"@ # ?
+
+    done
+}
+
+# many2
+# reusable composing function, array 'method' is global, usage example:
+#
+#                                              ˇ outdir              ˘ outbase 
+# many2 "$tmp" "back.png" "logo.png" "Subname" "$HOME/walltest/auto" "testing" "jpg"
+
+many2 () {
+    
+    local ltmp="$1" # tmp dir
+    
+    local lback="$2"
+    local llogo="$3"
+    
+    local lsubname="$4"
+    
+    local loutdir="$5"
+    local loutbase="$6"
+    local loutext="$7"
+    
+    local ltonedown="$8"    # if omitted then 90
+    local lgrvt="$9"        # if omitted then center
+    
+    [[ -z "$lgrvt" ]] && local lgvrt="center"
+    [[ -z "$ltonedown" ]] && local ltonedown="90"
+
+    # loop
+    for var in "${method[@]}" # global
+    do
+        echo "${var}"
+
+        #touch "${loutdir}/${loutbase}-${var}${lsubname}.${loutext}" 
+        
+        # action
+        convert "$lback" "$llogo" -gravity "${lgvrt}" -compose "${var}" -depth 8 +repage -composite "$ltmp/one.png" 
+        
+        # tone down
+        convert "$lback" "$ltmp/one.png" -define compose:args="$ltonedown" -compose blend -depth 8 +repage -composite "${loutdir}/${loutbase}-${lsubname}${var^}.${loutext}" 
+        
+        echo "${loutbase}-${lsubname}${var^}.${loutext}"
+
+    done
+}
+
+justmask () {
+ 
+        # copy alpha from logo to back
+        convert "$back" \( "$tmp/logoresized.png" -channel a -separate +channel \) -alpha off -gravity "${grvt}" -compose copy_opacity -composite "$tmp/backWithAlpha.png" 
+        
+        # slap back with alpha onto back
+        echo "back"
+        convert "$back" "$tmp/backWithAlpha.png" -gravity "${grvt}" -compose "screen" -depth 8 +repage -composite "$tmp/two.png" 
+        # tone down
+        convert "$back" "$tmp/two.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-back.${ext}" 
+        
+        # "${dir}/${base}-back.${ext}"
+        echo "${base}-back.${ext}"
+        
+        #---
+        # slap back with alpha onto back
+        echo "back dark"
+        
+        convert "$back" "$tmp/backWithAlpha.png" -gravity "${grvt}" -compose "multiply" -depth 8 +repage -composite "$tmp/two.png" 
+        # tone down
+        convert "$back" "$tmp/two.png" -define compose:args=55 -compose blend -depth 8 +repage -composite "${dir}/${base}-backdark.${ext}" 
+        
+        # "${dir}/${base}-back.${ext}"
+        echo "${base}-backdark.${ext}"
+   
+}
+
+lines () {
+    
+    # make empty image
+    convert -size "${width}"x1 xc:black "$tmp/lines.png"
+
+    # random
+    random () {
+        # 0 - 255
+        r=$(( RANDOM % 256 ))
+        g=$(( RANDOM % 256 ))
+        b=$(( RANDOM % 256 ))
+
+        # 1 - 100
+        linewidth=$(( RANDOM % 50 + 1 ))
+
+        # 0 - 1920
+        linepos=$(( RANDOM % width ))
+    }
+
+
+    # action
+    for ((i=1;i<=100;i++)); 
+    do
+        echo -n "$i "
+        random
+        mogrify -stroke "rgba(${r},${g},${b},0.2)" -linewidth "${linewidth}" \
+        -draw "line ${linepos},0 ${linepos},10" "$tmp/lines.png"
+
+    done
+    echo
+    
+    # bw
+    #mogrify -blur 0x3 -scale "${alphasize}"\! -auto-level -evaluate Min 30% -colorspace gray "$tmp/lines.png"
+    
+    rotateMaybe () {
+    if (( RANDOM %2 )) ; then
+        mogrify -rotate 90 "$tmp/lines.png"
+        echo "rotating lines 90"
+    else
+        echo "not rotating lines"
+    fi
+    }
+    
+    rotateMaybe
+    
+    mogrify -scale "${alphasize}"\! -auto-level -evaluate Min 130% -colorspace gray "$tmp/lines.png"
+    
+    # some additional destruction
+    convert "$tmp/lines.png" -spread 5 "$tmp/lines_spread.png"
+    
+    # tone down
+    convert "$tmp/lines_spread.png" "$tmp/lines.png" -define compose:args=90 -compose blend -depth 8 +repage -composite "$tmp/lines_comp.png" 
+    
+    
+    mv "$tmp/lines_comp.png" "$tmp/lines.png"
+    
+}
+
+extractalpha () {
+
+        # extract alpha from logo to rgb
+        if [ ! -f "$tmp/alpha.png" ]; then
+            convert "$tmp/logoresized.png" -alpha extract "$tmp/alpha.png"
+            # What is the size of that alpha in XxY format
+            alphasize="$(convert -ping "$tmp/alpha.png" -format "%wx%h" info:)"
+            (( debug )) && echo "$alphasize"    
+        fi
+}
+
+# mostly lines
+destroyedmask () {
+    
+        extractalpha # and get size 
+        
+        # lines
+        width="$(convert -ping "$tmp/alpha.png" -format "%w" info:)"
+        lines # must know the size ^ (alphasize and width)
+        #cp "$tmp/lines.png" "${dir}/lines.png"
+        
+        echo "noise"
+        noiseheadless
+    
+        # digi effect
+        convert "$tmp/lines.png" -virtual-pixel tile \
+        -auto-level -scale 10% -statistic Mode 40 \
+        -colorspace gray -auto-level -scale 1000% "$tmp/stats.png"
+        
+        # tone down
+        convert "$tmp/lines.png" "$tmp/stats.png" -define compose:args=35 -compose blend -depth 8 +repage -composite "$tmp/lines_comp.png"
+        mv "$tmp/lines_comp.png" "$tmp/lines.png"
+        
+        cp "$tmp/lines.png" "${dir}/lines.png"
+        
+        #set -x
+        # mix with some other mask, but clip/limit somehow
+        #convert -auto-level "$tmp/alpha.png" "$tmp/alphaauto.png" 
+        convert "$tmp/lines.png" "$tmp/alpha.png" -gravity center -compose minus \
+         -depth 8 +repage -composite -crop "${alphasize}+0+0" "$tmp/alphacomp.png" 
+         
+        # replace mask
+        convert "$tmp/logoresized.png" "$tmp/alphacomp.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalpha.png" 
+        
+        # replace mask and rgb to black
+        convert -size "${alphasize}" xc:black "$tmp/alphacomp.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphaBlack.png" 
+    
+        # compose, use new mixed mask
+        echo "destroyed mask"
+        convert "$back" "$tmp/logonewalpha.png" -gravity center -compose src-over -depth 8 +repage -composite "${dir}/${base}-destroyedDefault.${ext}" 
+        
+        echo "${base}-destroyedDefault.${ext}"
+                
+        # compose, use new mixed mask, fill front with black
+        echo "destroyed mask + fill black"
+        convert "$back" "$tmp/logonewalphaBlack.png" -gravity center -compose src-over -depth 8 +repage -composite "${dir}/${base}-destroyedBlack.${ext}" 
+        
+        echo "${base}-destroyedBlack.${ext}"
+        
+        # copy with destroyed mask (similar to justmask method)
+        echo "destroyed mask plus"
+        # copy alpha from destroyed logo to back
+        convert "$back" \( "$tmp/logonewalpha.png" -channel a -separate +channel \) -alpha off -gravity "${grvt}" -compose copy_opacity -composite "$tmp/backWithAlpha2.png" 
+        # slap back with alpha onto back
+        convert "$back" "$tmp/backWithAlpha2.png" -gravity "${grvt}" -compose "screen" -depth 8 +repage -composite "$tmp/two2.png" 
+        # tone down
+        convert "$back" "$tmp/two2.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-destroyedBack.${ext}" 
+        
+        echo "${base}-destroyedBack.${ext}"
+}
+
+jpegmask () {
+    
+    extractalpha
+    
+    echo "jpeg mask"
+    
+    convert -scale 5% -scale 2000% "$tmp/alpha.png" "$tmp/alphapixel.png"
+    # blend
+    convert "$tmp/alpha.png" "$tmp/alphapixel.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "$tmp/alphablend.png" 
+    
+    # replace mask
+    convert "$tmp/logoresized.png" "$tmp/alphablend.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphapixel.png" 
+    
+    # comp 
+    convert "$back" "$tmp/logonewalphapixel.png" -gravity center -compose screen -depth 8 +repage -composite "$tmp/logonewalphapixelcomp.png" 
+    
+    # tone down
+    convert "$back" "$tmp/logonewalphapixelcomp.png" -define compose:args=75 -compose blend -depth 8 +repage -composite "${dir}/${base}-jpegPlus.${ext}" 
+        
+    echo "${base}-jpegPlus.${ext}"
+}
+
+noiseheadless () {
+     
+     convert -size "${alphasize}" 'xc:gray(50%)' -seed "${RANDOM}" -attenuate 2 +noise poisson -colorspace gray -fill '#263945' +level 18%,24% -tint 100 -sharpen 0x1 -modulate 130,100,100 "$tmp/noise.png"
+    
+}
+
+digimask () {
+    
+    echo "digi mask"
+    
+    extractalpha
+    
+    echo "noise"
+    noiseheadless
+    
+    # digi effect
+    convert "$tmp/noise.png" -virtual-pixel tile \
+    -auto-level -scale 10% -statistic Mode 40 \
+    -colorspace gray -auto-level -scale 1000% "$tmp/stats.png"
+
+    # mix masks
+    convert "$tmp/stats.png" "$tmp/alpha.png" -gravity center -compose minus \
+    -depth 8 +repage -composite -crop "${alphasize}+0+0" "$tmp/alphacomp2.png"
+    
+    # replace mask
+    convert "$tmp/logoresized.png" "$tmp/alphacomp2.png" -alpha off -compose CopyOpacity -composite "$tmp/logonewalphastats.png"    
+    
+    # comp 
+    convert "$back" "$tmp/logonewalphastats.png" -gravity center -compose src-over -depth 8 +repage -composite "$tmp/logonewalphastatscomp.png" 
+    
+    # tone down
+    convert "$back" "$tmp/logonewalphastatscomp.png" -define compose:args=85 -compose blend -depth 8 +repage -composite "${dir}/${base}-digiDefault.${ext}" 
+        
+    echo "${base}-digiDefault.${ext}"
+    
+    # replace mask and rgb to black
+    convert -size "${alphasize}" xc:black "$tmp/alphacomp2.png" -alpha off -compose CopyOpacity -auto-level -composite "$tmp/logonewalphaBlack.png" 
+    
+    # compose, use new mixed mask, fill front with black
+    echo "digi mask + fill black"
+    convert "$back" "$tmp/logonewalphaBlack.png" -gravity center -compose src-over -depth 8 +repage -composite "$tmp/logonewalphaBlack_.png" 
+    
+    # tone down
+    convert "$back" "$tmp/logonewalphaBlack_.png" -define compose:args=85 -compose blend -depth 8 +repage -composite "${dir}/${base}-digiBlack.${ext}"
+        
+    echo "${base}-digiBlack.${ext}"
+    
+    #                                              ˇ outdir              ˘ outbase 
+    # many2 "$tmp" "back.png" "logo.png" "Subname" "$HOME/walltest/auto" "testing" "jpg"
+    many2 "$tmp" "$back" "$tmp/logonewalphastats.png" "digi" "${dir}" "${base}" "${ext}" "100"
+}
+
+# action
+#many
+#justmask
+#destroyedmask
+#jpegmask
+digimask
+
+# to fix:
+# code repetition, make many smaller functions
