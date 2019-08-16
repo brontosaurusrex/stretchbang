@@ -1,22 +1,58 @@
 #!/bin/bash
 
-# bman 2
+# bman
 
 # usage: bman geany
-
-set -e
 
 # tmp dir
 tmp="/tmp/$RANDOM-$$"
 trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
 mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
 
+# custom css (apt install fonts-noto)
+csstmp=$(cat <<CSS
+<!-- Bronto custom css -->
+<style type="text/css">
+    p       { margin-top: 0; margin-bottom: 0; vertical-align: top; font-family: 'Noto Serif', serif; font-size: large }
+    a       { font-family: 'Noto Serif', serif; font-size: large }
+    pre     { margin-top: 0; margin-bottom: 0; vertical-align: top; font-size: large }
+    table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+    h1      { text-align: center; font-family: 'Noto Serif', serif; font-size: xx-large }
+    hr      { border-top: 1px solid black; visibility: hidden; }
+    a:link {
+        text-decoration: none;
+    }
+    a:visited {
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    a:active {
+        text-decoration: underline;
+    }
+    body {
+        background-color: #F5F5F5;
+        color: #111111;
+        line-height: 1.6;
+
+    }
+</style>
+CSS
+)
+css="$(echo "$csstmp" | tr '\n' ' ')" # remove newlines
+
+set -e # Incompatible with ^ cat <<CSS stuff
 
 # action
 for man in "$@"
 do
 
-    man -Thtml "$man" > "${tmp}/${man}.html" 2> /dev/null
-    xdg-open "${tmp}/${man}.html"            2> /dev/null
+    man -Thtml "$man" > "${tmp}/${man}.tmp" 2> /dev/null
+    
+    sed "s|^</head>*|${css}</head>|g" <"${tmp}/${man}.tmp" >"${tmp}/${man}.html" # Insert my custom css before </head>
+    
+    xdg-open "${tmp}/${man}.html"           2> /dev/null
+    # xdg-settings set default-web-browser google-chrome.desktop
 
 done
