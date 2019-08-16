@@ -14,10 +14,11 @@ csstmp=$(cat <<CSS
 <!-- Bronto custom css -->
 <style type="text/css">
     p       { margin-top: 0; margin-bottom: 0; vertical-align: top; font-family: 'Noto Serif', serif; font-size: large }
-    a       { font-family: 'Noto Serif', serif; font-size: large }
+    a       { font-family: 'Noto Sans', serif; font-size: large }
     pre     { margin-top: 0; margin-bottom: 0; vertical-align: top; font-size: large }
     table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
     h1      { text-align: center; font-family: 'Noto Serif', serif; font-size: xx-large }
+    h2      { font-family: 'Noto Sans', sans; }
     hr      { border-top: 1px solid black; visibility: hidden; }
     a:link {
         text-decoration: none;
@@ -35,8 +36,8 @@ csstmp=$(cat <<CSS
         background-color: #F5F5F5;
         color: #111111;
         line-height: 1.6;
-
     }
+
 </style>
 CSS
 )
