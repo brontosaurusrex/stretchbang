@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# netflix
+
+# start with 'launchee netflix' to avoid duplicates.
+# launchee is a script 
+# https://raw.githubusercontent.com/brontosaurusrex/stretchbang/master/bin/launchee
+# 
+# In Chrome perhaps enable
+# chrome://flags/#overlay-scrollbars
+
+set -e 
+
+superecho() {
+    echo "$1"
+    notify-send -u low -t 1000 "$1"
+}
+
+# launch
+if command -v google-chrome; then
+    { google-chrome --app="https://netflix.com" & }
+    
+else
+    superecho "I need Google-Chrome"
+    exit 1;
+fi
+
+superecho "Starting Netflix ..."
