@@ -3,18 +3,20 @@
 # bman
 
 # usage: bman geany
+#        bman --dark geany
 
 # tmp dir
 tmp="/tmp/$RANDOM-$$"
-trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
+#trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
 mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
 
-# custom css (apt install fonts-noto)
+if [[ "$1" != "--dark" ]]; then
+# Bright custom css (apt install fonts-noto)
 csstmp=$(cat <<CSS
 <!-- Bronto custom css -->
 <style type="text/css">
     p       { margin-top: 0; margin-bottom: 0; vertical-align: top; font-family: 'Noto Serif', serif; font-size: large }
-    a       { font-family: 'Noto Sans', serif; font-size: large }
+    a       { font-family: 'Noto Sans', sans; font-size: large }
     pre     { margin-top: 0; margin-bottom: 0; vertical-align: top; font-size: large }
     table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
     h1      { text-align: center; font-family: 'Noto Serif', serif; font-size: xx-large }
@@ -36,12 +38,60 @@ csstmp=$(cat <<CSS
         background-color: #F5F5F5;
         color: #111111;
         line-height: 1.6;
-    }
+        
+}
 
+
+    }
 </style>
 CSS
 )
 css="$(echo "$csstmp" | tr '\n' ' ')" # remove newlines
+
+else # dark-er
+# Dark custom css (apt install fonts-noto)
+
+shift
+
+csstmp=$(cat <<CSS
+<!-- Bronto custom css -->
+<style type="text/css">
+    p       { margin-top: 0; margin-bottom: 0; vertical-align: top; font-family: 'Noto Serif light', serif; font-size: large }
+    a       { font-family: 'Noto Serif light', serif; font-size: large }
+    pre     { margin-top: 0; margin-bottom: 0; vertical-align: top; font-size: large }
+    table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+    h1      { text-align: center; font-family: 'Noto Serif light', serif; font-size: xx-large; color: #28c1d7 }
+    h2      { font-family: 'Noto Serif light', serif; color: #cb6317; }
+    hr      { border-top: 1px solid black; visibility: hidden; }
+    a:link {
+        text-decoration: none;
+        color: #4BB2C9;
+    }
+    a:visited {
+        text-decoration: none;
+        color: #4BB2C9;
+    }
+    a:hover {
+        text-decoration: underline;
+        color: #4BB2C9;
+    }
+    a:active {
+        text-decoration: underline;
+        color: #4BB2C9;
+    }
+    body {
+        background-color: #333D4D;
+        background-color: #13181B;
+        background-image: url(https://brontosaurusrex.github.io/public/mozillaGrain.png);
+        color: #96b0bf;
+        line-height: 1.6;
+    }
+</style>
+CSS
+)
+css="$(echo "$csstmp" | tr '\n' ' ')" # remove newlines
+
+fi
 
 set -e # Incompatible with ^ cat <<CSS stuff
 
