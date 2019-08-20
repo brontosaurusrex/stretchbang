@@ -86,6 +86,9 @@ csstmp=$(cat <<CSS
         color: #96b0bf;
         line-height: 1.6;
     }
+    b {
+        color: #4BB2C9;
+    }
 </style>
 CSS
 )
