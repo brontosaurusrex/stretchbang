@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# enable middle mouse scrolling system wide
+
+# a script that will try those commands for every id# listed in "xinput list" under  Virtual core pointer section
+# https://forums.bunsenlabs.org/viewtopic.php?pid=10771#p10771
+
+set -ex
+
+xinput list | sed -ne 's/^[^ ][^V].*id=\([0-9]*\).*/\1/p' | while read -r id
+do
+        case "$(xinput list-props "$id")" in
+        *"libinput Scroll Method Enabled"*)
+        
+            xinput set-prop "$id" "libinput Scroll Method Enabled" 0, 0, 1
+            # This is button
+            xinput set-prop "$id" "libinput Button Scrolling Button" 2
+            # This is middle mouse. Already 2 by default
+                ;;
+        esac
+done
