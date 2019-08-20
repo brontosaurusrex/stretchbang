@@ -7,6 +7,9 @@
 
 set -ex
 
+# 2 = middle, 3 = right
+button="3"
+
 xinput list | sed -ne 's/^[^ ][^V].*id=\([0-9]*\).*/\1/p' | while read -r id
 do
         case "$(xinput list-props "$id")" in
@@ -14,7 +17,7 @@ do
         
             xinput set-prop "$id" "libinput Scroll Method Enabled" 0, 0, 1
             # This is button
-            xinput set-prop "$id" "libinput Button Scrolling Button" 2
+            xinput set-prop "$id" "libinput Button Scrolling Button" "$button"
             # This is middle mouse. Already 2 by default
                 ;;
         esac
