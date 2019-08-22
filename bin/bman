@@ -10,45 +10,7 @@ tmp="/tmp/$RANDOM-$$"
 #trap '[ -n "$tmp" ] && rm -fr "$tmp"' EXIT
 mkdir -m 700 "$tmp" || { echo '!! unable to create a tmpdir' >&2; tmp=; exit 1; }
 
-if [[ "$1" != "--dark" ]]; then
-# Bright custom css (apt install fonts-noto)
-csstmp=$(cat <<CSS
-<!-- Bronto custom css -->
-<style type="text/css">
-    p       { margin-top: 0; margin-bottom: 0; vertical-align: top; font-family: 'Noto Serif', serif; font-size: large }
-    a       { font-family: 'Noto Sans', sans; font-size: large }
-    pre     { margin-top: 0; margin-bottom: 0; vertical-align: top; font-size: large }
-    table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
-    h1      { text-align: center; font-family: 'Noto Serif', serif; font-size: xx-large }
-    h2      { font-family: 'Noto Sans', sans; }
-    hr      { border-top: 1px solid black; visibility: hidden; }
-    a:link {
-        text-decoration: none;
-    }
-    a:visited {
-        text-decoration: none;
-    }
-    a:hover {
-        text-decoration: underline;
-    }
-    a:active {
-        text-decoration: underline;
-    }
-    body {
-        background-color: #F5F5F5;
-        color: #111111;
-        line-height: 1.6;
-        
-}
-
-
-    }
-</style>
-CSS
-)
-css="$(echo "$csstmp" | tr '\n' ' ')" # remove newlines
-
-else # dark-er
+if [[ "$1" == "--dark" ]]; then
 # Dark custom css (apt install fonts-noto)
 
 shift
@@ -89,6 +51,78 @@ csstmp=$(cat <<CSS
     b {
         color: #4BB2C9;
     }
+</style>
+CSS
+)
+css="$(echo "$csstmp" | tr '\n' ' ')" # remove newlines
+
+
+elif [[ "$1" == "--modern" ]]; then
+# Latin Modern Roman
+
+shift
+
+csstmp=$(cat <<CSS
+<!-- Bronto custom css -->
+<style type="text/css">
+    p       { margin-top: 0; margin-bottom: 0; vertical-align: top; font-family: 'Latin Modern Roman Unslanted', serif; font-size: large }
+    a       { font-family: 'Latin Modern Roman', serif; font-size: large }
+    pre     { margin-top: 0; margin-bottom: 0; vertical-align: top; font-size: large }
+    table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+    h1      { text-align: center; font-family: 'Latin Modern Roman', serif; font-size: xx-large }
+    h2      { text-align: center; font-family: 'Latin Modern Roman', sans; }
+    hr      { border-top: 1px solid black; visibility: hidden; }
+    a:link {
+        text-decoration: none;
+    }
+    a:visited {
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    a:active {
+        text-decoration: underline;
+    }
+    body {
+        background-color: #F5F5F5;
+        color: #111111;
+        line-height: 1.6;
+    }
+</style>
+CSS
+)
+css="$(echo "$csstmp" | tr '\n' ' ')" # remove newlines
+
+else 
+# Bright custom css (apt install fonts-noto)
+csstmp=$(cat <<CSS
+<!-- Bronto custom css -->
+<style type="text/css">
+    p       { margin-top: 0; margin-bottom: 0; vertical-align: top; font-family: 'Noto Serif', serif; font-size: large }
+    a       { font-family: 'Noto Sans', sans; font-size: large }
+    pre     { margin-top: 0; margin-bottom: 0; vertical-align: top; font-size: large }
+    table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+    h1      { text-align: center; font-family: 'Noto Serif', serif; font-size: xx-large }
+    h2      { font-family: 'Noto Sans', sans; }
+    hr      { border-top: 1px solid black; visibility: hidden; }
+    a:link {
+        text-decoration: none;
+    }
+    a:visited {
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    a:active {
+        text-decoration: underline;
+    }
+    body {
+        background-color: #F5F5F5;
+        color: #111111;
+        line-height: 1.6;
+        }
 </style>
 CSS
 )
